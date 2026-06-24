@@ -31,12 +31,19 @@
     width: 100%; max-width: 700px; padding: 30px 20px 0;
     display: flex; flex-direction: column; align-items: center; gap: 24px;
   }
+  @media (max-height: 700px), (max-width: 480px) {
+    .game-area { padding: 12px 16px 0; gap: 10px; }
+    .poster-container { height: min(34vh, 500px); max-height: 34vh; }
+    header { padding: 10px 20px; }
+    .progress-bar-wrap { height: 2px; }
+  }
   .round-info {
     display: flex; justify-content: space-between; width: 100%;
     font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray);
   }
   .poster-container {
-    position: relative; width: 100%; max-width: 440px; aspect-ratio: 2/3;
+    position: relative; width: auto; max-width: 440px; aspect-ratio: 2/3;
+    height: min(42vh, 660px); max-height: 42vh; margin: 0 auto;
     background: #000; overflow: hidden; border: 2px solid #1e1e2e; transition: border-color 0.15s;
   }
   .poster-container.flash-correct { border-color: #3ecf6f; }
@@ -129,7 +136,7 @@
 
 <div class="game-area" id="gameArea" style="display:none">
   <div class="round-info">
-    <span id="roundLabel">AFFICHE 1 / 30</span>
+    <span id="roundLabel">AFFICHE 1 / 33</span>
     <span id="revealPct">0% révélé</span>
   </div>
   <div class="poster-container" id="posterContainer">
@@ -266,6 +273,7 @@ function loadFilm(){
   function onReady(){
     imgC.className='poster-img ready';
     drawMask(0); startReveal(); inp.focus();
+    setTimeout(()=>{ try{ inp.scrollIntoView({block:'center', behavior:'smooth'}); }catch(e){} }, 300);
   }
   if(imgC.complete && imgC.naturalWidth>0) onReady();
   else imgC.onload=onReady;

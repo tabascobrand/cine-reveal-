@@ -1,170 +1,7 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CINÉ REVEAL — Devine l'affiche</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #0a0a0f; --panel: #12121a; --gold: #f5c842;
-    --red: #e02d2d; --white: #f0eeea; --gray: #444455; --dim: #22222f;
-  }
-  body {
-    background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif;
-    min-height: 100vh; display: flex; flex-direction: column;
-    align-items: center; padding: 0 0 60px; overflow-x: hidden;
-  }
-  header {
-    width: 100%; padding: 18px 32px; display: flex;
-    align-items: center; justify-content: space-between; border-bottom: 1px solid #1e1e2e;
-  }
-  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 4px; color: var(--gold); }
-  .logo span { color: var(--white); }
-  .score-display { display: flex; flex-direction: column; align-items: flex-end; }
-  .score-label { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gray); }
-  .score-value { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold); line-height: 1; }
-  .progress-bar-wrap { width: 100%; height: 3px; background: var(--dim); }
-  .progress-bar-fill { height: 100%; background: var(--gold); transition: width 0.3s ease; }
-  .game-area {
-    width: 100%; max-width: 700px; padding: 30px 20px 0;
-    display: flex; flex-direction: column; align-items: center; gap: 24px;
-  }
-  @media (max-height: 700px), (max-width: 480px) {
-    .game-area { padding: 12px 16px 0; gap: 10px; }
-    .poster-container { height: min(34vh, 500px); max-height: 34vh; }
-    header { padding: 10px 20px; }
-    .progress-bar-wrap { height: 2px; }
-  }
-  .round-info {
-    display: flex; justify-content: space-between; width: 100%;
-    font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray);
-  }
-  .poster-container {
-    position: relative; width: auto; max-width: 440px; aspect-ratio: 2/3;
-    height: min(42vh, 660px); max-height: 42vh; margin: 0 auto;
-    background: #000; overflow: hidden; border: 2px solid #1e1e2e; transition: border-color 0.15s;
-  }
-  .poster-container.flash-correct { border-color: #3ecf6f; }
-  .poster-container.flash-wrong   { border-color: var(--red); }
-  .poster-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-  .poster-img.hide  { visibility: hidden; }
-  .poster-img.ready { visibility: visible; }
-  .reveal-mask { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-  .pts-badge {
-    position: absolute; top: 12px; right: 12px;
-    background: rgba(0,0,0,0.75); border: 1px solid var(--gold);
-    color: var(--gold); font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.4rem; padding: 4px 12px; letter-spacing: 2px; transition: color 0.3s;
-  }
-  .pts-badge.low { color: var(--red); border-color: var(--red); }
-  .timer-wrap { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 6px; }
-  .timer-row { display: flex; justify-content: space-between; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); }
-  .timer-bar { width: 100%; height: 4px; background: var(--dim); border-radius: 2px; overflow: hidden; }
-  .timer-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.1s linear, background 0.3s; }
-  .timer-fill.urgent { background: var(--red); }
-  .input-wrap { width: 100%; max-width: 440px; display: flex; gap: 10px; }
-  .input-wrap input {
-    flex: 1; background: var(--panel); border: 1px solid var(--gray); border-radius: 2px;
-    color: var(--white); font-size: 1rem; font-family: 'Inter', sans-serif;
-    padding: 12px 16px; outline: none; transition: border-color 0.2s; letter-spacing: 0.5px;
-  }
-  .input-wrap input:focus { border-color: var(--gold); }
-  .input-wrap input.correct { border-color: #3ecf6f; background: #0d2018; }
-  .input-wrap input.wrong   { border-color: var(--red); background: #200d0d; }
-  .btn-skip {
-    background: transparent; border: 1px solid var(--gray); color: var(--gray);
-    font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
-    padding: 0 16px; cursor: pointer; transition: all 0.2s; border-radius: 2px;
-  }
-  .btn-skip:hover { border-color: var(--white); color: var(--white); }
-  .feedback { font-size: 0.8rem; letter-spacing: 1px; height: 20px; color: var(--gray); }
-  .feedback.ok    { color: #3ecf6f; }
-  .feedback.ko    { color: var(--red); }
-  .feedback.fuzzy { color: #f5a623; }
-  .screen {
-    display: none; width: 100%; max-width: 440px;
-    flex-direction: column; align-items: center; gap: 20px;
-    padding: 40px 20px; text-align: center;
-  }
-  .screen.active { display: flex; }
-  .screen-title { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 6px; color: var(--gold); }
-  .screen-sub { color: var(--gray); font-size: 0.85rem; letter-spacing: 1px; line-height: 1.6; }
-  .btn-primary {
-    background: var(--gold); color: #000; font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.2rem; letter-spacing: 3px; border: none; padding: 14px 40px;
-    cursor: pointer; transition: opacity 0.2s; margin-top: 8px;
-  }
-  .btn-primary:hover { opacity: 0.85; }
-  .final-breakdown { width: 100%; display: flex; flex-direction: column; gap: 8px; }
-  .breakdown-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 14px; background: var(--panel); border-left: 3px solid var(--dim); font-size: 0.85rem;
-  }
-  .breakdown-row.scored { border-left-color: var(--gold); }
-  .breakdown-row .pts { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--gold); }
-  @keyframes shake {
-    0%,100%{ transform:translateX(0); } 15%{ transform:translateX(-7px); }
-    30%{ transform:translateX(7px); } 45%{ transform:translateX(-5px); }
-    60%{ transform:translateX(5px); } 75%{ transform:translateX(-3px); } 90%{ transform:translateX(3px); }
-  }
-  .poster-container.shaking { animation: shake 0.4s ease; }
-  @keyframes flashGreen {
-    0%{ box-shadow:0 0 0 0 rgba(62,207,111,0.5); }
-    50%{ box-shadow:0 0 0 20px rgba(62,207,111,0); }
-    100%{ box-shadow:none; }
-  }
-  .poster-container.correct-flash { animation: flashGreen 0.6s ease; }
-</style>
-</head>
-<body>
-<header>
-  <div class="logo">CINÉ<span>REVEAL</span></div>
-  <div class="score-display">
-    <div class="score-label">Score</div>
-    <div class="score-value" id="headerScore">0</div>
-  </div>
-</header>
-<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
-
-<div class="screen active" id="screenStart" style="margin-top:60px">
-  <div class="screen-title">CINÉ REVEAL</div>
-  <div class="screen-sub">Une affiche de film apparaît, cachée.<br>La fenêtre s'agrandit — plus vite tu trouves, plus tu scores.<br><br>Tape le titre et valide avec <strong style="color:var(--white)">Entrée</strong>.<br>Les petites fautes sont tolérées.</div>
-  <button class="btn-primary" onclick="startGame()">JOUER</button>
-</div>
-
-<div class="game-area" id="gameArea" style="display:none">
-  <div class="round-info">
-    <span id="roundLabel">AFFICHE 1 / 33</span>
-    <span id="revealPct">0% révélé</span>
-  </div>
-  <div class="poster-container" id="posterContainer">
-    <img class="poster-img hide" id="posterImgClean" src="" alt="affiche">
-    <img class="poster-img hide" id="posterImgFull"  src="" alt="affiche révélée">
-    <canvas class="reveal-mask" id="revealCanvas"></canvas>
-    <div class="pts-badge" id="ptsBadge">100 pts</div>
-  </div>
-  <div class="timer-wrap">
-    <div class="timer-row"><span>RÉVÉLATION</span><span id="timerLabel">0%</span></div>
-    <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
-  </div>
-  <div class="input-wrap">
-    <input type="text" id="answerInput" placeholder="Titre du film… (Entrée pour valider)" autocomplete="off" spellcheck="false">
-    <button class="btn-skip" id="skipBtn" onclick="skipFilm()">PASSER</button>
-  </div>
-  <div class="feedback" id="feedback"></div>
-</div>
-
-<div class="screen" id="screenEnd" style="margin-top:40px">
-  <div class="screen-title" id="endTitle">RÉSULTAT</div>
-  <div class="screen-sub" id="endSub"></div>
-  <div class="final-breakdown" id="breakdown"></div>
-  <button class="btn-primary" onclick="restartGame()">REJOUER</button>
-</div>
-
 <script>
 const AC = new (window.AudioContext || window.webkitAudioContext)();
+
+// --- AUDIO ---
 function playWrong() {
   const buf=AC.createBuffer(1,AC.sampleRate*0.18,AC.sampleRate);
   const data=buf.getChannelData(0);
@@ -174,6 +11,7 @@ function playWrong() {
   const bq=AC.createBiquadFilter(); bq.type='bandpass'; bq.frequency.setValueAtTime(280,AC.currentTime); bq.frequency.exponentialRampToValueAtTime(80,AC.currentTime+0.18); bq.Q.value=1.2;
   src.connect(bq); bq.connect(g); g.connect(AC.destination); src.start();
 }
+
 function playCorrect() {
   [523.25,783.99].forEach((freq,i)=>{
     const osc=AC.createOscillator(),g=AC.createGain();
@@ -183,14 +21,24 @@ function playCorrect() {
     osc.connect(g); g.connect(AC.destination); osc.start(t); osc.stop(t+0.25);
   });
 }
+
+// --- UTILS ---
 function levenshtein(a,b){
   const m=a.length,n=b.length;
   const dp=Array.from({length:m+1},(_,i)=>[i,...Array(n).fill(0)]);
   for(let j=0;j<=n;j++) dp[0][j]=j;
-  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++) dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++)
+    dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
   return dp[m][n];
 }
-function normalize(str){ return str.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,''); }
+
+function normalize(str){
+  return str.toLowerCase().trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9 ]/g,'');
+}
+
 function isFuzzyMatch(input,target){
   const a=normalize(input),b=normalize(target);
   if(a===b) return 'exact';
@@ -199,212 +47,204 @@ function isFuzzyMatch(input,target){
   return dist<=maxDist?'fuzzy':false;
 }
 
-const FILMS = [
-  {title:"Léon", accept:["leon", "léon", "leon le professionnel", "leon the professional"], clean:"images/leon-clean.jpg", full:"images/leon-full.jpg"},
-  {title:"The Grand Budapest Hotel", accept:["the grand budapest hotel", "grand budapest hotel", "grand budapest"], clean:"images/grand-budapest-clean.jpg", full:"images/grand-budapest-full.jpg"},
-  {title:"The Lobster", accept:["the lobster", "lobster"], clean:"images/lobster-clean.jpg", full:"images/lobster-full.jpg"},
-  {title:"Everything Everywhere All at Once", accept:["everything everywhere all at once", "everything everywhere"], clean:"images/everything-everywhere-clean.jpg", full:"images/everything-everywhere-full.jpg"},
-  {title:"Oppenheimer", accept:["oppenheimer"], clean:"images/oppenheimer-clean.jpg", full:"images/oppenheimer-full.jpg"},
-  {title:"American Beauty", accept:["american beauty"], clean:"images/american-beauty-clean.jpg", full:"images/american-beauty-full.jpg"},
-  {title:"Parasite", accept:["parasite"], clean:"images/parasite-clean.jpg", full:"images/parasite-full.jpg"},
-  {title:"Annette", accept:["annette"], clean:"images/annette-clean.jpg", full:"images/annette-full.jpg"},
-  {title:"Forrest Gump", accept:["forrest gump", "forrest"], clean:"images/forrest-gump-clean.jpg", full:"images/forrest-gump-full.jpg"},
-  {title:"The Mask", accept:["the mask", "mask"], clean:"images/the-mask-clean.jpg", full:"images/the-mask-full.jpg"},
-  {title:"Fear and Loathing in Las Vegas", accept:["fear and loathing in las vegas", "fear and loathing", "las vegas parano"], clean:"images/fear-and-loathing-clean.jpg", full:"images/fear-and-loathing-full.jpg"},
-  {title:"Seven", accept:["seven", "se7en", "7"], clean:"images/seven-clean.jpg", full:"images/seven-full.jpg"},
-  {title:"Midsommar", accept:["midsommar"], clean:"images/midsommar-clean.jpg", full:"images/midsommar-full.jpg"},
-  {title:"Le Grand Bleu", accept:["le grand bleu", "grand bleu", "the big blue"], clean:"images/grand-bleu-clean.jpg", full:"images/grand-bleu-full.jpg"},
-  {title:"Maman j'ai raté l'avion", accept:["maman j ai rate l avion", "home alone", "maman jai rate lavion"], clean:"images/home-alone-clean.jpg", full:"images/home-alone-full.jpg"},
-  {title:"Scream", accept:["scream", "frisson"], clean:"images/scream-clean.jpg", full:"images/scream-full.jpg"},
-  {title:"Whiplash", accept:["whiplash"], clean:"images/whiplash-clean.jpg", full:"images/whiplash-full.jpg"},
-  {title:"Titanic", accept:["titanic"], clean:"images/titanic-clean.jpg", full:"images/titanic-full.jpg"},
-  {title:"Superman", accept:["superman"], clean:"images/superman-clean.jpg", full:"images/superman-full.jpg"},
-  {title:"Mystic River", accept:["mystic river", "mystic"], clean:"images/mystic-river-clean.jpg", full:"images/mystic-river-full.jpg"},
-  {title:"Inception", accept:["inception"], clean:"images/inception-clean.jpg", full:"images/inception-full.jpg"},
-  {title:"Vol au-dessus d'un nid de coucou", accept:["vol au dessus d un nid de coucou", "one flew over the cuckoo s nest", "one flew over the cuckoos nest", "cuckoo", "nid de coucou"], clean:"images/cuckoo-clean.jpg", full:"images/cuckoo-full.jpg"},
-  {title:"Le Silence des agneaux", accept:["le silence des agneaux", "silence of the lambs", "the silence of the lambs", "silence des agneaux"], clean:"images/silence-agneaux-clean.jpg", full:"images/silence-agneaux-full.jpg"},
-  {title:"Aviator", accept:["aviator", "the aviator"], clean:"images/aviator-clean.jpg", full:"images/aviator-full.jpg"},
-  {title:"Les Dents de la mer", accept:["les dents de la mer", "dents de la mer", "jaws"], clean:"images/jaws-clean.jpg", full:"images/jaws-full.jpg"},
-  {title:"Dumb and Dumber", accept:["dumb and dumber", "dumb dumber"], clean:"images/dumb-and-dumber-clean.jpg", full:"images/dumb-and-dumber-full.jpg"},
-  {title:"The Truman Show", accept:["the truman show", "truman show", "truman"], clean:"images/truman-show-clean.jpg", full:"images/truman-show-full.jpg"},
-  {title:"Boyhood", accept:["boyhood"], clean:"images/boyhood-clean.jpg", full:"images/boyhood-full.jpg"},
-  {title:"Beethoven", accept:["beethoven"], clean:"images/beethoven-clean.jpg", full:"images/beethoven-full.jpg"},
-  {title:"La Ch'tite Famille", accept:["la chtite famille", "la ch tite famille", "chtite famille", "ch tite famille"], clean:"images/chtite-famille-clean.jpg", full:"images/chtite-famille-full.jpg"},
-  {title:"Sherlock Holmes", accept:["sherlock holmes","sherlock"], clean:"images/sherlock-clean.jpg", full:"images/sherlock.jpg"},
-  {title:"Rasta Rockett", accept:["rasta rockett","rastarocket","rasta rocket"], clean:"images/rastarocket-clean.jpg", full:"images/rastarocket.jpg"},
-  {title:"Hook", accept:["hook"], clean:"images/hook-clean.jpg", full:"images/hook.jpg"}
-];
-FILMS.forEach(f=>{ f.cleanSrc=f.clean; f.fullSrc=f.full; });
+// --- 🎬 FILMS (CHARGÉS DEPUIS JSON) ---
+let FILMS = [];
 
-function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+async function loadFilms(){
+  const res = await fetch('films.json');
+  const data = await res.json();
 
-let queue,currentIdx,totalScore,roundScores,revealPct=0,revealInterval=null,currentPts=100,answered=false;
+  FILMS = data.map(f => ({
+    title: f.title,
+    accept: [normalize(f.title)],
+    clean: `images/${f.file}-clean.jpg`,
+    full: `images/${f.file}.jpg`
+  }));
+}
+
+// --- GAME STATE ---
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+let queue,currentIdx,totalScore,roundScores;
+let revealPct=0,revealInterval=null,currentPts=100,answered=false;
+
 const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=100;
 
-function startGame(){
+// --- START GAME ---
+async function startGame(){
+  await loadFilms();
+
   document.getElementById('screenStart').classList.remove('active');
   document.getElementById('gameArea').style.display='flex';
-  queue=shuffle(FILMS); currentIdx=0; totalScore=0; roundScores=[];
+
+  queue=shuffle(FILMS);
+  currentIdx=0;
+  totalScore=0;
+  roundScores=[];
+
   loadFilm();
 }
 
+// --- LOAD FILM ---
 function loadFilm(){
-  answered=false; revealPct=0; currentPts=MAX_PTS;
+  answered=false;
+  revealPct=0;
+  currentPts=MAX_PTS;
+
   const film=queue[currentIdx];
+
   const imgC=document.getElementById('posterImgClean');
   const imgF=document.getElementById('posterImgFull');
+
   imgC.className='poster-img hide';
   imgF.className='poster-img hide';
+
   const canvas=document.getElementById('revealCanvas');
   const container=document.getElementById('posterContainer');
-  canvas.width=container.offsetWidth; canvas.height=container.offsetHeight;
+
+  canvas.width=container.offsetWidth;
+  canvas.height=container.offsetHeight;
+
   const ctx=canvas.getContext('2d');
-  ctx.fillStyle='#000'; ctx.fillRect(0,0,canvas.width,canvas.height);
-  imgC.src=film.cleanSrc;
-  imgF.src=film.fullSrc;
+  ctx.fillStyle='#000';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  imgC.src=film.clean;
+  imgF.src=film.full;
+
   const inp=document.getElementById('answerInput');
-  inp.value=''; inp.className=''; inp.disabled=false;
+  inp.value='';
+  inp.className='';
+  inp.disabled=false;
+
   document.getElementById('feedback').textContent='';
-  document.getElementById('feedback').className='feedback';
   document.getElementById('skipBtn').disabled=false;
-  document.getElementById('progressFill').style.width=(currentIdx/queue.length*100)+'%';
-  document.getElementById('roundLabel').textContent=`AFFICHE ${currentIdx+1} / ${queue.length}`;
-  document.getElementById('posterContainer').className='poster-container';
+
+  document.getElementById('roundLabel').textContent=
+    `AFFICHE ${currentIdx+1} / ${queue.length}`;
+
   function onReady(){
     imgC.className='poster-img ready';
-    drawMask(0); startReveal(); inp.focus();
-    setTimeout(()=>{ try{ inp.scrollIntoView({block:'center', behavior:'smooth'}); }catch(e){} }, 300);
+    drawMask(0);
+    startReveal();
+    inp.focus();
   }
-  if(imgC.complete && imgC.naturalWidth>0) onReady();
+
+  if(imgC.complete) onReady();
   else imgC.onload=onReady;
 }
 
+// --- MASK ---
 function drawMask(pct){
   const canvas=document.getElementById('revealCanvas');
   const container=document.getElementById('posterContainer');
-  canvas.width=container.offsetWidth; canvas.height=container.offsetHeight;
+
+  canvas.width=container.offsetWidth;
+  canvas.height=container.offsetHeight;
+
   const ctx=canvas.getContext('2d');
-  ctx.fillStyle='#000'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#000';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
   const cx=canvas.width/2, cy=canvas.height/2;
   const frac=0.08+(1-0.08)*(pct/100);
-  ctx.clearRect(cx-canvas.width*frac/2, cy-canvas.height*frac/2, canvas.width*frac, canvas.height*frac);
-  const pi=Math.round(pct);
-  document.getElementById('revealPct').textContent=pi+'% révélé';
-  document.getElementById('timerFill').style.width=pct+'%';
-  document.getElementById('timerLabel').textContent=pi+'%';
-  document.getElementById('timerFill').classList.toggle('urgent',pct>70);
-  currentPts=Math.max(0,Math.round(MAX_PTS*(1-pct/100)));
-  const badge=document.getElementById('ptsBadge');
-  badge.textContent=currentPts+' pts';
-  badge.className='pts-badge'+(currentPts<30?' low':'');
+
+  ctx.clearRect(
+    cx-canvas.width*frac/2,
+    cy-canvas.height*frac/2,
+    canvas.width*frac,
+    canvas.height*frac
+  );
 }
 
+// --- REVEAL LOOP ---
 function startReveal(){
   if(revealInterval) clearInterval(revealInterval);
+
   revealInterval=setInterval(()=>{
     if(answered) return;
+
     revealPct=Math.min(100,revealPct+REVEAL_STEP);
     drawMask(revealPct);
-    document.getElementById('headerScore').textContent=totalScore;
+
     if(revealPct>=100){
       clearInterval(revealInterval);
       if(!answered){
         answered=true;
-        showFullPoster();
-        document.getElementById('feedback').textContent='→ '+queue[currentIdx].title;
-        document.getElementById('feedback').className='feedback ko';
-        roundScores.push({title:queue[currentIdx].title,pts:0,missed:true});
-        setTimeout(nextFilm,2000);
+        skipAuto();
       }
     }
   },TICK_MS);
 }
 
-function showFullPoster(){
-  const canvas=document.getElementById('revealCanvas');
-  canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
-  document.getElementById('posterImgClean').className='poster-img hide';
-  document.getElementById('posterImgFull').className='poster-img ready';
+// --- AUTO FAIL ---
+function skipAuto(){
+  roundScores.push({title:queue[currentIdx].title,pts:0,missed:true});
+  nextFilm();
 }
 
+// --- INPUT ---
 document.getElementById('answerInput').addEventListener('keydown',function(e){
-  if(e.key!=='Enter') return;
-  if(answered) return;
+  if(e.key!=='Enter' || answered) return;
+
   AC.resume();
+
   const film=queue[currentIdx];
   let matched=false, wasFuzzy=false;
+
   for(const alias of film.accept){
     const r=isFuzzyMatch(this.value,alias);
-    if(r==='exact'){matched=true;wasFuzzy=false;break;}
+    if(r==='exact'){matched=true;break;}
     if(r==='fuzzy'){matched=true;wasFuzzy=true;}
   }
-  if(matched) triggerCorrect(film,this,wasFuzzy);
-  else triggerWrong(this);
+
+  if(matched) triggerCorrect(film,wasFuzzy);
+  else triggerWrong();
 });
 
-function triggerCorrect(film,inp,wasFuzzy){
-  clearInterval(revealInterval); answered=true;
-  inp.className='correct'; inp.disabled=true;
+// --- CORRECT ---
+function triggerCorrect(film,wasFuzzy){
+  clearInterval(revealInterval);
+  answered=true;
+
   playCorrect();
-  const pc=document.getElementById('posterContainer');
-  pc.classList.add('flash-correct','correct-flash');
-  showFullPoster();
-  const earned=currentPts; totalScore+=earned;
+
+  const earned=currentPts;
+  totalScore+=earned;
+
   roundScores.push({title:film.title,pts:earned,fuzzy:wasFuzzy});
-  const fb=document.getElementById('feedback');
-  fb.textContent=wasFuzzy?`✓ +${earned} pts (approximatif accepté !)`:`✓ +${earned} pts`;
-  fb.className='feedback '+(wasFuzzy?'fuzzy':'ok');
-  document.getElementById('headerScore').textContent=totalScore;
-  document.getElementById('skipBtn').disabled=true;
-  setTimeout(()=>{pc.classList.remove('correct-flash');nextFilm();},1500);
+
+  nextFilm();
 }
 
-function triggerWrong(inp){
-  playWrong(); inp.className='wrong'; inp.select();
-  const pc=document.getElementById('posterContainer');
-  pc.classList.add('flash-wrong','shaking');
-  pc.addEventListener('animationend',()=>pc.classList.remove('shaking','flash-wrong'),{once:true});
-  document.getElementById('feedback').textContent='✗ Mauvaise réponse…';
-  document.getElementById('feedback').className='feedback ko';
-  setTimeout(()=>{inp.className='';},600);
+// --- WRONG ---
+function triggerWrong(){
+  playWrong();
 }
 
+// --- NEXT ---
+function nextFilm(){
+  currentIdx++;
+  if(currentIdx>=queue.length){
+    alert("FIN");
+  } else {
+    loadFilm();
+  }
+}
+
+// --- SKIP ---
 function skipFilm(){
   if(answered) return;
-  clearInterval(revealInterval); answered=true;
-  roundScores.push({title:queue[currentIdx].title,pts:0,skipped:true});
-  showFullPoster();
-  document.getElementById('feedback').textContent='→ '+queue[currentIdx].title;
-  document.getElementById('feedback').className='feedback ko';
-  document.getElementById('answerInput').disabled=true;
-  document.getElementById('skipBtn').disabled=true;
-  setTimeout(nextFilm,1500);
-}
-
-function nextFilm(){ currentIdx++; if(currentIdx>=queue.length) endGame(); else loadFilm(); }
-
-function endGame(){
   clearInterval(revealInterval);
-  document.getElementById('gameArea').style.display='none';
-  document.getElementById('progressFill').style.width='100%';
-  document.getElementById('screenEnd').classList.add('active');
-  const max=queue.length*MAX_PTS, pct=Math.round((totalScore/max)*100);
-  document.getElementById('endTitle').textContent=totalScore+' pts';
-  document.getElementById('endSub').textContent=
-    pct>=80?'Cinéphile confirmé — excellent score !':
-    pct>=50?'Pas mal, mais tu peux faire mieux…':'Retourne voir des films !';
-  document.getElementById('breakdown').innerHTML=roundScores.map(r=>`
-    <div class="breakdown-row ${r.pts>0?'scored':''}">
-      <span>${r.title}${r.fuzzy?' <span style="color:#f5a623;font-size:0.7em">~</span>':''}</span>
-      <span class="pts">${r.pts>0?'+'+r.pts:r.skipped?'PASSÉ':'MANQUÉ'}</span>
-    </div>`).join('');
-}
-
-function restartGame(){
-  document.getElementById('screenEnd').classList.remove('active');
-  document.getElementById('headerScore').textContent='0';
-  startGame();
+  answered=true;
+  roundScores.push({title:queue[currentIdx].title,pts:0,skipped:true});
+  nextFilm();
 }
 </script>
-</body>
-</html>

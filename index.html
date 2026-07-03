@@ -125,11 +125,19 @@
 </head>
 <body>
 <header>
-  <div class="logo" onclick="goHome()" style="cursor:pointer">CINÉ<span>REVEAL</span></div>
-  <button id="forestBtn" onclick="toggleForest()" title="Son forêt" style="
-    background:transparent; border:none; cursor:pointer; padding:4px 8px;
-    color:var(--gray); font-size:1.3rem; transition:color 0.2s; line-height:1;
-  ">🌲</button>
+  <div style="display:flex;align-items:center;gap:14px">
+    <div class="logo" onclick="goHome()" style="cursor:pointer">CINÉ<span>REVEAL</span></div>
+    <button id="forestBtn" onclick="toggleForest()" title="Son ambiance" style="
+      background:transparent; border:none; cursor:pointer; padding:4px;
+      color:var(--gray); display:flex; align-items:center; transition:color 0.2s;
+    ">
+      <svg id="forestIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+        <path id="wave1" d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        <path id="wave2" d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+      </svg>
+    </button>
+  </div>
   <div class="score-display">
     <div class="score-label">Score</div>
     <div class="score-value" id="headerScore">0</div>
@@ -178,7 +186,7 @@ function playWrong() {
   const data=buf.getChannelData(0);
   for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*Math.pow(1-i/data.length,1.5);
   const src=AC.createBufferSource(); src.buffer=buf;
-  const g=AC.createGain(); g.gain.setValueAtTime(0.35,AC.currentTime); g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.18);
+  const g=AC.createGain(); g.gain.setValueAtTime(0.7,AC.currentTime); g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.22);
   const bq=AC.createBiquadFilter(); bq.type='bandpass'; bq.frequency.setValueAtTime(280,AC.currentTime); bq.frequency.exponentialRampToValueAtTime(80,AC.currentTime+0.18); bq.Q.value=1.2;
   src.connect(bq); bq.connect(g); g.connect(AC.destination); src.start();
 }
@@ -665,6 +673,7 @@ function startReveal(){
       clearInterval(revealInterval);
       if(!answered){
         answered=true;
+        playWrong();
         showFullPoster();
         document.getElementById('feedback').textContent='→ '+queue[currentIdx].title;
         document.getElementById('feedback').className='feedback ko';
@@ -788,7 +797,7 @@ function initForest(){
   if(!forestAudio){
     forestAudio = new Audio(FOREST_SRC);
     forestAudio.loop = false;
-    forestAudio.volume = 0.35;
+    forestAudio.volume = 0.12;
   }
 }
 
@@ -805,9 +814,20 @@ function toggleForest(){
   initForest();
   forestMuted = !forestMuted;
   forestAudio.muted = forestMuted;
+  const wave1 = document.getElementById('wave1');
+  const wave2 = document.getElementById('wave2');
   const btn = document.getElementById('forestBtn');
-  btn.textContent = forestMuted ? '🌲✕' : '🌲';
-  btn.style.color = forestMuted ? 'var(--red)' : 'var(--gray)';
+  if(forestMuted){
+    wave1.style.display = 'none';
+    wave2.style.display = 'none';
+    btn.style.color = 'var(--gray)';
+    btn.style.opacity = '0.4';
+  } else {
+    wave1.style.display = '';
+    wave2.style.display = '';
+    btn.style.color = 'var(--gray)';
+    btn.style.opacity = '1';
+  }
 }
 
 function goHome(){

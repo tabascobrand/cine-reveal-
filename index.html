@@ -13,8 +13,8 @@
   }
   body {
     background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif;
-    min-height: 100vh; display: flex; flex-direction: column;
-    align-items: center; padding: 0 0 60px; overflow-x: hidden;
+    height: 100vh; height: 100dvh; display: flex; flex-direction: column;
+    align-items: center; padding: 0; overflow: hidden;
   }
   header {
     width: 100%; padding: 18px 32px; display: flex;
@@ -28,8 +28,9 @@
   .progress-bar-wrap { width: 100%; height: 3px; background: var(--dim); }
   .progress-bar-fill { height: 100%; background: var(--gold); transition: width 0.3s ease; }
   .game-area {
-    width: 100%; max-width: 700px; padding: 30px 20px 0;
-    display: flex; flex-direction: column; align-items: center; gap: 24px;
+    width: 100%; max-width: 700px; padding: 16px 20px 16px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    flex: 1; overflow: hidden;
   }
   /* Se déclenche quand la hauteur visible se réduit (clavier mobile ouvert),
      pas quand l'écran est juste étroit (mobile en mode normal, sans clavier) */
@@ -44,8 +45,10 @@
     font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray);
   }
   .poster-container {
-    position: relative; width: 100%; max-width: 440px; aspect-ratio: 2/3;
-    max-height: 75vh; max-height: 75dvh; margin: 0 auto;
+    position: relative; width: 100%; max-width: 340px; aspect-ratio: 2/3;
+    flex-shrink: 1; min-height: 0;
+    max-height: calc(100vh - 280px); max-height: calc(100dvh - 280px);
+    margin: 0 auto;
     background: #000; overflow: hidden; border: 2px solid #1e1e2e; transition: border-color 0.15s;
   }
   .poster-container.flash-correct { border-color: #3ecf6f; }
@@ -122,7 +125,11 @@
 </head>
 <body>
 <header>
-  <div class="logo">CINÉ<span>REVEAL</span></div>
+  <div class="logo" onclick="goHome()" style="cursor:pointer">CINÉ<span>REVEAL</span></div>
+  <button id="forestBtn" onclick="toggleForest()" title="Son forêt" style="
+    background:transparent; border:none; cursor:pointer; padding:4px 8px;
+    color:var(--gray); font-size:1.3rem; transition:color 0.2s; line-height:1;
+  ">🌲</button>
   <div class="score-display">
     <div class="score-label">Score</div>
     <div class="score-value" id="headerScore">0</div>
@@ -177,13 +184,51 @@ function playWrong() {
   src.connect(bq); bq.connect(g); g.connect(AC.destination); src.start();
 }
 function playCorrect() {
-  [523.25,783.99].forEach((freq,i)=>{
-    const osc=AC.createOscillator(),g=AC.createGain();
-    osc.type='triangle'; osc.frequency.value=freq;
-    const t=AC.currentTime+i*0.13;
-    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.25,t+0.02); g.gain.exponentialRampToValueAtTime(0.001,t+0.22);
-    osc.connect(g); g.connect(AC.destination); osc.start(t); osc.stop(t+0.25);
+  const t = AC.currentTime;
+
+  // Couche 1 : onde sine douce, légèrement désaccordée pour donner de la chaleur
+  // Trois partiels proches qui créent un battement organique
+  [[261.6, 0.18], [263.1, 0.12], [392.0, 0.10]].forEach(([freq, vol]) => {
+    const osc = AC.createOscillator();
+    const g = AC.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, t);
+    osc.frequency.linearRampToValueAtTime(freq * 1.015, t + 0.3); // légère montée de pitch
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(vol, t + 0.04);
+    g.gain.setValueAtTime(vol, t + 0.15);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+    osc.connect(g); g.connect(AC.destination);
+    osc.start(t); osc.stop(t + 0.6);
   });
+
+  // Couche 2 : petite note aiguë magique qui arrive après (effet "collect")
+  const osc2 = AC.createOscillator();
+  const g2 = AC.createGain();
+  const t2 = t + 0.12;
+  osc2.type = 'sine';
+  osc2.frequency.setValueAtTime(880, t2);
+  osc2.frequency.exponentialRampToValueAtTime(1320, t2 + 0.18); // montée douce
+  g2.gain.setValueAtTime(0, t2);
+  g2.gain.linearRampToValueAtTime(0.09, t2 + 0.03);
+  g2.gain.exponentialRampToValueAtTime(0.001, t2 + 0.28);
+  osc2.connect(g2); g2.connect(AC.destination);
+  osc2.start(t2); osc2.stop(t2 + 0.3);
+
+  // Couche 3 : très léger bruit de texture (grain de la potion)
+  const bufLen = AC.sampleRate * 0.06;
+  const buf = AC.createBuffer(1, bufLen, AC.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < bufLen; i++) data[i] = (Math.random() * 2 - 1) * 0.015;
+  const noise = AC.createBufferSource();
+  noise.buffer = buf;
+  const gn = AC.createGain();
+  const bq = AC.createBiquadFilter();
+  bq.type = 'bandpass'; bq.frequency.value = 1800; bq.Q.value = 0.8;
+  gn.gain.setValueAtTime(0.6, t);
+  gn.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+  noise.connect(bq); bq.connect(gn); gn.connect(AC.destination);
+  noise.start(t);
 }
 function levenshtein(a,b){
   const m=a.length,n=b.length;
@@ -550,6 +595,7 @@ function startGame(){
   document.getElementById('gameArea').style.display='flex';
   queue = getNextSession();
   currentIdx=0; totalScore=0; roundScores=[];
+  startForest();
   loadFilm();
 }
 
@@ -579,7 +625,6 @@ function loadFilm(){
     if(answered) return; // évite double déclenchement
     imgC.className='poster-img ready';
     drawMask(0); startReveal(); inp.focus();
-    setTimeout(()=>{ try{ inp.scrollIntoView({block:'center', behavior:'smooth'}); }catch(e){} }, 300);
   }
   imgC.onerror = onReady; // si l'image ne charge pas, on joue quand même
   if(imgC.complete && imgC.naturalWidth>0){ onReady(); }
@@ -728,7 +773,50 @@ function restartGame(){
   document.getElementById('gameArea').style.display='flex';
   queue = getNextSession();
   currentIdx=0; totalScore=0; roundScores=[];
+  startForest();
   loadFilm();
+}
+
+// ── Son forêt ─────────────────────────────────────────────────────
+const FOREST_SRC = 'foret.mp3';
+const FOREST_DURATION = 20 * 60; // 20 minutes en secondes
+const FOREST_SAFE_END = FOREST_DURATION - 5 * 60; // ne pas démarrer après 15 min (pour que 5 min restent)
+
+let forestAudio = null;
+let forestMuted = false;
+
+function initForest(){
+  if(!forestAudio){
+    forestAudio = new Audio(FOREST_SRC);
+    forestAudio.loop = false;
+    forestAudio.volume = 0.35;
+  }
+}
+
+function startForest(){
+  initForest();
+  // Démarre à un endroit aléatoire dans les 15 premières minutes
+  const startAt = Math.random() * FOREST_SAFE_END;
+  forestAudio.currentTime = startAt;
+  forestAudio.muted = forestMuted;
+  forestAudio.play().catch(()=>{}); // ignore si bloqué par autoplay policy
+}
+
+function toggleForest(){
+  initForest();
+  forestMuted = !forestMuted;
+  forestAudio.muted = forestMuted;
+  const btn = document.getElementById('forestBtn');
+  btn.textContent = forestMuted ? '🌲✕' : '🌲';
+  btn.style.color = forestMuted ? 'var(--red)' : 'var(--gray)';
+}
+
+function goHome(){
+  clearInterval(revealInterval);
+  document.getElementById('gameArea').style.display='none';
+  document.getElementById('screenEnd').classList.remove('active');
+  document.getElementById('screenStart').classList.add('active');
+  document.getElementById('headerScore').textContent='0';
 }
 </script>
 </body>

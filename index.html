@@ -408,7 +408,7 @@ const FILMS = [
   {title:"La Marche de l'Empereur", accept:["la marche de l empereur"], clean:"images/marche-clean.jpg", full:"images/marche.jpg"},
   {title:"Mars Attacks", accept:["mars attacks"], clean:"images/marsattack-clean.jpg", full:"images/marsattack.jpg"},
   {title:"Marty Supreme", accept:["marty supreme"], clean:"images/marty-clean.jpg", full:"images/marty.jpg"},
-  {title:"The Matrix", accept:["the matrix", "matrix"], clean:"images/matrix1-clean.jpg", full:"images/matric1.jpg"},
+  {title:"The Matrix", accept:["the matrix", "matrix"], clean:"images/matric1-clean.jpg", full:"images/matric1.jpg"},
   {title:"Memento", accept:["memento"], clean:"images/memento-clean.jpg", full:"images/memento.jpg"},
   {title:"Merci Patron !", accept:["merci patron"], clean:"images/mercipatron-clean.jpg", full:"images/mercipatron.jpg"},
   {title:"Metropolis", accept:["metropolis"], clean:"images/metropolis-clean.jpg", full:"images/metropolis.jpg"},
@@ -416,7 +416,7 @@ const FILMS = [
   {title:"Mickey 17", accept:["mickey 17"], clean:"images/mickey17-clean.jpg", full:"images/mickey17.jpg"},
   {title:"Microcosmos", accept:["microcosmos"], clean:"images/microcosmos-clean.jpg", full:"images/microcosmos.jpg"},
   {title:"Milk", accept:["milk"], clean:"images/milky-clean.jpg", full:"images/milky.jpg"},
-  {title:"Million Dollar Baby", accept:["million dollar baby"], clean:"images/milliondollars-clean.jpg", full:"images/milliondollarsbaby.jpg"},
+  {title:"Million Dollar Baby", accept:["million dollar baby"], clean:"images/milliondollars-clean.jpg", full:"images/milliondollars.jpg"},
   {title:"Minority Report", accept:["minority report"], clean:"images/minority-clean.jpg", full:"images/minority.jpg"},
   {title:"Les Misérables", accept:["les miserables"], clean:"images/miserables-clean.jpg", full:"images/miserables.jpg"},
   {title:"Misery", accept:["misery"], clean:"images/misery-clean.jpg", full:"images/misery.jpg"},
@@ -531,10 +531,15 @@ function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Mat
 let queue,currentIdx,totalScore,roundScores,revealPct=0,revealInterval=null,currentPts=100,answered=false;
 const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=100;
 
+const SESSION_SIZE = 20;
+
 function startGame(){
   document.getElementById('screenStart').classList.remove('active');
   document.getElementById('gameArea').style.display='flex';
-  queue=shuffle(FILMS); currentIdx=0; totalScore=0; roundScores=[];
+  // Sélectionner SESSION_SIZE films au hasard parmi tous les films
+  const shuffled = shuffle(FILMS);
+  queue = shuffled.slice(0, SESSION_SIZE);
+  currentIdx=0; totalScore=0; roundScores=[];
   loadFilm();
 }
 
@@ -561,12 +566,18 @@ function loadFilm(){
   document.getElementById('roundLabel').textContent=`AFFICHE ${currentIdx+1} / ${queue.length}`;
   document.getElementById('posterContainer').className='poster-container';
   function onReady(){
+    if(answered) return; // évite double déclenchement
     imgC.className='poster-img ready';
     drawMask(0); startReveal(); inp.focus();
     setTimeout(()=>{ try{ inp.scrollIntoView({block:'center', behavior:'smooth'}); }catch(e){} }, 300);
   }
-  if(imgC.complete && imgC.naturalWidth>0) onReady();
-  else imgC.onload=onReady;
+  imgC.onerror = onReady; // si l'image ne charge pas, on joue quand même
+  if(imgC.complete && imgC.naturalWidth>0){ onReady(); }
+  else {
+    imgC.onload = onReady;
+    // Timeout de secours : si l'image n'est pas chargée après 5s, on démarre quand même
+    setTimeout(()=>{ if(!answered && revealPct===0) onReady(); }, 5000);
+  }
 }
 
 function drawMask(pct){
@@ -613,8 +624,20 @@ function startReveal(){
 function showFullPoster(){
   const canvas=document.getElementById('revealCanvas');
   canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
-  document.getElementById('posterImgClean').className='poster-img hide';
-  document.getElementById('posterImgFull').className='poster-img ready';
+  const imgC=document.getElementById('posterImgClean');
+  const imgF=document.getElementById('posterImgFull');
+  imgC.className='poster-img hide';
+  // Si l'image full est déjà chargée, on l'affiche directement
+  // Sinon on attend qu'elle soit prête avant de la rendre visible
+  function displayFull(){
+    imgF.className='poster-img ready';
+  }
+  if(imgF.complete && imgF.naturalWidth>0){
+    displayFull();
+  } else {
+    imgF.onload = displayFull;
+    imgF.onerror = ()=>{ imgF.className='poster-img ready'; }; // affiche quand même en cas d'erreur
+  }
 }
 
 document.getElementById('answerInput').addEventListener('keydown',function(e){

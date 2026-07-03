@@ -142,8 +142,8 @@
     <span id="revealPct">0% révélé</span>
   </div>
   <div class="poster-container" id="posterContainer">
-    <img class="poster-img hide" id="posterImgClean" src="" alt="affiche">
     <img class="poster-img hide" id="posterImgFull"  src="" alt="affiche révélée">
+    <img class="poster-img hide" id="posterImgClean" src="" alt="affiche">
     <canvas class="reveal-mask" id="revealCanvas"></canvas>
     <div class="pts-badge" id="ptsBadge">100 pts</div>
   </div>
@@ -646,7 +646,6 @@ function showFullPoster(){
     displayFull();
   } else {
     imgF.onload = displayFull;
-    imgF.onerror = ()=>{ imgF.className='poster-img ready'; }; // affiche quand même en cas d'erreur
   }
 }
 
@@ -715,7 +714,7 @@ function endGame(){
   document.getElementById('endTitle').textContent=totalScore+' pts';
   document.getElementById('endSub').textContent=
     pct>=80?'Cinéphile confirmé — excellent score !':
-    pct>=50?'Pas mal, mais tu peux faire mieux…':'Retourne voir des films !';
+    pct>=50?'Pas mal, mais tu peux faire mieux…':'';
   document.getElementById('breakdown').innerHTML=roundScores.map(r=>`
     <div class="breakdown-row ${r.pts>0?'scored':''}">
       <span>${r.title}${r.fuzzy?' <span style="color:#f5a623;font-size:0.7em">~</span>':''}</span>

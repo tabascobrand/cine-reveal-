@@ -127,11 +127,8 @@
 <header>
   <div style="display:flex;align-items:center;gap:14px">
     <div class="logo" onclick="goHome()" style="cursor:pointer">CINÉ<span>REVEAL</span></div>
-    <button id="forestBtn" onclick="toggleForest()" title="Son ambiance" style="
-      background:transparent; border:none; cursor:pointer; padding:4px;
-      color:var(--gray); display:flex; align-items:center; transition:color 0.2s;
-    ">
-      <svg id="forestIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <button id="forestBtn" onclick="toggleForest()" title="Son ambiance" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);display:flex;align-items:center;transition:color 0.2s;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
         <path id="wave1" d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
         <path id="wave2" d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
@@ -186,56 +183,75 @@ function playWrong() {
   const data=buf.getChannelData(0);
   for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*Math.pow(1-i/data.length,1.5);
   const src=AC.createBufferSource(); src.buffer=buf;
-  const g=AC.createGain(); g.gain.setValueAtTime(0.7,AC.currentTime); g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.22);
+  const g=AC.createGain(); g.gain.setValueAtTime(0.55,AC.currentTime); g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.22);
   const bq=AC.createBiquadFilter(); bq.type='bandpass'; bq.frequency.setValueAtTime(280,AC.currentTime); bq.frequency.exponentialRampToValueAtTime(80,AC.currentTime+0.18); bq.Q.value=1.2;
   src.connect(bq); bq.connect(g); g.connect(AC.destination); src.start();
 }
 function playCorrect() {
   const t = AC.currentTime;
 
-  // Couche 1 : onde sine douce, légèrement désaccordée pour donner de la chaleur
-  // Trois partiels proches qui créent un battement organique
-  [[261.6, 0.18], [263.1, 0.12], [392.0, 0.10]].forEach(([freq, vol]) => {
+  // Reverb synthétique douce
+  function makeReverb(dur, decay){
+    const len = AC.sampleRate * dur;
+    const buf = AC.createBuffer(2, len, AC.sampleRate);
+    for(let c=0;c<2;c++){
+      const d = buf.getChannelData(c);
+      for(let i=0;i<len;i++) d[i] = (Math.random()*2-1) * Math.pow(1-i/len, decay);
+    }
+    const conv = AC.createConvolver();
+    conv.buffer = buf;
+    return conv;
+  }
+  const reverb = makeReverb(2.0, 2.2);
+  const reverbGain = AC.createGain();
+  reverbGain.gain.value = 0.32;
+  reverb.connect(reverbGain); reverbGain.connect(AC.destination);
+
+  // Master très doux
+  const master = AC.createGain();
+  master.gain.value = 0.055;
+  master.connect(AC.destination);
+  master.connect(reverb);
+
+  // Delay léger
+  const delay = AC.createDelay(0.7);
+  delay.delayTime.value = 0.3;
+  const delayGain = AC.createGain();
+  delayGain.gain.value = 0.18;
+  delay.connect(delayGain); delayGain.connect(master);
+
+  // Joue une note type flûte : sine + souffle
+  function playFlute(freq, start, dur, vol){
     const osc = AC.createOscillator();
     const g = AC.createGain();
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(freq, t);
-    osc.frequency.linearRampToValueAtTime(freq * 1.015, t + 0.3); // légère montée de pitch
-    g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(vol, t + 0.04);
-    g.gain.setValueAtTime(vol, t + 0.15);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
-    osc.connect(g); g.connect(AC.destination);
-    osc.start(t); osc.stop(t + 0.6);
-  });
+    osc.frequency.setValueAtTime(freq, start);
+    osc.frequency.linearRampToValueAtTime(freq * 1.003, start + dur * 0.7);
+    g.gain.setValueAtTime(0, start);
+    g.gain.linearRampToValueAtTime(vol, start + 0.05);
+    g.gain.setValueAtTime(vol * 0.85, start + dur * 0.55);
+    g.gain.exponentialRampToValueAtTime(0.001, start + dur);
+    osc.connect(g); g.connect(master); g.connect(delay);
+    osc.start(start); osc.stop(start + dur + 0.1);
 
-  // Couche 2 : petite note aiguë magique qui arrive après (effet "collect")
-  const osc2 = AC.createOscillator();
-  const g2 = AC.createGain();
-  const t2 = t + 0.12;
-  osc2.type = 'sine';
-  osc2.frequency.setValueAtTime(880, t2);
-  osc2.frequency.exponentialRampToValueAtTime(1320, t2 + 0.18); // montée douce
-  g2.gain.setValueAtTime(0, t2);
-  g2.gain.linearRampToValueAtTime(0.09, t2 + 0.03);
-  g2.gain.exponentialRampToValueAtTime(0.001, t2 + 0.28);
-  osc2.connect(g2); g2.connect(AC.destination);
-  osc2.start(t2); osc2.stop(t2 + 0.3);
+    // Souffle flûte
+    const bLen = Math.floor(AC.sampleRate * dur);
+    const bBuf = AC.createBuffer(1, bLen, AC.sampleRate);
+    const bd = bBuf.getChannelData(0);
+    for(let i=0;i<bLen;i++) bd[i] = (Math.random()*2-1) * Math.pow(1-i/bLen, 1.8) * 0.018;
+    const breath = AC.createBufferSource();
+    breath.buffer = bBuf;
+    const bpf = AC.createBiquadFilter();
+    bpf.type = 'bandpass'; bpf.frequency.value = freq * 2.2; bpf.Q.value = 1.2;
+    const bg = AC.createGain(); bg.gain.value = vol * 0.35;
+    breath.connect(bpf); bpf.connect(bg); bg.connect(master);
+    breath.start(start);
+  }
 
-  // Couche 3 : très léger bruit de texture (grain de la potion)
-  const bufLen = AC.sampleRate * 0.06;
-  const buf = AC.createBuffer(1, bufLen, AC.sampleRate);
-  const data = buf.getChannelData(0);
-  for (let i = 0; i < bufLen; i++) data[i] = (Math.random() * 2 - 1) * 0.015;
-  const noise = AC.createBufferSource();
-  noise.buffer = buf;
-  const gn = AC.createGain();
-  const bq = AC.createBiquadFilter();
-  bq.type = 'bandpass'; bq.frequency.value = 1800; bq.Q.value = 0.8;
-  gn.gain.setValueAtTime(0.6, t);
-  gn.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
-  noise.connect(bq); bq.connect(gn); gn.connect(AC.destination);
-  noise.start(t);
+  // Trois notes espacées, douces — accord de Do majeur
+  playFlute(523.25, t,        0.55, 1.0);   // Do5
+  playFlute(659.25, t + 0.15, 0.50, 0.75);  // Mi5
+  playFlute(783.99, t + 0.28, 0.60, 0.55);  // Sol5
 }
 function levenshtein(a,b){
   const m=a.length,n=b.length;
@@ -747,6 +763,7 @@ function triggerWrong(inp){
 function skipFilm(){
   if(answered) return;
   clearInterval(revealInterval); answered=true;
+  playWrong();
   roundScores.push({title:queue[currentIdx].title,pts:0,skipped:true});
   showFullPoster();
   document.getElementById('feedback').textContent='→ '+queue[currentIdx].title;
@@ -787,9 +804,8 @@ function restartGame(){
 
 // ── Son forêt ─────────────────────────────────────────────────────
 const FOREST_SRC = 'foret.mp3';
-const FOREST_DURATION = 20 * 60; // 20 minutes en secondes
-const FOREST_SAFE_END = FOREST_DURATION - 5 * 60; // ne pas démarrer après 15 min (pour que 5 min restent)
-
+const FOREST_DURATION = 20 * 60;
+const FOREST_SAFE_END = FOREST_DURATION - 5 * 60;
 let forestAudio = null;
 let forestMuted = false;
 
@@ -800,16 +816,12 @@ function initForest(){
     forestAudio.volume = 0.12;
   }
 }
-
 function startForest(){
   initForest();
-  // Démarre à un endroit aléatoire dans les 15 premières minutes
-  const startAt = Math.random() * FOREST_SAFE_END;
-  forestAudio.currentTime = startAt;
+  forestAudio.currentTime = Math.random() * FOREST_SAFE_END;
   forestAudio.muted = forestMuted;
-  forestAudio.play().catch(()=>{}); // ignore si bloqué par autoplay policy
+  forestAudio.play().catch(()=>{});
 }
-
 function toggleForest(){
   initForest();
   forestMuted = !forestMuted;
@@ -818,15 +830,11 @@ function toggleForest(){
   const wave2 = document.getElementById('wave2');
   const btn = document.getElementById('forestBtn');
   if(forestMuted){
-    wave1.style.display = 'none';
-    wave2.style.display = 'none';
-    btn.style.color = 'var(--gray)';
-    btn.style.opacity = '0.4';
+    wave1.style.display='none'; wave2.style.display='none';
+    btn.style.color='var(--gray)'; btn.style.opacity='0.5';
   } else {
-    wave1.style.display = '';
-    wave2.style.display = '';
-    btn.style.color = 'var(--gray)';
-    btn.style.opacity = '1';
+    wave1.style.display=''; wave2.style.display='';
+    btn.style.color='var(--gold)'; btn.style.opacity='1';
   }
 }
 

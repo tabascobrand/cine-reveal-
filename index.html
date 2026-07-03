@@ -138,7 +138,7 @@
 
 <div class="game-area" id="gameArea" style="display:none">
   <div class="round-info">
-    <span id="roundLabel">AFFICHE 1 / 301</span>
+    <span id="roundLabel">AFFICHE 1 / 20</span>
     <span id="revealPct">0% révélé</span>
   </div>
   <div class="poster-container" id="posterContainer">
@@ -530,15 +530,25 @@ function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Mat
 
 let queue,currentIdx,totalScore,roundScores,revealPct=0,revealInterval=null,currentPts=100,answered=false;
 const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=100;
-
 const SESSION_SIZE = 20;
+
+// File globale : garantit qu'on voit tous les films avant d'en revoir un
+let globalQueue = [];
+
+function getNextSession(){
+  // Si la file globale a moins de SESSION_SIZE films restants, on la recrée
+  if(globalQueue.length < SESSION_SIZE){
+    globalQueue = shuffle(FILMS);
+  }
+  const session = globalQueue.slice(0, SESSION_SIZE);
+  globalQueue = globalQueue.slice(SESSION_SIZE);
+  return session;
+}
 
 function startGame(){
   document.getElementById('screenStart').classList.remove('active');
   document.getElementById('gameArea').style.display='flex';
-  // Sélectionner SESSION_SIZE films au hasard parmi tous les films
-  const shuffled = shuffle(FILMS);
-  queue = shuffled.slice(0, SESSION_SIZE);
+  queue = getNextSession();
   currentIdx=0; totalScore=0; roundScores=[];
   loadFilm();
 }
@@ -716,7 +726,10 @@ function endGame(){
 function restartGame(){
   document.getElementById('screenEnd').classList.remove('active');
   document.getElementById('headerScore').textContent='0';
-  startGame();
+  document.getElementById('gameArea').style.display='flex';
+  queue = getNextSession();
+  currentIdx=0; totalScore=0; roundScores=[];
+  loadFilm();
 }
 </script>
 </body>

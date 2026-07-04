@@ -780,8 +780,8 @@ function endGame(){
   const max=queue.length*MAX_PTS, pct=Math.round((totalScore/max)*100);
   document.getElementById('endTitle').textContent=totalScore+' pts';
   document.getElementById('endSub').textContent=
-    pct>=80?'Cinéphile confirmé — excellent score !':
-    pct>=50?'Pas mal, mais tu peux faire mieux…':'';
+    pct>=80?' ':
+    pct>=50?' ':'';
   document.getElementById('breakdown').innerHTML=roundScores.map(r=>`
     <div class="breakdown-row ${r.pts>0?'scored':''}">
       <span>${r.title}${r.fuzzy?' <span style="color:#f5a623;font-size:0.7em">~</span>':''}</span>

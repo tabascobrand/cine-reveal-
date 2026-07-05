@@ -15,6 +15,16 @@
     background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif;
     height: 100vh; height: 100dvh; display: flex; flex-direction: column;
     align-items: center; padding: 0; overflow: hidden;
+    position: relative;
+  }
+  #screenEnd.active {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    overflow-y: auto; z-index: 10;
+    background: var(--bg);
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: flex-start;
+    padding: 40px 20px 60px; gap: 20px;
+    max-width: none; width: 100%;
   }
   header {
     width: 100%; padding: 18px 32px; display: flex;
@@ -169,7 +179,7 @@
   <div class="feedback" id="feedback"></div>
 </div>
 
-<div class="screen" id="screenEnd" style="margin-top:40px">
+<div class="screen" id="screenEnd" style="margin-top:0;overflow-y:auto;max-height:100%;padding:30px 20px;">
   <div class="screen-title" id="endTitle">RÉSULTAT</div>
   <div class="screen-sub" id="endSub"></div>
   <div class="final-breakdown" id="breakdown"></div>
@@ -614,7 +624,11 @@ let globalQueue = [];
 function getNextSession(){
   // Si la file globale a moins de SESSION_SIZE films restants, on la recrée
   if(globalQueue.length < SESSION_SIZE){
-    globalQueue = shuffle(FILMS);
+    // Double shuffle pour casser tout biais résiduel
+    let pool = shuffle(shuffle([...FILMS]));
+    // Décalage aléatoire supplémentaire pour éviter les débuts de liste similaires
+    const offset = Math.floor(Math.random() * pool.length);
+    globalQueue = [...pool.slice(offset), ...pool.slice(0, offset)];
   }
   const session = globalQueue.slice(0, SESSION_SIZE);
   globalQueue = globalQueue.slice(SESSION_SIZE);
@@ -699,8 +713,8 @@ function startReveal(){
         answered=true;
         playWrong();
         showFullPoster();
-        document.getElementById('feedback').textContent='→ '+queue[currentIdx].title;
-        document.getElementById('feedback').className='feedback ko';
+        document.getElementById('feedback').textContent='';
+        document.getElementById('feedback').className='feedback';
         roundScores.push({title:queue[currentIdx].title,pts:0,missed:true});
         setTimeout(nextFilm,2000);
       }
@@ -774,8 +788,8 @@ function skipFilm(){
   playWrong();
   roundScores.push({title:queue[currentIdx].title,pts:0,skipped:true});
   showFullPoster();
-  document.getElementById('feedback').textContent='→ '+queue[currentIdx].title;
-  document.getElementById('feedback').className='feedback ko';
+  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').className='feedback';
   document.getElementById('answerInput').disabled=true;
   document.getElementById('skipBtn').disabled=true;
   setTimeout(nextFilm,1500);

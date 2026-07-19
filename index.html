@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REVEAL</title>
+<link rel="icon" type="image/png" href="favicon.ico">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a0f; --white: #f0eeea; --gray: #444455; --dim: #22222f;
+    --gold: #f5c842; --teal: #4ecdc4; --disabled: #2a2a3a;
+  }
+  body {
+    background: var(--bg); color: var(--white);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 40px 20px;
+  }
+  .title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem; letter-spacing: 8px;
+    color: var(--white); margin-bottom: 12px;
+  }
+  .subtitle {
+    font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gray); margin-bottom: 60px;
+  }
+  .cards {
+    display: flex; flex-direction: column; gap: 20px;
+    width: 100%; max-width: 380px;
+  }
+  .card {
+    border: 1px solid; border-radius: 2px;
+    padding: 28px 32px; cursor: pointer;
+    transition: all 0.2s; text-decoration: none;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .card:hover { transform: translateY(-2px); }
+  .card.gold { border-color: var(--gold); }
+  .card.gold:hover { background: rgba(245,200,66,0.06); }
+  .card.teal { border-color: var(--teal); }
+  .card.teal:hover { background: rgba(78,205,196,0.06); }
+  .card.soon { border-color: var(--dim); cursor: default; opacity: 0.4; }
+  .card-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem; letter-spacing: 4px;
+  }
+  .card.gold .card-name { color: var(--gold); }
+  .card.teal .card-name { color: var(--teal); }
+  .card.soon .card-name { color: var(--gray); }
+  .card-desc {
+    font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gray);
+  }
+  .card-tag {
+    font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--dim); margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+  <div class="title">REVEAL</div>
+  <div class="subtitle">Choisis ton univers</div>
+  <div class="cards">
+    <a class="card gold" href="cine.html">
+      <div class="card-name">CINÉ REVEAL</div>
+      <div class="card-desc">Devine l'affiche de film</div>
+    </a>
+    <a class="card teal" href="objet.html">
+      <div class="card-name">OBJET REVEAL</div>
+      <div class="card-desc">Devine l'objet mystère</div>
+    </a>
+  </div>
+</body>
+</html>

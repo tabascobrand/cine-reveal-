@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANIMAL REVEAL — Devine l'animal</title>
+<link rel="icon" type="image/png" href="favicon.ico.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a0f; --panel: #12121a; --accent: #4ecdc4;
+    --orange: #f5a623; --red: #e02d2d; --white: #f0eeea; --gray: #444455; --dim: #22222f;
+  }
+  body {
+    background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif;
+    height: 100vh; height: 100dvh; display: flex; flex-direction: column;
+    align-items: center; padding: 0; overflow: hidden; position: relative;
+  }
+  #screenEnd.active {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    overflow-y: auto; z-index: 10; background: var(--bg);
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: flex-start; padding: 40px 20px 60px; gap: 20px;
+    max-width: none; width: 100%;
+  }
+  header {
+    width: 100%; padding: 18px 32px; display: flex;
+    align-items: center; justify-content: space-between; border-bottom: 1px solid #1e1e2e;
+    flex-shrink: 0;
+  }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 4px; color: var(--accent); cursor: pointer; }
+  .logo span { color: var(--white); }
+  .score-display { display: flex; flex-direction: column; align-items: flex-end; }
+  .score-label { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gray); }
+  .score-value { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--accent); line-height: 1; }
+  .progress-bar-wrap { width: 100%; height: 3px; background: var(--dim); flex-shrink: 0; }
+  .progress-bar-fill { height: 100%; background: var(--accent); transition: width 0.3s ease; }
+  .game-area {
+    width: 100%; max-width: 700px; padding: 16px 20px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    flex: 1; overflow: hidden;
+  }
+  @media (max-height: 500px) {
+    .game-area { padding: 8px 16px; gap: 8px; }
+    .photo-container { max-height: 32vh; max-height: 32dvh; }
+    header { padding: 8px 20px; }
+  }
+  .round-info {
+    display: flex; justify-content: space-between; width: 100%;
+    font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray);
+  }
+  .photo-container {
+    position: relative; width: 100%; max-width: 380px; aspect-ratio: 1/1;
+    flex-shrink: 1; min-height: 0;
+    max-height: calc(100vh - 280px); max-height: calc(100dvh - 280px);
+    margin: 0 auto;
+    background: #000; overflow: hidden; border: 2px solid #1e1e2e; transition: border-color 0.2s;
+  }
+  .photo-container.flash-correct { border-color: var(--accent); }
+  .photo-container.flash-half   { border-color: var(--orange); }
+  .photo-container.flash-wrong  { border-color: var(--red); }
+  .photo-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+  .photo-img.hide  { visibility: hidden; }
+  .photo-img.ready { visibility: visible; }
+  .reveal-mask { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+  .pts-badge {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(0,0,0,0.8); border: 1px solid var(--accent);
+    color: var(--accent); font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem; padding: 4px 10px; letter-spacing: 2px;
+    display: flex; flex-direction: column; align-items: center; gap: 1px;
+    transition: all 0.3s;
+  }
+  .pts-badge .pts-fixed { font-size: 0.65rem; letter-spacing: 1px; opacity: 0.7; }
+  .pts-badge .pts-bonus { font-size: 1.1rem; }
+  .pts-badge.half { border-color: var(--orange); color: var(--orange); }
+  .timer-wrap { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 6px; }
+  .timer-row { display: flex; justify-content: space-between; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); }
+  .timer-bar { width: 100%; height: 4px; background: var(--dim); border-radius: 2px; overflow: hidden; }
+  .timer-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.1s linear, background 0.3s; }
+  .timer-fill.urgent { background: var(--red); }
+  .input-wrap { width: 100%; max-width: 440px; display: flex; gap: 10px; }
+  .input-wrap input {
+    flex: 1; background: var(--panel); border: 1px solid var(--gray); border-radius: 2px;
+    color: var(--white); font-size: 1rem; font-family: 'Inter', sans-serif;
+    padding: 12px 16px; outline: none; transition: border-color 0.2s;
+  }
+  .input-wrap input:focus { border-color: var(--accent); }
+  .input-wrap input.correct { border-color: var(--accent); background: #0d1e1e; }
+  .input-wrap input.half    { border-color: var(--orange); background: #1e1200; }
+  .input-wrap input.wrong   { border-color: var(--red); background: #200d0d; }
+  .btn-skip {
+    background: transparent; border: 1px solid var(--gray); color: var(--gray);
+    font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
+    padding: 0 16px; cursor: pointer; transition: all 0.2s; border-radius: 2px;
+  }
+  .btn-skip:hover { border-color: var(--white); color: var(--white); }
+  .feedback { font-size: 0.8rem; letter-spacing: 1px; height: 20px; color: var(--gray); }
+  .feedback.ok    { color: var(--accent); }
+  .feedback.half  { color: var(--orange); }
+  .feedback.ko    { color: var(--red); }
+  .feedback.fuzzy { color: #a0e8e4; }
+  .screen {
+    display: none; width: 100%; max-width: 440px;
+    flex-direction: column; align-items: center; gap: 20px;
+    padding: 40px 20px; text-align: center;
+  }
+  .screen.active { display: flex; }
+  .screen-title { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 6px; color: var(--accent); }
+  .screen-sub { color: var(--gray); font-size: 0.85rem; letter-spacing: 1px; line-height: 1.6; }
+  .btn-primary {
+    background: var(--accent); color: #000; font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem; letter-spacing: 3px; border: none; padding: 14px 40px;
+    cursor: pointer; transition: opacity 0.2s; margin-top: 8px;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+  .final-breakdown { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+  .breakdown-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; background: var(--panel); border-left: 3px solid var(--dim); font-size: 0.85rem;
+  }
+  .breakdown-row.scored { border-left-color: var(--accent); }
+  .breakdown-row.half-scored { border-left-color: var(--orange); }
+  .breakdown-row .pts { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--accent); }
+  .breakdown-row.half-scored .pts { color: var(--orange); }
+  @keyframes shake {
+    0%,100%{ transform:translateX(0); } 15%{ transform:translateX(-7px); }
+    30%{ transform:translateX(7px); } 45%{ transform:translateX(-5px); }
+    60%{ transform:translateX(5px); } 75%{ transform:translateX(-3px); } 90%{ transform:translateX(3px); }
+  }
+  .photo-container.shaking { animation: shake 0.4s ease; }
+  @keyframes flashCorrect {
+    0%{ box-shadow:0 0 0 0 rgba(78,205,196,0.5); }
+    50%{ box-shadow:0 0 0 20px rgba(78,205,196,0); }
+    100%{ box-shadow:none; }
+  }
+  .photo-container.correct-flash { animation: flashCorrect 0.6s ease; }
+  @keyframes flashHalf {
+    0%{ box-shadow:0 0 0 0 rgba(245,166,35,0.5); }
+    50%{ box-shadow:0 0 0 20px rgba(245,166,35,0); }
+    100%{ box-shadow:none; }
+  }
+  .photo-container.half-flash { animation: flashHalf 0.6s ease; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" onclick="goHome()">ANIMAL<span>REVEAL</span></div>
+  <div class="score-display">
+    <div class="score-label">Score</div>
+    <div class="score-value" id="headerScore">0</div>
+  </div>
+</header>
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+
+<div class="screen active" id="screenStart">
+  <div class="screen-title">ANIMAL REVEAL</div>
+  <button class="btn-primary" onclick="startGame()">JOUER</button>
+</div>
+
+<div class="game-area" id="gameArea" style="display:none">
+  <div class="round-info">
+    <span id="roundLabel">ANIMAL 1 / 20</span>
+    <span id="revealPct">0% révélé</span>
+  </div>
+  <div class="photo-container" id="photoContainer">
+    <img class="photo-img hide" id="photoImg" src="" alt="animal">
+    <canvas class="reveal-mask" id="revealCanvas"></canvas>
+    <div class="pts-badge" id="ptsBadge">
+      <div class="pts-fixed" id="ptsFixed"></div>
+      <div class="pts-bonus" id="ptsBonus">+50</div>
+    </div>
+  </div>
+  <div class="timer-wrap">
+    <div class="timer-row"><span>RÉVÉLATION</span><span id="timerLabel">0%</span></div>
+    <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
+  </div>
+  <div class="input-wrap">
+    <input type="text" id="answerInput" placeholder="Nom de l'animal… (Entrée pour valider)" autocomplete="off" spellcheck="false">
+    <button class="btn-skip" id="skipBtn" onclick="skipAnimal()">PASSER</button>
+  </div>
+  <div class="feedback" id="feedback"></div>
+</div>
+
+<div class="screen" id="screenEnd">
+  <div class="screen-title" id="endTitle">RÉSULTAT</div>
+  <div class="screen-sub" id="endSub"></div>
+  <div class="final-breakdown" id="breakdown"></div>
+  <button class="btn-primary" onclick="restartGame()">REJOUER</button>
+</div>
+
+<script>
+const AC = new (window.AudioContext || window.webkitAudioContext)();
+
+function playWrong() {
+  const buf=AC.createBuffer(1,AC.sampleRate*0.18,AC.sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*Math.pow(1-i/data.length,1.5);
+  const src=AC.createBufferSource(); src.buffer=buf;
+  const g=AC.createGain(); g.gain.setValueAtTime(0.55,AC.currentTime); g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.22);
+  const bq=AC.createBiquadFilter(); bq.type='bandpass'; bq.frequency.setValueAtTime(280,AC.currentTime); bq.frequency.exponentialRampToValueAtTime(80,AC.currentTime+0.18); bq.Q.value=1.2;
+  src.connect(bq); bq.connect(g); g.connect(AC.destination); src.start();
+}
+
+function playCorrect() {
+  const t = AC.currentTime;
+  function makeReverb(dur,decay){
+    const len=AC.sampleRate*dur; const buf=AC.createBuffer(2,len,AC.sampleRate);
+    for(let c=0;c<2;c++){const d=buf.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay);}
+    const conv=AC.createConvolver(); conv.buffer=buf; return conv;
+  }
+  const reverb=makeReverb(2.0,2.2); const reverbGain=AC.createGain(); reverbGain.gain.value=0.32;
+  reverb.connect(reverbGain); reverbGain.connect(AC.destination);
+  const master=AC.createGain(); master.gain.value=0.055;
+  master.connect(AC.destination); master.connect(reverb);
+  const delay=AC.createDelay(0.7); delay.delayTime.value=0.3;
+  const delayGain=AC.createGain(); delayGain.gain.value=0.18;
+  delay.connect(delayGain); delayGain.connect(master);
+  function playFlute(freq,start,dur,vol){
+    const osc=AC.createOscillator(); const g=AC.createGain();
+    osc.type='sine'; osc.frequency.setValueAtTime(freq,start);
+    osc.frequency.linearRampToValueAtTime(freq*1.003,start+dur*0.7);
+    g.gain.setValueAtTime(0,start); g.gain.linearRampToValueAtTime(vol,start+0.05);
+    g.gain.setValueAtTime(vol*0.85,start+dur*0.55); g.gain.exponentialRampToValueAtTime(0.001,start+dur);
+    osc.connect(g); g.connect(master); g.connect(delay); osc.start(start); osc.stop(start+dur+0.1);
+    const bLen=Math.floor(AC.sampleRate*dur); const bBuf=AC.createBuffer(1,bLen,AC.sampleRate);
+    const bd=bBuf.getChannelData(0);
+    for(let i=0;i<bLen;i++) bd[i]=(Math.random()*2-1)*Math.pow(1-i/bLen,1.8)*0.018;
+    const breath=AC.createBufferSource(); breath.buffer=bBuf;
+    const bpf=AC.createBiquadFilter(); bpf.type='bandpass'; bpf.frequency.value=freq*2.2; bpf.Q.value=1.2;
+    const bg=AC.createGain(); bg.gain.value=vol*0.35;
+    breath.connect(bpf); bpf.connect(bg); bg.connect(master); breath.start(start);
+  }
+  playFlute(523.25,t,0.55,1.0);
+  playFlute(659.25,t+0.15,0.50,0.75);
+  playFlute(783.99,t+0.28,0.60,0.55);
+}
+
+function playHalf() {
+  // Son intermédiaire — une seule note douce
+  const t = AC.currentTime;
+  const osc = AC.createOscillator(); const g = AC.createGain();
+  osc.type = 'sine'; osc.frequency.value = 659.25;
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.07,t+0.04);
+  g.gain.exponentialRampToValueAtTime(0.001,t+0.4);
+  osc.connect(g); g.connect(AC.destination); osc.start(t); osc.stop(t+0.45);
+}
+
+function levenshtein(a,b){
+  const m=a.length,n=b.length;
+  const dp=Array.from({length:m+1},(_,i)=>[i,...Array(n).fill(0)]);
+  for(let j=0;j<=n;j++) dp[0][j]=j;
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++) dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  return dp[m][n];
+}
+function normalize(str){ return str.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,''); }
+function isFuzzyMatch(input,target){
+  const a=normalize(input),b=normalize(target);
+  if(a===b) return 'exact';
+  const dist=levenshtein(a,b);
+  const maxDist=b.length<=5?1:b.length<=10?2:3;
+  return dist<=maxDist?'fuzzy':false;
+}
+
+// ── ANIMAUX ───────────────────────────────────────────────────────
+// Format nom simple  : {title:"Abeille", part1:["abeille"], part2:null, src:"animal-images/animal-images/abeille.jpg"}
+// Format nom double  : {title:"Canard colvert", part1:["canard"], part2:["colvert"], src:"animal-images/animal-images/canard-colvert.jpg"}
+const ANIMALS = [
+  {title:"Abeille", part1:["abeille"], part2:null, src:"animal-images/animal-images/abeille.jpg"},
+  {title:"Araignée crabe épineuse", part1:["araignee crabe epineuse","araignee crabe"], part2:["araignee","crabe epineux"], src:"animal-images/animal-images/araignée-crabeépineuse.jpg"},
+  {title:"Araignée souriante d'Hawaï", part1:["araignee souriante d hawaii","araignee souriante"], part2:["araignee","souriante"], src:"animal-images/animal-images/araignée-souriantedhawaï.jpg"},
+  {title:"Autruche", part1:["autruche"], part2:null, src:"animal-images/animal-images/autruche.jpg"},
+  {title:"Canard colvert", part1:["canard"], part2:["colvert"], src:"animal-images/animal-images/canard-colvert.jpg"},
+  {title:"Canard mandarin", part1:["canard"], part2:["mandarin"], src:"animal-images/animal-images/canard-mandarin.jpg"},
+  {title:"Cerf blanc", part1:["cerf"], part2:["cerf blanc","blanc"], src:"animal-images/animal-images/cerf-blanc.jpg"},
+  {title:"Chien", part1:["chien"], part2:null, src:"animal-images/animal-images/chien.jpg"},
+  {title:"Coccinelle", part1:["coccinelle"], part2:null, src:"animal-images/animal-images/coccinelle.jpg"},
+  {title:"Coq", part1:["coq"], part2:null, src:"animal-images/animal-images/coq.jpg"},
+  {title:"Fourmi tisserande", part1:["fourmi"], part2:["fourmi tisserande","tisserande"], src:"animal-images/animal-images/fourmi-tisserande.jpg"},
+  {title:"Gypaète barbu", part1:["gypaete"], part2:["gypaete barbu","barbu"], src:"animal-images/animal-images/gypaète-barbu.jpg"},
+  {title:"Grand-duc (hibou)", part1:["hibou","grand duc"], part2:["grand duc","hibou"], src:"animal-images/animal-images/hibou-grandduc.jpg"},
+  {title:"Loup à crinière", part1:["loup"], part2:["loup a criniere","criniere"], src:"animal-images/animal-images/loup-àcrinière.jpg"},
+  {title:"Loutre de mer", part1:["loutre"], part2:["loutre de mer","de mer"], src:"animal-images/animal-images/loutre-demer.jpg"},
+  {title:"Macareux moine", part1:["macareux"], part2:["macareux moine","moine"], src:"animal-images/animal-images/macareux-moine.jpg"},
+  {title:"Manchot royal", part1:["manchot"], part2:["manchot royal","royal"], src:"animal-images/animal-images/manchot-royal.jpg"},
+  {title:"Mandrill", part1:["mandrill"], part2:null, src:"animal-images/animal-images/mandrill.jpg"},
+  {title:"Mante religieuse", part1:["mante"], part2:["mante religieuse","religieuse"], src:"animal-images/animal-images/mantereligieuse.jpg"},
+  {title:"Méduse pélagique", part1:["meduse"], part2:["meduse pelagique","pelagique"], src:"animal-images/animal-images/méduse-pélagique.jpg"},
+  {title:"Messager sagittaire (oiseau secrétaire)", part1:["messager sagittaire","oiseau secretaire"], part2:["messager sagittaire","oiseau secretaire"], src:"animal-images/animal-images/messagersagittaire-oiseausecrétaire.jpg"},
+  {title:"Morse", part1:["morse"], part2:null, src:"animal-images/animal-images/morse.jpg"},
+  {title:"Nasique", part1:["nasique"], part2:null, src:"animal-images/animal-images/nasique.jpg"},
+  {title:"Paon bleu", part1:["paon"], part2:["paon bleu","bleu"], src:"animal-images/animal-images/paon-bleu.jpg"},
+  {title:"Phacochère", part1:["phacochere"], part2:null, src:"animal-images/animal-images/phacochère.jpg"},
+  {title:"Pintade de Numidie", part1:["pintade"], part2:["pintade de numidie","de numidie","numidie"], src:"animal-images/animal-images/pintade-denumidie.jpg"},
+  {title:"Poule", part1:["poule"], part2:null, src:"animal-images/animal-images/poule.jpg"},
+  {title:"Rhinopithèque de Biet", part1:["rhinopitheque"], part2:["rhinopitheque de biet","de biet","biet"], src:"animal-images/animal-images/rhinopithèque-debiet.jpg"},
+  {title:"Souris", part1:["souris"], part2:null, src:"animal-images/animal-images/souris.jpg"},
+  {title:"Tragopan de Temminck", part1:["tragopan"], part2:["tragopan de temminck","de temminck","temminck"], src:"animal-images/animal-images/trapogan-detemminck.jpg"},
+];
+
+const FIXED_SIMPLE = 50;
+const FIXED_DOUBLE = 50; // par partie
+const BONUS_MAX = 50;
+const REVEAL_STEP = 0.4, TICK_MS = 120;
+const SESSION_SIZE = 20;
+
+let globalQueue = [];
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function getNextSession(){
+  if(globalQueue.length < SESSION_SIZE){
+    let pool = shuffle(shuffle([...ANIMALS]));
+    const offset = Math.floor(Math.random() * pool.length);
+    globalQueue = [...pool.slice(offset), ...pool.slice(0, offset)];
+  }
+  const session = globalQueue.slice(0, SESSION_SIZE);
+  globalQueue = globalQueue.slice(SESSION_SIZE);
+  return session;
+}
+
+let queue, currentIdx, totalScore, roundScores;
+let revealPct = 0, revealInterval = null, answered = false;
+let bonusCaptured = false, currentBonus = BONUS_MAX;
+// Pour les noms doubles : suivi des parties trouvées
+let part1Found = false, part2Found = false;
+
+function startGame(){
+  document.getElementById('screenStart').classList.remove('active');
+  document.getElementById('gameArea').style.display='flex';
+  queue = getNextSession();
+  currentIdx=0; totalScore=0; roundScores=[];
+  loadAnimal();
+}
+
+function loadAnimal(){
+  answered=false; revealPct=0; bonusCaptured=false; currentBonus=BONUS_MAX;
+  part1Found=false; part2Found=false;
+  const animal = queue[currentIdx];
+  const img = document.getElementById('photoImg');
+  img.className='photo-img hide';
+  const canvas=document.getElementById('revealCanvas');
+  const container=document.getElementById('photoContainer');
+  canvas.width=container.offsetWidth; canvas.height=container.offsetHeight;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#000'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  img.src = animal.src;
+  const inp=document.getElementById('answerInput');
+  inp.value=''; inp.className=''; inp.disabled=false;
+  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('skipBtn').disabled=false;
+  document.getElementById('progressFill').style.width=(currentIdx/queue.length*100)+'%';
+  document.getElementById('roundLabel').textContent=`ANIMAL ${currentIdx+1} / ${queue.length}`;
+  document.getElementById('photoContainer').className='photo-container';
+  updateBadge();
+  function onReady(){
+    if(answered) return;
+    img.className='photo-img ready';
+    drawMask(0); startReveal(); inp.focus();
+  }
+  img.onerror=onReady;
+  if(img.complete && img.naturalWidth>0) onReady();
+  else { img.onload=onReady; setTimeout(()=>{if(!answered&&revealPct===0)onReady();},5000); }
+}
+
+function updateBadge(){
+  const animal = queue[currentIdx];
+  const isDouble = animal.part2 !== null;
+  const badge = document.getElementById('ptsBadge');
+  const fixedEl = document.getElementById('ptsFixed');
+  const bonusEl = document.getElementById('ptsBonus');
+  if(isDouble){
+    let fixedTotal = (part1Found?FIXED_DOUBLE:0) + (part2Found?FIXED_DOUBLE:0);
+    let remaining = (!part1Found?FIXED_DOUBLE:0) + (!part2Found?FIXED_DOUBLE:0);
+    fixedEl.textContent = fixedTotal > 0 ? `${fixedTotal} pts` : '';
+    bonusEl.textContent = `+${currentBonus}`;
+    badge.className = 'pts-badge' + (part1Found||part2Found?' half':'');
+  } else {
+    fixedEl.textContent = '';
+    bonusEl.textContent = `+${currentBonus}`;
+    badge.className = 'pts-badge';
+  }
+}
+
+function drawMask(pct){
+  const canvas=document.getElementById('revealCanvas');
+  const container=document.getElementById('photoContainer');
+  canvas.width=container.offsetWidth; canvas.height=container.offsetHeight;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#000'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  const cx=canvas.width/2, cy=canvas.height/2;
+  const frac=0.08+(1-0.08)*(pct/100);
+  ctx.clearRect(cx-canvas.width*frac/2, cy-canvas.height*frac/2, canvas.width*frac, canvas.height*frac);
+  const pi=Math.round(pct);
+  document.getElementById('revealPct').textContent=pi+'% révélé';
+  document.getElementById('timerFill').style.width=pct+'%';
+  document.getElementById('timerLabel').textContent=pi+'%';
+  document.getElementById('timerFill').classList.toggle('urgent',pct>70);
+  // Mettre à jour le bonus qui décroît
+  if(!bonusCaptured){
+    currentBonus = Math.max(0, Math.round(BONUS_MAX*(1-pct/100)));
+    updateBadge();
+  }
+}
+
+function startReveal(){
+  if(revealInterval) clearInterval(revealInterval);
+  revealInterval=setInterval(()=>{
+    if(answered) return;
+    revealPct=Math.min(100,revealPct+REVEAL_STEP);
+    drawMask(revealPct);
+    document.getElementById('headerScore').textContent=totalScore;
+    if(revealPct>=100){
+      clearInterval(revealInterval);
+      if(!answered){
+        answered=true;
+        playWrong();
+        document.getElementById('photoImg').className='photo-img ready';
+        const canvas=document.getElementById('revealCanvas');
+        canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+        document.getElementById('feedback').textContent='';
+        const animal=queue[currentIdx];
+        const pts = (part1Found?FIXED_DOUBLE:0)+(part2Found?FIXED_DOUBLE:0);
+        roundScores.push({title:animal.title, pts, bonus:0, missed:true, partial:part1Found||part2Found});
+        setTimeout(nextAnimal,2000);
+      }
+    }
+  },TICK_MS);
+}
+
+document.getElementById('answerInput').addEventListener('keydown',function(e){
+  if(e.key!=='Enter') return;
+  if(answered) return;
+  AC.resume();
+  const animal=queue[currentIdx];
+  const inp=this;
+  const isDouble = animal.part2 !== null;
+
+  if(!isDouble){
+    // Nom simple
+    let matched=false, wasFuzzy=false;
+    for(const alias of animal.part1){
+      const r=isFuzzyMatch(inp.value, alias);
+      if(r==='exact'){matched=true;wasFuzzy=false;break;}
+      if(r==='fuzzy'){matched=true;wasFuzzy=true;}
+    }
+    if(matched) triggerCorrectSimple(animal,inp,wasFuzzy);
+    else triggerWrong(inp);
+  } else {
+    // Nom double
+    let matchedP1=false, matchedP2=false, fuzzy=false;
+    for(const a of animal.part1){
+      const r=isFuzzyMatch(inp.value,a);
+      if(r==='exact'){matchedP1=true;break;}
+      if(r==='fuzzy'){matchedP1=true;fuzzy=true;}
+    }
+    for(const a of animal.part2){
+      const r=isFuzzyMatch(inp.value,a);
+      if(r==='exact'){matchedP2=true;fuzzy=false;break;}
+      if(r==='fuzzy'){matchedP2=true;fuzzy=true;}
+    }
+
+    if(!matchedP1 && !matchedP2){ triggerWrong(inp); return; }
+
+    // Capturer le bonus à la première bonne réponse
+    if(!bonusCaptured){ bonusCaptured=true; }
+
+    if(matchedP1 && !part1Found){
+      part1Found=true;
+      const earned=FIXED_DOUBLE;
+      totalScore+=earned;
+      document.getElementById('headerScore').textContent=totalScore;
+      playHalf();
+      inp.value=''; inp.className='half';
+      setTimeout(()=>{inp.className='';},600);
+      const pc=document.getElementById('photoContainer');
+      pc.classList.add('flash-half','half-flash');
+      setTimeout(()=>pc.classList.remove('half-flash','flash-half'),700);
+      document.getElementById('feedback').textContent=`✓ +${earned} pts${fuzzy?' ~':''} — complète !`;
+      document.getElementById('feedback').className='feedback half';
+      updateBadge();
+    }
+    if(matchedP2 && !part2Found){
+      part2Found=true;
+      const earned=FIXED_DOUBLE;
+      totalScore+=earned;
+      document.getElementById('headerScore').textContent=totalScore;
+      inp.value=''; inp.className='half';
+      setTimeout(()=>{inp.className='';},600);
+      const pc=document.getElementById('photoContainer');
+      pc.classList.add('flash-half','half-flash');
+      setTimeout(()=>pc.classList.remove('half-flash','flash-half'),700);
+      document.getElementById('feedback').textContent=`✓ +${earned} pts${fuzzy?' ~':''} — complète !`;
+      document.getElementById('feedback').className='feedback half';
+      updateBadge();
+    }
+
+    // Les deux parties trouvées ?
+    if(part1Found && part2Found){
+      // Ajouter le bonus
+      const bonus = bonusCaptured ? currentBonus : 0;
+      totalScore+=bonus;
+      document.getElementById('headerScore').textContent=totalScore;
+      clearInterval(revealInterval); answered=true;
+      inp.disabled=true; inp.className='correct';
+      playCorrect();
+      const pc=document.getElementById('photoContainer');
+      pc.classList.add('flash-correct','correct-flash');
+      document.getElementById('photoImg').className='photo-img ready';
+      const canvas=document.getElementById('revealCanvas');
+      canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+      document.getElementById('skipBtn').disabled=true;
+      document.getElementById('feedback').textContent=`✓ Complet ! +${bonus} bonus`;
+      document.getElementById('feedback').className='feedback ok';
+      roundScores.push({title:animal.title, pts:FIXED_DOUBLE*2, bonus, missed:false, partial:false});
+      setTimeout(()=>{pc.classList.remove('correct-flash');nextAnimal();},1800);
+    }
+  }
+});
+
+function triggerCorrectSimple(animal,inp,wasFuzzy){
+  clearInterval(revealInterval); answered=true;
+  const bonus = currentBonus;
+  const earned = FIXED_SIMPLE + bonus;
+  totalScore+=earned;
+  inp.className='correct'; inp.disabled=true;
+  playCorrect();
+  const pc=document.getElementById('photoContainer');
+  pc.classList.add('flash-correct','correct-flash');
+  document.getElementById('photoImg').className='photo-img ready';
+  const canvas=document.getElementById('revealCanvas');
+  canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+  document.getElementById('headerScore').textContent=totalScore;
+  document.getElementById('skipBtn').disabled=true;
+  const fb=document.getElementById('feedback');
+  fb.textContent=`✓ +${earned} pts${wasFuzzy?' ~':''}`;
+  fb.className='feedback ok';
+  roundScores.push({title:animal.title, pts:FIXED_SIMPLE, bonus, missed:false, partial:false});
+  setTimeout(()=>{pc.classList.remove('correct-flash');nextAnimal();},1500);
+}
+
+function triggerWrong(inp){
+  playWrong(); inp.className='wrong'; inp.select();
+  const pc=document.getElementById('photoContainer');
+  pc.classList.add('flash-wrong','shaking');
+  pc.addEventListener('animationend',()=>pc.classList.remove('shaking','flash-wrong'),{once:true});
+  document.getElementById('feedback').textContent='✗ Mauvaise réponse…';
+  document.getElementById('feedback').className='feedback ko';
+  setTimeout(()=>{inp.className='';},600);
+}
+
+function skipAnimal(){
+  if(answered) return;
+  clearInterval(revealInterval); answered=true;
+  playWrong();
+  const animal=queue[currentIdx];
+  const pts=(part1Found?FIXED_DOUBLE:0)+(part2Found?FIXED_DOUBLE:0);
+  roundScores.push({title:animal.title, pts, bonus:0, missed:false, partial:part1Found||part2Found, skipped:true});
+  document.getElementById('photoImg').className='photo-img ready';
+  const canvas=document.getElementById('revealCanvas');
+  canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+  document.getElementById('feedback').textContent='';
+  document.getElementById('answerInput').disabled=true;
+  document.getElementById('skipBtn').disabled=true;
+  setTimeout(nextAnimal,1500);
+}
+
+function nextAnimal(){ currentIdx++; if(currentIdx>=queue.length) endGame(); else loadAnimal(); }
+
+function endGame(){
+  clearInterval(revealInterval);
+  document.getElementById('gameArea').style.display='none';
+  document.getElementById('progressFill').style.width='100%';
+  document.getElementById('screenEnd').classList.add('active');
+  const maxPossible = queue.reduce((s,a)=>s+(a.part2?FIXED_DOUBLE*2:FIXED_SIMPLE)+BONUS_MAX,0);
+  const pct=Math.round((totalScore/maxPossible)*100);
+  document.getElementById('endTitle').textContent=totalScore+' pts';
+  document.getElementById('endSub').textContent=pct>=80?'Expert en faune !':pct>=50?'Pas mal…':'';
+  document.getElementById('breakdown').innerHTML=roundScores.map(r=>{
+    const rowClass = r.pts>0&&!r.partial ? 'scored' : r.partial ? 'half-scored' : '';
+    const ptsDisplay = r.skipped ? 'PASSÉ' : r.missed&&r.pts===0 ? 'MANQUÉ' : `+${r.pts+(r.bonus||0)}`;
+    return `<div class="breakdown-row ${rowClass}">
+      <span>${r.title}</span>
+      <span class="pts">${ptsDisplay}</span>
+    </div>`;
+  }).join('');
+}
+
+function restartGame(){
+  document.getElementById('screenEnd').classList.remove('active');
+  document.getElementById('headerScore').textContent='0';
+  document.getElementById('gameArea').style.display='flex';
+  queue=getNextSession(); currentIdx=0; totalScore=0; roundScores=[];
+  loadAnimal();
+}
+
+function goHome(){ window.location.href='index.html'; }
+</script>
+</body>
+</html>

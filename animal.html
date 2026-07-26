@@ -51,7 +51,7 @@
     font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray);
   }
   .photo-container {
-    position: relative; width: 100%; max-width: 380px; aspect-ratio: 1/1;
+    position: relative; width: 100%; max-width: 340px; aspect-ratio: 2/3;
     flex-shrink: 1; min-height: 0;
     max-height: calc(100vh - 280px); max-height: calc(100dvh - 280px);
     margin: 0 auto;
@@ -170,9 +170,9 @@
     <div id="animalTitle" style="
       position:absolute; bottom:0; left:0; right:0;
       background:rgba(0,0,0,0.72); color:#f0eeea;
-      font-family:'Bebas Neue',sans-serif; font-size:1.2rem; letter-spacing:3px;
-      text-align:center; padding:8px 12px;
-      display:none; text-transform:uppercase;
+      font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:2px;
+      text-align:center; padding:7px 12px;
+      display:none; text-transform:uppercase; line-height:1.4;
     "></div>
     <div class="pts-badge" id="ptsBadge">
       <div class="pts-fixed" id="ptsFixed"></div>
@@ -292,7 +292,7 @@ const ANIMALS = [
   {title:"Macareux moine", part1:["macareux"], part2:["macareux moine","moine"], src:"animal-images/animal-images/macareux-moine.jpg"},
   {title:"Manchot royal", part1:["manchot"], part2:["manchot royal","royal"], src:"animal-images/animal-images/manchot-royal.jpg"},
   {title:"Mandrill", part1:["mandrill"], part2:null, src:"animal-images/animal-images/mandrill.jpg"},
-  {title:"Mante religieuse", part1:["mante religieuse","mante"], part2:null, src:"animal-images/animal-images/mantereligieuse.jpg"},
+  {title:"Mante religieuse", part1:["mante religieuse"], part2:null, src:"animal-images/animal-images/mantereligieuse.jpg"},
   {title:"Méduse pélagique", part1:["meduse"], part2:["meduse pelagique","pelagique"], src:"animal-images/animal-images/méduse-pélagique.jpg"},
   {title:"Messager sagittaire (oiseau secrétaire)", part1:["messager sagittaire"], part2:["oiseau secretaire"], src:"animal-images/animal-images/messagersagittaire-oiseausecrétaire.jpg"},
   {title:"Morse", part1:["morse"], part2:null, src:"animal-images/animal-images/morse.jpg"},
@@ -487,8 +487,10 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       const pc=document.getElementById('photoContainer');
       pc.classList.add('flash-half','half-flash');
       setTimeout(()=>pc.classList.remove('half-flash','flash-half'),700);
-      document.getElementById('feedback').textContent=`✓ +${earned} pts${fuzzy?' ~':''} — complète !`;
+      document.getElementById('feedback').textContent=`✓ +${earned} pts — continue !`;
       document.getElementById('feedback').className='feedback half';
+      document.getElementById('animalTitle').textContent='(50 / 100 pts)';
+      document.getElementById('animalTitle').style.display='block';
       updateBadge();
     }
     if(matchedP2 && !part2Found){
@@ -501,8 +503,10 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       const pc=document.getElementById('photoContainer');
       pc.classList.add('flash-half','half-flash');
       setTimeout(()=>pc.classList.remove('half-flash','flash-half'),700);
-      document.getElementById('feedback').textContent=`✓ +${earned} pts${fuzzy?' ~':''} — complète !`;
+      document.getElementById('feedback').textContent=`✓ +${earned} pts — continue !`;
       document.getElementById('feedback').className='feedback half';
+      document.getElementById('animalTitle').textContent='(50 / 100 pts)';
+      document.getElementById('animalTitle').style.display='block';
       updateBadge();
     }
 
@@ -523,7 +527,7 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       document.getElementById('skipBtn').disabled=true;
       document.getElementById('animalTitle').textContent=animal.title;
       document.getElementById('animalTitle').style.display='block';
-      document.getElementById('feedback').textContent=`✓ Complet ! +${bonus} bonus`;
+      document.getElementById('feedback').textContent=`✓ +${FIXED_DOUBLE*2 + bonus} pts`;
       document.getElementById('feedback').className='feedback ok';
       roundScores.push({title:animal.title, pts:FIXED_DOUBLE*2, bonus, missed:false, partial:false});
       setTimeout(()=>{pc.classList.remove('correct-flash');nextAnimal();},1800);

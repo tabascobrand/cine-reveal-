@@ -146,7 +146,16 @@
 </head>
 <body>
 <header>
-  <div class="logo" onclick="goHome()">ANIMAL<span>REVEAL</span></div>
+  <div style="display:flex;align-items:center;gap:14px">
+    <div class="logo" onclick="goHome()">ANIMAL<span>REVEAL</span></div>
+    <button id="soundBtn" onclick="toggleSound()" title="Son ambiance" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--accent);display:flex;align-items:center;transition:color 0.2s;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+        <path id="wave1" d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        <path id="wave2" d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+      </svg>
+    </button>
+  </div>
   <div class="score-display">
     <div class="score-label">Score</div>
     <div class="score-value" id="headerScore">0</div>
@@ -345,6 +354,7 @@ function startGame(){
   document.getElementById('gameArea').style.display='flex';
   queue = getNextSession();
   currentIdx=0; totalScore=0; roundScores=[];
+  startSound();
   loadAnimal();
 }
 
@@ -496,7 +506,7 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       const pc=document.getElementById('photoContainer');
       pc.classList.add('flash-half','half-flash');
       setTimeout(()=>pc.classList.remove('half-flash','flash-half'),700);
-      document.getElementById('feedback').textContent=`✓ +${earned} pts — continue !`;
+      document.getElementById('feedback').textContent=`✓ +${earned} pts`;
       document.getElementById('feedback').className='feedback half';
       document.getElementById('animalTitle').textContent='(50 / 100 pts)';
       document.getElementById('animalTitle').style.display='block';
@@ -512,7 +522,7 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       const pc=document.getElementById('photoContainer');
       pc.classList.add('flash-half','half-flash');
       setTimeout(()=>pc.classList.remove('half-flash','flash-half'),700);
-      document.getElementById('feedback').textContent=`✓ +${earned} pts — continue !`;
+      document.getElementById('feedback').textContent=`✓ +${earned} pts`;
       document.getElementById('feedback').className='feedback half';
       document.getElementById('animalTitle').textContent='(50 / 100 pts)';
       document.getElementById('animalTitle').style.display='block';
@@ -621,7 +631,44 @@ function restartGame(){
   document.getElementById('headerScore').textContent='0';
   document.getElementById('gameArea').style.display='flex';
   queue=getNextSession(); currentIdx=0; totalScore=0; roundScores=[];
+  startSound();
   loadAnimal();
+}
+
+// ── Son ambiance ─────────────────────────────────────────────────
+const SOUND_SRC = 'foret.mp3';
+const SOUND_DURATION = 20 * 60;
+const SOUND_SAFE_END = SOUND_DURATION - 5 * 60;
+let soundAudio = null;
+let soundMuted = false;
+
+function initSound(){
+  if(!soundAudio){
+    soundAudio = new Audio(SOUND_SRC);
+    soundAudio.loop = false;
+    soundAudio.volume = 0.12;
+  }
+}
+function startSound(){
+  initSound();
+  soundAudio.currentTime = Math.random() * SOUND_SAFE_END;
+  soundAudio.muted = soundMuted;
+  soundAudio.play().catch(()=>{});
+}
+function toggleSound(){
+  initSound();
+  soundMuted = !soundMuted;
+  soundAudio.muted = soundMuted;
+  const wave1 = document.getElementById('wave1');
+  const wave2 = document.getElementById('wave2');
+  const btn = document.getElementById('soundBtn');
+  if(soundMuted){
+    wave1.style.display='none'; wave2.style.display='none';
+    btn.style.color='var(--gray)'; btn.style.opacity='0.5';
+  } else {
+    wave1.style.display=''; wave2.style.display='';
+    btn.style.color='var(--accent)'; btn.style.opacity='1';
+  }
 }
 
 function goHome(){ window.location.href='index.html'; }

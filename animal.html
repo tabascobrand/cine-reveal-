@@ -276,7 +276,7 @@ function isFuzzyMatch(input,target){
 const ANIMALS = [
   {title:"Abeille", part1:["abeille"], part2:null, src:"animal-images/animal-images/abeille.jpg"},
   {title:"Araignée crabe épineuse", part1:["araignee"], part2:["araignee crabe epineuse","crabe epineuse"], src:"animal-images/animal-images/araignée-crabeépineuse.jpg"},
-  {title:"Araignée souriante d'Hawaï", part1:["araignee","araignee souriante"], part2:["araignee souriante d hawaii","souriante d hawaii"], src:"animal-images/animal-images/araignée-souriantedhawai.jpg"},
+  {title:"Araignée souriante d'Hawaï", part1:["araignee","araignee souriante"], part2:["araignee souriante d hawaii","souriante d hawaii"], src:"animal-images/animal-images/araignée-souriantedhawaï.jpg"},
   {title:"Autruche", part1:["autruche"], part2:null, src:"animal-images/animal-images/autruche.jpg"},
   {title:"Canard colvert", part1:["canard"], part2:["colvert"], src:"animal-images/animal-images/canard-colvert.jpg"},
   {title:"Canard mandarin", part1:["canard"], part2:["mandarin"], src:"animal-images/animal-images/canard-mandarin.jpg"},
@@ -310,18 +310,27 @@ const FIXED_SIMPLE = 50;
 const FIXED_DOUBLE = 50; // par partie
 const BONUS_MAX = 50;
 const REVEAL_STEP = 0.4, TICK_MS = 120;
-const SESSION_SIZE = 20;
+const SESSION_SIZE = 15;
 
 let globalQueue = [];
+let lastSession = [];
+
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
 function getNextSession(){
   if(globalQueue.length < SESSION_SIZE){
+    // Nouveau mélange en excluant les animaux de la dernière session autant que possible
     let pool = shuffle(shuffle([...ANIMALS]));
-    const offset = Math.floor(Math.random() * pool.length);
-    globalQueue = [...pool.slice(offset), ...pool.slice(0, offset)];
+    // Pousser les animaux récents à la fin
+    const recent = new Set(lastSession.map(a=>a.title));
+    const front = pool.filter(a=>!recent.has(a.title));
+    const back  = pool.filter(a=> recent.has(a.title));
+    pool = shuffle(front).concat(shuffle(back));
+    globalQueue = pool;
   }
   const session = globalQueue.slice(0, SESSION_SIZE);
   globalQueue = globalQueue.slice(SESSION_SIZE);
+  lastSession = session;
   return session;
 }
 

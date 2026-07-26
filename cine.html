@@ -2,7 +2,6 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" type="image/png" href="favicon.ico.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CINÉ REVEAL — Devine l'affiche</title>
 <style>
@@ -16,16 +15,6 @@
     background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif;
     height: 100vh; height: 100dvh; display: flex; flex-direction: column;
     align-items: center; padding: 0; overflow: hidden;
-    position: relative;
-  }
-  #screenEnd.active {
-    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-    overflow-y: auto; z-index: 10;
-    background: var(--bg);
-    display: flex; flex-direction: column; align-items: center;
-    justify-content: flex-start;
-    padding: 40px 20px 60px; gap: 20px;
-    max-width: none; width: 100%;
   }
   header {
     width: 100%; padding: 18px 32px; display: flex;
@@ -180,7 +169,7 @@
   <div class="feedback" id="feedback"></div>
 </div>
 
-<div class="screen" id="screenEnd" style="margin-top:0;overflow-y:auto;max-height:100%;padding:30px 20px;">
+<div class="screen" id="screenEnd" style="margin-top:40px">
   <div class="screen-title" id="endTitle">RÉSULTAT</div>
   <div class="screen-sub" id="endSub"></div>
   <div class="final-breakdown" id="breakdown"></div>
@@ -306,22 +295,6 @@ const FILMS = [
   {title:"Brazil", accept:["brazil"], clean:"images/brazil-clean.jpg", full:"images/brazil.jpg"},
   {title:"Braveheart", accept:["braveheart"], clean:"images/braveheart-clean.jpg", full:"images/braveheart.jpg"},
   {title:"La Ligne verte", accept:["la ligne verte","the green mile"], clean:"images/ligneverte-clean.jpg", full:"images/ligneverte.jpg"},
-  {title:"Bugonia", accept:["bugonia"], clean:"images/bugonia-clean.png", full:"images/bugonia.png"},
-  {title:"Le Robot sauvage", accept:["le robot sauvage", "robotsauvage", "the wild robot"], clean:"images/robotsauvage-clean.png", full:"images/robotsauvage.png"},
-  {title:"Nosferatu", accept:["nosferatu"], clean:"images/nosferatu-clean.png", full:"images/nosferatu.png"},
-  {title:"L'Empire", accept:["l empire", "lempire", "the empire"], clean:"images/lempire-clean.png", full:"images/lempire.png"},
-  {title:"Dream Scenario", accept:["dream scenario", "dreamscenario"], clean:"images/dreamscenario-clean.png", full:"images/dreamscenario.png"},
-  {title:"Pauvres Créatures", accept:["pauvres creatures", "poor things", "poorthing"], clean:"images/poorthing-clean.png", full:"images/poorthing.png"},
-  {title:"Beau is Afraid", accept:["beau is afraid", "beau a peur", "beauisafraid"], clean:"images/beauisafraid-clean.png", full:"images/beauisafraid.png"},
-  {title:"Mars Express", accept:["mars express", "marsexpress"], clean:"images/marsexpress-clean.png", full:"images/marsexpress.png"},
-  {title:"Dune", accept:["dune"], clean:"images/dune-clean.png", full:"images/dune.png"},
-  {title:"Nope", accept:["nope"], clean:"images/nope-clean.png", full:"images/nope.png"},
-  {title:"Bullet Train", accept:["bullet train", "bullettrain"], clean:"images/bullettrain-clean.png", full:"images/bullettrain.png"},
-  {title:"Fumer fait tousser", accept:["fumer fait tousser", "fumerfaittousser"], clean:"images/fumerfaittousser-clean.png", full:"images/fumerfaittousser.png"},
-  {title:"Tenet", accept:["tenet"], clean:"images/tenet-clean.png", full:"images/tenet.png"},
-  {title:"Us", accept:["us"], clean:"images/us-clean.png", full:"images/us.png"},
-  {title:"Rocketman", accept:["rocketman"], clean:"images/rocketman-clean.png", full:"images/rocketman.png"},
-  {title:"The Substance", accept:["the substance", "thesubstance"], clean:"images/thesubstance-clean.png", full:"images/thesubstance.png"},
   {title:"Flubber", accept:["flubber"], clean:"images/flubber-clean.jpg", full:"images/flubber.jpg"},
   {title:"Usual Suspects", accept:["usual suspects","the usual suspects"], clean:"images/usual-clean.jpg", full:"images/usual.jpg"},
   {title:"Le Diable s'habille en Prada", accept:["le diable s habille en prada","the devil wears prada"], clean:"images/diableprada-clean.jpg", full:"images/diableprada.jpg"},
@@ -362,10 +335,11 @@ const FILMS = [
   {title:"Sherlock Holmes", accept:["sherlock holmes","sherlock"], clean:"images/sherlock-clean.jpg", full:"images/sherlock.jpg"},
   {title:"Rasta Rockett", accept:["rasta rockett","rastarocket","rasta rocket"], clean:"images/rastarocket-clean.jpg", full:"images/rastarocket.jpg"},
   {title:"Hook", accept:["hook"], clean:"images/hook-clean.jpg", full:"images/hook.jpg"},
-  {title:"Les Trois Frères", accept:["les trois freres", "les 3 frères"], clean:"images/3freres-clean.jpg", full:"images/3freres.jpg"},
+  {title:"Les Trois Frères", accept:["les trois freres"], clean:"images/3freres-clean.jpg", full:"images/3freres.jpg"},
   {title:"Les 4 Fantastiques", accept:["les 4 fantastiques", "les quatre fantastiques", "4 fantastiques"], clean:"images/4fantastiques-clean.jpg", full:"images/4fantastiques.jpg"},
   {title:"4 Zéros", accept:["4 zeros"], clean:"images/4zeros-clean.jpg", full:"images/4zeros.jpg"},
-  {title:"Sixième Sens", accept:["sixieme sens", "le sixieme sens", "sixth sense", "6eme sens"], clean:"images/6emesens-clean.jpg", full:"images/6emesens.jpg"},
+  {title:"Sixième Sens", accept:["sixieme sens", "le sixieme sens", "sixth sense"], clean:"images/6emesens-clean.jpg", full:"images/6emesens.jpg"},
+  {title:"Les Huit Salopards", accept:["les huit salopards", "les 8 salopards", "the hateful eight"], clean:"images/8salopards-clean.jpg", full:"images/8salopards.jpg"},
   {title:"10 Jours sans maman", accept:["10 jours sans maman"], clean:"images/10jours-clean.jpg", full:"images/10jours.jpg"},
   {title:"12 Hommes en colère", accept:["12 hommes en colere", "12 angry men"], clean:"images/12hommes-clean.jpg", full:"images/12hommes.jpg"},
   {title:"40 ans toujours puceau", accept:["40 ans toujours puceau", "the 40 year old virgin"], clean:"images/40ans-clean.jpg", full:"images/40ans.jpg"},
@@ -387,7 +361,7 @@ const FILMS = [
   {title:"Argo", accept:["argo"], clean:"images/argo-clean.jpg", full:"images/argo.jpg"},
   {title:"Arrête-moi si tu peux", accept:["arrete moi si tu peux", "catch me if you can"], clean:"images/arretemoi-clean.jpg", full:"images/arretemoi.jpg"},
   {title:"Arthur et les Minimoys", accept:["arthur et les minimoys", "arthur"], clean:"images/arthur-clean.jpg", full:"images/arthur.jpg"},
-  {title:"Astérix et Obélix : L'Empire du Milieu", accept:["Astérix et Obélix : L'Empire du Milieu", "asterix empire du milieu"], clean:"images/asterixempire-clean.jpg", full:"images/asterixempire.jpg"},
+  {title:"Astérix et l'Empire du Milieu", accept:["asterix et l empire du milieu", "asterix empire du milieu"], clean:"images/asterixempire-clean.jpg", full:"images/asterixempire.jpg"},
   {title:"Astérix et Obélix : Au service de Sa Majesté", accept:["asterix au service de sa majeste", "asterix et obelix au service de sa majeste", "au service de sa majeste"], clean:"images/asterixmajeste-clean.jpg", full:"images/asterixmajeste.jpg"},
   {title:"Asteroid City", accept:["asteroid city"], clean:"images/asteroid-clean.jpg", full:"images/asteroid.jpg"},
   {title:"Au poste !", accept:["au poste"], clean:"images/auposte-clean.jpg", full:"images/auposte.jpg"},
@@ -399,7 +373,7 @@ const FILMS = [
   {title:"Babylon", accept:["babylon"], clean:"images/babylon-clean.jpg", full:"images/babylon.jpg"},
   {title:"Babysitting", accept:["babysitting"], clean:"images/babysitting-clean.jpg", full:"images/babysitting.jpg"},
   {title:"Batman", accept:["batman"], clean:"images/batman-clean.jpg", full:"images/batman.jpg"},
-  {title:"Batman Le Défi", accept:["batman le defi", "batman 2"], clean:"images/batmandefi-clean.jpg", full:"images/batmandefi.jpg"},
+  {title:"Batman Le Défi", accept:["batman le defi", "batman returns"], clean:"images/batmandefi-clean.jpg", full:"images/batmandefi.jpg"},
   {title:"Batman et Robin", accept:["batman et robin", "batman and robin"], clean:"images/batmanetrobin-clean.jpg", full:"images/batmanetrobin.jpg"},
   {title:"Les Beaux Gosses", accept:["les beaux gosses"], clean:"images/beauxgosses-clean.jpg", full:"images/beauxgosses.jpg"},
   {title:"Beavis et Butt-Head", accept:["beavis et butt head", "beavis and butthead"], clean:"images/beavis-clean.jpg", full:"images/beavis.jpg"},
@@ -419,9 +393,10 @@ const FILMS = [
   {title:"Le Secret de Brokeback Mountain", accept:["brokeback mountain", "le secret de brokeback mountain"], clean:"images/brockeback-clean.jpg", full:"images/brockeback.jpg"},
   {title:"Les Bronzés", accept:["les bronzes"], clean:"images/bronzes-clean.jpg", full:"images/bronzes.jpg"},
   {title:"Les Bronzés font du ski", accept:["les bronzes font du ski"], clean:"images/bronzes2-clean.jpg", full:"images/bronzes2.jpg"},
-  {title:"Les Bronzés Amis pour la vie", accept:["les bronzés amis pour la vie"], clean:"images/bronzes3-clean.jpg", full:"images/bronzes3.jpg"},
+  {title:"Amis pour la vie", accept:["amis pour la vie"], clean:"images/bronzes3-clean.jpg", full:"images/bronzes3.jpg"},
   {title:"Bruce Tout-Puissant", accept:["bruce tout puissant", "bruce almighty"], clean:"images/bruce-clean.jpg", full:"images/bruce.jpg"},
   {title:"The Brutalist", accept:["the brutalist"], clean:"images/brutalist-clean.jpg", full:"images/brutalist.jpg"},
+  {title:"Bugonia", accept:["bugonia"], clean:"images/bugonia-clean.jpg", full:"images/bugonia.jpg"},
   {title:"L'Étrange Histoire de Benjamin Button", accept:["l etrange histoire de benjamin button", "benjamin button"], clean:"images/button-clean.jpg", full:"images/button.jpg"},
   {title:"Ça", accept:["ca", "it"], clean:"images/ça-clean.jpg", full:"images/ça.jpg"},
   {title:"Captain Fantastic", accept:["captain fantastic"], clean:"images/captainfantastic-clean.jpg", full:"images/captainfantastic.jpg"},
@@ -434,12 +409,12 @@ const FILMS = [
   {title:"La Chèvre", accept:["la chevre"], clean:"images/chevre-clean.jpg", full:"images/chevre.jpg"},
   {title:"Chicken Run", accept:["chicken run"], clean:"images/chickenrun-clean.jpg", full:"images/chickenrun.jpg"},
   {title:"Le Voyage de Chihiro", accept:["le voyage de chihiro"], clean:"images/chihiro-clean.jpg", full:"images/chihiro.jpg"},
-  {title:"Les Choristes", accept:["les choristes", "choristes"], clean:"images/choristes-clean.jpg", full:"images/choristes.jpg"},
+  {title:"Les Choristes", accept:["les choristes"], clean:"images/chortistes-clean.jpg", full:"images/chortistes.jpg"},
   {title:"Chouchou", accept:["chouchou"], clean:"images/chouchou-clean.jpg", full:"images/chouchou.jpg"},
   {title:"Bienvenue chez les Ch'tis", accept:["bienvenue chez les chtis"], clean:"images/chtis-clean.jpg", full:"images/chtis.jpg"},
   {title:"Cocorico", accept:["cocorico"], clean:"images/cocorico-clean.jpg", full:"images/cocorico.jpg"},
   {title:"Coexister", accept:["coexister"], clean:"images/coexister-clean.jpg", full:"images/coexister.jpg"},
-  {title:"Ma Vie de Courgette", accept:["ma vie de courgette", "vie de courgette"], clean:"images/courgette-clean.jpg", full:"images/courgette.jpg"},
+  {title:"Ma Vie de Courgette", accept:["ma vie de courgette"], clean:"images/courgette-clean.jpg", full:"images/courgette.jpg"},
   {title:"Cyprien", accept:["cyprien"], clean:"images/cyprien-clean.jpg", full:"images/cyprien.jpg"},
   {title:"Dallas Buyers Club", accept:["dallas buyers club"], clean:"images/dallas-clean.jpg", full:"images/dallas.jpg"},
   {title:"Débarquement immédiat", accept:["debarquement immediat"], clean:"images/debarquement-clean.jpg", full:"images/debarquement.jpg"},
@@ -449,37 +424,41 @@ const FILMS = [
   {title:"Didier", accept:["didier"], clean:"images/didier-clean.jpg", full:"images/didier.jpg"},
   {title:"Disco", accept:["disco"], clean:"images/disco-clean.jpg", full:"images/disco.jpg"},
   {title:"Le Discours d'un roi", accept:["le discours d un roi", "the king s speech"], clean:"images/discours-clean.jpg", full:"images/discours.jpg"},
+  {title:"Divorce Club", accept:["divorce club"], clean:"images/divorce-clean.jpg", full:"images/divorce.jpg"},
   {title:"Donnie Darko", accept:["donnie darko"], clean:"images/donnie-clean.jpg", full:"images/donnie.jpg"},
   {title:"The Doors", accept:["the doors"], clean:"images/doors-clean.jpg", full:"images/doors.jpg"},
   {title:"Mrs. Doubtfire", accept:["mrs doubtfire", "madame doubtfire"], clean:"images/doubtfire-clean.jpg", full:"images/doubtfire.jpg"},
-  {title:"Le Doudou", accept:["doudou"], clean:"images/doudou-clean.jpg", full:"images/doudou.jpg"},
+  {title:"Le Doudou", accept:["le doudou"], clean:"images/doudou-clean.jpg", full:"images/doudou.jpg"},
+  {title:"Drama", accept:["drama"], clean:"images/drama-clean.jpg", full:"images/drama.jpg"},
   {title:"Drunk", accept:["drunk", "another round"], clean:"images/drunk-clean.jpg", full:"images/drunk.jpg"},
   {title:"L'Élève Ducobu", accept:["l eleve ducobu"], clean:"images/ducobu-clean.jpg", full:"images/ducobu.jpg"},
   {title:"Dumb and Dumber 2", accept:["dumb and dumber 2"], clean:"images/dumb2-clean.jpg", full:"images/dumb2.jpg"},
   {title:"L'Effet papillon", accept:["l effet papillon"], clean:"images/effet-clean.jpg", full:"images/effet.jpg"},
+  {title:"L'Enquête corse", accept:["l enquete corse"], clean:"images/enquetecorse-clean.jpg", full:"images/enquetecorse.jpg"},
   {title:"Entre les murs", accept:["entre les murs"], clean:"images/entremurs-clean.jpg", full:"images/entremurs.jpg"},
   {title:"E.T. l'extra-terrestre", accept:["e t l extra terrestre", "e t"], clean:"images/et-clean.jpg", full:"images/et.jpg"},
   {title:"Eternal Sunshine of the Spotless Mind", accept:["eternal sunshine of the spotless mind"], clean:"images/eternal-clean.jpg", full:"images/eternal.jpg"},
   {title:"L'Exorciste", accept:["l exorciste"], clean:"images/exorciste-clean.jpg", full:"images/exorciste.jpg"},
   {title:"Eyes Wide Shut", accept:["eyes wide shut"], clean:"images/eyeswide-clean.jpg", full:"images/eyeswide.jpg"},
   {title:"Fargo", accept:["fargo"], clean:"images/fargo-clean.jpg", full:"images/fargo.jpg"},
+  {title:"Liaison fatale", accept:["liaison fatale", "fatal attraction"], clean:"images/fatal-clean.jpg", full:"images/fatal.jpg"},
   {title:"Fiston", accept:["fiston"], clean:"images/fiston-clean.jpg", full:"images/fiston.jpg"},
   {title:"Flow", accept:["flow"], clean:"images/flow-clean.jpg", full:"images/flow.jpg"},
   {title:"Footloose", accept:["footloose"], clean:"images/footlose-clean.jpg", full:"images/footlose.jpg"},
-  {title:"La Forme de l'eau", accept:["la forme de leau", "the shape of water"], clean:"images/formedeleau-clean.jpg", full:"images/formedeleau.jpg"},
-  {title:"The French Dispatch", accept:["the french dispatch", "french dispatch"], clean:"images/french-clean.jpg", full:"images/french.jpg"},
+  {title:"La Forme de l'eau", accept:["la forme de leau"], clean:"images/formedeleau-clean.jpg", full:"images/formedeleau.jpg"},
+  {title:"The French Dispatch", accept:["the french dispatch"], clean:"images/french-clean.jpg", full:"images/french.jpg"},
   {title:"Frida", accept:["frida"], clean:"images/frida-clean.jpg", full:"images/frida.jpg"},
   {title:"Full Metal Jacket", accept:["full metal jacket"], clean:"images/fullmetal-clean.jpg", full:"images/fullmetal.jpg"},
   {title:"Gaston Lagaffe", accept:["gaston lagaffe"], clean:"images/gaston-clean.jpg", full:"images/gaston.jpg"},
-  {title:"Gattaca", accept:["gattaca", "bienvenue à gattaca"], clean:"images/gattaca-clean.jpg", full:"images/gattaca.jpg"},
+  {title:"Gattaca", accept:["gattaca"], clean:"images/gattaca-clean.jpg", full:"images/gattaca.jpg"},
   {title:"Gandhi", accept:["gandhi"], clean:"images/ghandi-clean.jpg", full:"images/ghandi.jpg"},
   {title:"Gladiator", accept:["gladiator"], clean:"images/gladiator-clean.jpg", full:"images/gladiator.jpg"},
   {title:"Glass Onion", accept:["glass onion"], clean:"images/glassonions-clean.jpg", full:"images/glassonions.jpg"},
-  {title:"Les Goonies", accept:["goonies", "les goonies"], clean:"images/goonies-clean.jpg", full:"images/goonies.jpg"},
+  {title:"Les Goonies", accept:["goonies"], clean:"images/goonies-clean.jpg", full:"images/goonies.jpg"},
   {title:"Gran Torino", accept:["gran torino"], clean:"images/grantorino-clean.jpg", full:"images/grantorino.jpg"},
   {title:"Gravity", accept:["gravity"], clean:"images/gravity-clean.jpg", full:"images/gravity.jpg"},
   {title:"Grease", accept:["grease"], clean:"images/grease-clean.jpg", full:"images/grease.jpg"},
-  {title:"Green Book", accept:["green book", "livre vert"], clean:"images/greenbook-clean.jpg", full:"images/greenbook.jpg"},
+  {title:"Green Book", accept:["green book"], clean:"images/greenbook-clean.jpg", full:"images/greenbook.jpg"},
   {title:"Gremlins", accept:["gremlins"], clean:"images/gremlins-clean.jpg", full:"images/gremlins.jpg"},
   {title:"Halloween", accept:["halloween"], clean:"images/halloween-clean.jpg", full:"images/halloween.jpg"},
   {title:"Happy Feet", accept:["happy feet"], clean:"images/happyfeet-clean.jpg", full:"images/happyfeet.jpg"},
@@ -491,23 +470,23 @@ const FILMS = [
   {title:"Interstellar", accept:["interstellar"], clean:"images/interstellar-clean.jpg", full:"images/interstellar.jpg"},
   {title:"Jackass", accept:["jackass"], clean:"images/jackass-clean.jpg", full:"images/jackass.jpg"},
   {title:"Joker", accept:["joker"], clean:"images/joker-clean.jpg", full:"images/joker.jpg"},
-  {title:"Un jour sans fin", accept:["un jour sans fin", "Groundhog Day"], clean:"images/jourfin-clean.jpg", full:"images/jourfin.jpg"},
-  {title:"Les Kaïra", accept:["les kaira", "kaira"], clean:"images/kaira-clean.jpg", full:"images/kaira.jpg"},
+  {title:"Un jour sans fin", accept:["un jour sans fin"], clean:"images/jourfin-clean.jpg", full:"images/jourfin.jpg"},
+  {title:"La Kaïra", accept:["la kaira"], clean:"images/kaira-clean.jpg", full:"images/kaira.jpg"},
   {title:"Kirikou et la Sorcière", accept:["kirikou et la sorciere"], clean:"images/kirikou-clean.jpg", full:"images/kirikou.jpg"},
   {title:"Kuzco, l'empereur mégalo", accept:["kuzco l empereur megalo", "kuzco"], clean:"images/kuzco-clean.jpg", full:"images/kuzco.jpg"},
   {title:"Lady Bird", accept:["lady bird"], clean:"images/lady-clean.jpg", full:"images/lady.jpg"},
-  {title:"La La Land", accept:["la la land", "lalaland"], clean:"images/lalaland-clean.jpg", full:"images/lalaland.jpg"},
+  {title:"La La Land", accept:["la la land"], clean:"images/lalaland-clean.jpg", full:"images/lalaland.jpg"},
   {title:"La Piel que habito", accept:["la piel que habito", "the skin i live in"], clean:"images/lapiel-clean.jpg", full:"images/lapiel.jpg"},
   {title:"La vie est belle", accept:["la vie est belle"], clean:"images/lavieestbelle-clean.jpg", full:"images/lavieestbelle.jpg"},
   {title:"Le Fils", accept:["le fils"], clean:"images/lefils-clean.jpg", full:"images/lefils.jpg"},
-  {title:"La Liste de Schindler", accept:["la liste de schindler", "schindler s list", "liste de schindler"], clean:"images/liste-clean.jpg", full:"images/liste.jpg"},
+  {title:"La Liste de Schindler", accept:["la liste de schindler", "schindler s list"], clean:"images/liste-clean.jpg", full:"images/liste.jpg"},
   {title:"Lord of War", accept:["lord of war"], clean:"images/lord-clean.jpg", full:"images/lord.jpg"},
   {title:"Mad Max", accept:["mad max"], clean:"images/madmax-clean.jpg", full:"images/madmax.jpg"},
   {title:"Magnolia", accept:["magnolia"], clean:"images/magnolia-clean.jpg", full:"images/magnolia.jpg"},
   {title:"La Marche de l'Empereur", accept:["la marche de l empereur"], clean:"images/marche-clean.jpg", full:"images/marche.jpg"},
   {title:"Mars Attacks", accept:["mars attacks"], clean:"images/marsattack-clean.jpg", full:"images/marsattack.jpg"},
   {title:"Marty Supreme", accept:["marty supreme"], clean:"images/marty-clean.jpg", full:"images/marty.jpg"},
-  {title:"The Matrix", accept:["the matrix", "matrix"], clean:"images/matrix-clean.jpg", full:"images/matrix.jpg"},
+  {title:"The Matrix", accept:["the matrix", "matrix"], clean:"images/matric1-clean.jpg", full:"images/matric1.jpg"},
   {title:"Memento", accept:["memento"], clean:"images/memento-clean.jpg", full:"images/memento.jpg"},
   {title:"Merci Patron !", accept:["merci patron"], clean:"images/mercipatron-clean.jpg", full:"images/mercipatron.jpg"},
   {title:"Metropolis", accept:["metropolis"], clean:"images/metropolis-clean.jpg", full:"images/metropolis.jpg"},
@@ -519,7 +498,7 @@ const FILMS = [
   {title:"Minority Report", accept:["minority report"], clean:"images/minority-clean.jpg", full:"images/minority.jpg"},
   {title:"Les Misérables", accept:["les miserables"], clean:"images/miserables-clean.jpg", full:"images/miserables.jpg"},
   {title:"Misery", accept:["misery"], clean:"images/misery-clean.jpg", full:"images/misery.jpg"},
-  {title:"Mission Cléopâtre", accept:["mission cleopatre", "asterix et obelix mission cleopatre"], clean:"images/missioncleopatre-clean.jpg", full:"images/missioncleopatre.jpg"},
+  {title:"Mission Cléopâtre", accept:["mission cleopatre"], clean:"images/missioncleopatre-clean.jpg", full:"images/missioncleopatre.jpg"},
   {title:"La Môme", accept:["la mome"], clean:"images/mome-clean.jpg", full:"images/mome.jpg"},
   {title:"Princesse Mononoke", accept:["princesse mononoke"], clean:"images/mononoke-clean.jpg", full:"images/mononoke.jpg"},
   {title:"Moonlight", accept:["moonlight"], clean:"images/moonlight-clean.jpg", full:"images/moonlight.jpg"},
@@ -538,7 +517,7 @@ const FILMS = [
   {title:"O'Brother", accept:["o brother"], clean:"images/obrother-clean.jpg", full:"images/obrother.jpg"},
   {title:"Paddington", accept:["paddington"], clean:"images/paddington-clean.jpg", full:"images/paddington.jpg"},
   {title:"Paprika", accept:["paprika"], clean:"images/paprika-clean.jpg", full:"images/paprika.jpg"},
-  {title:"Le Parfum", accept:["le parfum", "parfum"], clean:"images/parfum-clean.jpg", full:"images/parfum.jpg"},
+  {title:"Le Parfum", accept:["le parfum"], clean:"images/parfum-clean.jpg", full:"images/parfum.jpg"},
   {title:"Le Pari", accept:["le pari"], clean:"images/pari-clean.jpg", full:"images/pari.jpg"},
   {title:"Pattaya", accept:["pattaya"], clean:"images/pattaya-clean.jpg", full:"images/pattaya.jpg"},
   {title:"Perfect Blue", accept:["perfect blue"], clean:"images/perfectblue-clean.jpg", full:"images/perfectblue.jpg"},
@@ -546,6 +525,8 @@ const FILMS = [
   {title:"Le Pianiste", accept:["le pianiste"], clean:"images/pianiste-clean.jpg", full:"images/pianiste.jpg"},
   {title:"L'accident de piano", accept:["l'accident de piano", "the piano accident"], clean:"images/piano-clean.jpg", full:"images/piano.jpg"},
   {title:"Pink Floyd: The Wall", accept:["pink floyd the wall"], clean:"images/thewall-clean.jpg", full:"images/thewall.jpg"},
+  {title:"Pirates des Caraïbes", accept:["pirates des caraibes"], clean:"images/pirates-clean.jpg", full:"images/pirates.jpg"},
+  {title:"Pirates des Caraïbes : La Malédiction du Black Pearl", accept:["pirates des caraibes la malediction du black pearl"], clean:"images/pirate1-clean.jpg", full:"images/pirate1.jpg"},
   {title:"La Planète sauvage", accept:["la planete sauvage"], clean:"images/planetesauvage-clean.jpg", full:"images/planetesauvage.jpg"},
   {title:"Chantons sous la pluie", accept:["chantons sous la pluie"], clean:"images/pluie-clean.jpg", full:"images/pluie.jpg"},
   {title:"Podium", accept:["podium"], clean:"images/podium-clean.jpg", full:"images/podium.jpg"},
@@ -553,6 +534,7 @@ const FILMS = [
   {title:"Problemos", accept:["problemos"], clean:"images/problemos-clean.jpg", full:"images/problemos.jpg"},
   {title:"Les Profs 2", accept:["les profs 2"], clean:"images/profs2-clean.jpg", full:"images/profs2.jpg"},
   {title:"Projet X", accept:["projet x"], clean:"images/projetx-clean.jpg", full:"images/projetx.jpg"},
+  {title:"Psychose", accept:["psychose"], clean:"images/psy-clean.jpg", full:"images/psy.jpg"},
   {title:"Pulp Fiction", accept:["pulp fiction"], clean:"images/pulpfiction-clean.jpg", full:"images/pulpfiction.jpg"},
   {title:"Les Aventures de Rabbi Jacob", accept:["les aventures de rabbi jacob", "rabbi jacob"], clean:"images/rabbi-clean.jpg", full:"images/rabbi.jpg"},
   {title:"Radin !", accept:["radin"], clean:"images/radin-clean.jpg", full:"images/radin.jpg"},
@@ -564,12 +546,12 @@ const FILMS = [
   {title:"The Revenant", accept:["the revenant"], clean:"images/revenant-clean.jpg", full:"images/revenant.jpg"},
   {title:"Rocky", accept:["rocky"], clean:"images/rocky-clean.jpg", full:"images/rocky.jpg"},
   {title:"Qui veut la peau de Roger Rabbit", accept:["qui veut la peau de roger rabbit", "roger rabbit"], clean:"images/roger-clean.jpg", full:"images/roger.jpg"},
-  {title:"RRRrrrr!!!", accept:["rrrrrr", "RRRrrrr", "rrrrrrrrr"], clean:"images/rrr-clean.jpg", full:"images/rrr.jpg"},
+  {title:"RRR", accept:["rrr"], clean:"images/rrr-clean.jpg", full:"images/rrr.jpg"},
   {title:"Scarface", accept:["scarface"], clean:"images/scarface-clean.jpg", full:"images/scarface.jpg"},
   {title:"Segpa", accept:["segpa"], clean:"images/segpa-clean.jpg", full:"images/segpa.jpg"},
-  {title:"Le Seigneur des Anneaux : La Communauté de l'Anneau", accept:["le seigneur des anneaux la communaute de l anneau", "la communaute de l anneau", "le seigneur des anneaux 1"], clean:"images/seigneur1-clean.jpg", full:"images/seigneur1.jpg"},
-  {title:"Le Seigneur des Anneaux : Les Deux Tours", accept:["le seigneur des anneaux les deux tours", "les deux tours", "le seigneur des anneaux 2"], clean:"images/seigneur2-clean.jpg", full:"images/seigneur2.jpg"},
-  {title:"Le Seigneur des Anneaux : Le Retour du Roi", accept:["le seigneur des anneaux le retour du roi", "le retour du roi", "le seigneur des anneaux 3"], clean:"images/seigneur3-clean.jpg", full:"images/seigneur3.jpg"},
+  {title:"Le Seigneur des Anneaux : La Communauté de l'Anneau", accept:["le seigneur des anneaux la communaute de l anneau", "la communaute de l anneau"], clean:"images/seigneur1-clean.jpg", full:"images/seigneur1.jpg"},
+  {title:"Le Seigneur des Anneaux : Les Deux Tours", accept:["le seigneur des anneaux les deux tours", "les deux tours"], clean:"images/seigneur2-clean.jpg", full:"images/seigneur2.jpg"},
+  {title:"Le Seigneur des Anneaux : Le Retour du Roi", accept:["le seigneur des anneaux le retour du roi", "le retour du roi"], clean:"images/seigneur3-clean.jpg", full:"images/seigneur3.jpg"},
   {title:"Les Seigneurs", accept:["les seigneurs"], clean:"images/seigneurs-clean.jpg", full:"images/seigneurs.jpg"},
   {title:"Le Sens de la fête", accept:["le sens de la fete"], clean:"images/sensfete-clean.jpg", full:"images/sensfete.jpg"},
   {title:"Shaolin Soccer", accept:["shaolin soccer"], clean:"images/shaolinsoccer-clean.jpg", full:"images/shaolinsoccer.jpg"},
@@ -584,6 +566,7 @@ const FILMS = [
   {title:"Space Jam", accept:["space jam"], clean:"images/spacejam-clean.jpg", full:"images/spacejam.jpg"},
   {title:"Frangins malgré eux", accept:["frangins malgre eux", "step brothers"], clean:"images/stepbrothers-clean.jpg", full:"images/stepbrothers.jpg"},
   {title:"Suicide Squad", accept:["suicide squad"], clean:"images/suicidesquad-clean.jpg", full:"images/suicidesquad.jpg"},
+  {title:"SuperGrave", accept:["supergrave"], clean:"images/supergrave-clean.jpg", full:"images/supergrave.jpg"},
   {title:"Sweeney Todd", accept:["sweeney todd"], clean:"images/sweeney-clean.jpg", full:"images/sweeney.jpg"},
   {title:"Tanguy", accept:["tanguy"], clean:"images/tanguy-clean.jpg", full:"images/tanguy.jpg"},
   {title:"Tarzan", accept:["tarzan"], clean:"images/tarzan-clean.jpg", full:"images/tarzan.jpg"},
@@ -604,7 +587,7 @@ const FILMS = [
   {title:"Tout sur ma mère", accept:["tout sur ma mere"], clean:"images/toutsurmamere-clean.jpg", full:"images/toutsurmamere.jpg"},
   {title:"Toy Story", accept:["toy story"], clean:"images/toystory-clean.jpg", full:"images/toystory.jpg"},
   {title:"Les Triplettes de Belleville", accept:["les triplettes de belleville"], clean:"images/triplettes-clean.jpg", full:"images/triplettes.jpg"},
-  {title:"Un p'tit truc en plus", accept:["un p'tit truc en plus", "un petit truc en plus", "petit truc en plus"], clean:"images/trucenplus-clean.jpg", full:"images/trucenplus.jpg"},
+  {title:"Un p'tit truc en plus", accept:["un truc en plus"], clean:"images/trucenplus-clean.jpg", full:"images/trucenplus.jpg"},
   {title:"Natural Born Killers", accept:["natural born killers", "tueurs nes"], clean:"images/tueursnés-clean.jpg", full:"images/tueursnés.jpg"},
   {title:"Les Visiteurs", accept:["les visiteurs"], clean:"images/visiteurs-clean.jpg", full:"images/visiteurs.jpg"},
   {title:"Les Visiteurs : La Révolution", accept:["les visiteurs la revolution"], clean:"images/visiteursrevolution-clean.jpg", full:"images/visiteursrevolution.jpg"},
@@ -631,11 +614,7 @@ let globalQueue = [];
 function getNextSession(){
   // Si la file globale a moins de SESSION_SIZE films restants, on la recrée
   if(globalQueue.length < SESSION_SIZE){
-    // Double shuffle pour casser tout biais résiduel
-    let pool = shuffle(shuffle([...FILMS]));
-    // Décalage aléatoire supplémentaire pour éviter les débuts de liste similaires
-    const offset = Math.floor(Math.random() * pool.length);
-    globalQueue = [...pool.slice(offset), ...pool.slice(0, offset)];
+    globalQueue = shuffle(FILMS);
   }
   const session = globalQueue.slice(0, SESSION_SIZE);
   globalQueue = globalQueue.slice(SESSION_SIZE);
@@ -720,8 +699,8 @@ function startReveal(){
         answered=true;
         playWrong();
         showFullPoster();
-        document.getElementById('feedback').textContent='';
-        document.getElementById('feedback').className='feedback';
+        document.getElementById('feedback').textContent='→ '+queue[currentIdx].title;
+        document.getElementById('feedback').className='feedback ko';
         roundScores.push({title:queue[currentIdx].title,pts:0,missed:true});
         setTimeout(nextFilm,2000);
       }
@@ -795,8 +774,8 @@ function skipFilm(){
   playWrong();
   roundScores.push({title:queue[currentIdx].title,pts:0,skipped:true});
   showFullPoster();
-  document.getElementById('feedback').textContent='';
-  document.getElementById('feedback').className='feedback';
+  document.getElementById('feedback').textContent='→ '+queue[currentIdx].title;
+  document.getElementById('feedback').className='feedback ko';
   document.getElementById('answerInput').disabled=true;
   document.getElementById('skipBtn').disabled=true;
   setTimeout(nextFilm,1500);
@@ -868,11 +847,7 @@ function toggleForest(){
 }
 
 function goHome(){
-  clearInterval(revealInterval);
-  document.getElementById('gameArea').style.display='none';
-  document.getElementById('screenEnd').classList.remove('active');
-  document.getElementById('screenStart').classList.add('active');
-  document.getElementById('headerScore').textContent='0';
+  window.location.href = 'index.html';
 }
 </script>
 </body>

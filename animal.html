@@ -167,6 +167,13 @@
   <div class="photo-container" id="photoContainer">
     <img class="photo-img hide" id="photoImg" src="" alt="animal">
     <canvas class="reveal-mask" id="revealCanvas"></canvas>
+    <div id="animalTitle" style="
+      position:absolute; bottom:0; left:0; right:0;
+      background:rgba(0,0,0,0.72); color:#f0eeea;
+      font-family:'Bebas Neue',sans-serif; font-size:1.2rem; letter-spacing:3px;
+      text-align:center; padding:8px 12px;
+      display:none; text-transform:uppercase;
+    "></div>
     <div class="pts-badge" id="ptsBadge">
       <div class="pts-fixed" id="ptsFixed"></div>
       <div class="pts-bonus" id="ptsBonus">+50</div>
@@ -352,6 +359,8 @@ function loadAnimal(){
   document.getElementById('progressFill').style.width=(currentIdx/queue.length*100)+'%';
   document.getElementById('roundLabel').textContent=`ANIMAL ${currentIdx+1} / ${queue.length}`;
   document.getElementById('photoContainer').className='photo-container';
+  document.getElementById('animalTitle').style.display='none';
+  document.getElementById('animalTitle').textContent='';
   updateBadge();
   function onReady(){
     if(answered) return;
@@ -420,6 +429,8 @@ function startReveal(){
         canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
         document.getElementById('feedback').textContent='';
         const animal=queue[currentIdx];
+        document.getElementById('animalTitle').textContent=animal.title;
+        document.getElementById('animalTitle').style.display='block';
         const pts = (part1Found?FIXED_DOUBLE:0)+(part2Found?FIXED_DOUBLE:0);
         roundScores.push({title:animal.title, pts, bonus:0, missed:true, partial:part1Found||part2Found});
         setTimeout(nextAnimal,2000);
@@ -510,6 +521,8 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       const canvas=document.getElementById('revealCanvas');
       canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
       document.getElementById('skipBtn').disabled=true;
+      document.getElementById('animalTitle').textContent=animal.title;
+      document.getElementById('animalTitle').style.display='block';
       document.getElementById('feedback').textContent=`✓ Complet ! +${bonus} bonus`;
       document.getElementById('feedback').className='feedback ok';
       roundScores.push({title:animal.title, pts:FIXED_DOUBLE*2, bonus, missed:false, partial:false});
@@ -532,6 +545,8 @@ function triggerCorrectSimple(animal,inp,wasFuzzy){
   canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
   document.getElementById('headerScore').textContent=totalScore;
   document.getElementById('skipBtn').disabled=true;
+  document.getElementById('animalTitle').textContent=animal.title;
+  document.getElementById('animalTitle').style.display='block';
   const fb=document.getElementById('feedback');
   fb.textContent=`✓ +${earned} pts${wasFuzzy?' ~':''}`;
   fb.className='feedback ok';
@@ -560,6 +575,8 @@ function skipAnimal(){
   const canvas=document.getElementById('revealCanvas');
   canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
   document.getElementById('feedback').textContent='';
+  document.getElementById('animalTitle').textContent=queue[currentIdx].title;
+  document.getElementById('animalTitle').style.display='block';
   document.getElementById('answerInput').disabled=true;
   document.getElementById('skipBtn').disabled=true;
   setTimeout(nextAnimal,1500);

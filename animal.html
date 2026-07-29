@@ -285,7 +285,7 @@ function isFuzzyMatch(input,target){
 const ANIMALS = [
   {title:"Abeille", part1:["abeille"], part2:null, src:"animal-images/animal-images/abeille.jpg"},
   {title:"Araignée crabe épineuse", part1:["araignee"], part2:["araignee crabe epineuse","crabe epineuse"], src:"animal-images/animal-images/araignée-crabeépineuse.jpg"},
-  {title:"Araignée souriante d'Hawaï", part1:["araignee","araignee souriante"], part2:["araignee souriante d hawaii","souriante d hawaii"], src:"animal-images/animal-images/araignée-souriantedhawai.jpg"},
+  {title:"Araignée souriante d'Hawaï", part1:["araignee","araignee souriante"], part2:["araignee souriante d hawaii","souriante d hawaii"], src:"animal-images/animal-images/araignée-souriantedhawaï.jpg"},
   {title:"Autruche", part1:["autruche"], part2:null, src:"animal-images/animal-images/autruche.jpg"},
   {title:"Canard colvert", part1:["canard"], part2:["colvert"], src:"animal-images/animal-images/canard-colvert.jpg"},
   {title:"Canard mandarin", part1:["canard"], part2:["mandarin"], src:"animal-images/animal-images/canard-mandarin.jpg"},
@@ -478,6 +478,45 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
     else triggerWrong(inp);
   } else {
     // Nom double
+    // Vérifier d'abord si l'input matche le nom complet (toutes combinaisons p1+p2)
+    let fullMatch = false, fullFuzzy = false;
+    for(const a1 of animal.part1){
+      for(const a2 of animal.part2){
+        const combined1 = a1 + ' ' + a2;
+        const combined2 = a2 + ' ' + a1;
+        const r1 = isFuzzyMatch(inp.value, combined1);
+        const r2 = isFuzzyMatch(inp.value, combined2);
+        if(r1==='exact'||r2==='exact'){ fullMatch=true; fullFuzzy=false; break; }
+        if(r1==='fuzzy'||r2==='fuzzy'){ fullMatch=true; fullFuzzy=true; }
+      }
+      if(fullMatch && !fullFuzzy) break;
+    }
+    if(fullMatch){
+      // Valide les deux parties d'un coup
+      if(!bonusCaptured){ bonusCaptured=true; }
+      if(!part1Found){ part1Found=true; totalScore+=FIXED_DOUBLE; }
+      if(!part2Found){ part2Found=true; totalScore+=FIXED_DOUBLE; }
+      const bonus = currentBonus;
+      totalScore+=bonus;
+      document.getElementById('headerScore').textContent=totalScore;
+      clearInterval(revealInterval); answered=true;
+      inp.disabled=true; inp.className='correct';
+      playCorrect();
+      const pc=document.getElementById('photoContainer');
+      pc.classList.add('flash-correct','correct-flash');
+      document.getElementById('photoImg').className='photo-img ready';
+      const canvas=document.getElementById('revealCanvas');
+      canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+      document.getElementById('animalTitle').textContent=animal.title;
+      document.getElementById('animalTitle').style.display='block';
+      document.getElementById('skipBtn').disabled=true;
+      document.getElementById('feedback').textContent=`✓ +${FIXED_DOUBLE*2+bonus} pts${fullFuzzy?' ~':''}`;
+      document.getElementById('feedback').className='feedback ok';
+      roundScores.push({title:animal.title, pts:FIXED_DOUBLE*2, bonus, missed:false, partial:false});
+      setTimeout(()=>{pc.classList.remove('correct-flash');nextAnimal();},1800);
+      return;
+    }
+
     let matchedP1=false, matchedP2=false, fuzzy=false;
     for(const a of animal.part1){
       const r=isFuzzyMatch(inp.value,a);

@@ -17,12 +17,12 @@
     height: 100vh; height: 100dvh; display: flex; flex-direction: column;
     align-items: center; padding: 0; overflow: hidden; position: relative;
   }
+  body.score-visible {
+    height: auto; min-height: 100vh; overflow-y: auto; position: static;
+  }
   #screenEnd.active {
-    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-    overflow-y: auto; z-index: 10; background: var(--bg);
     display: flex; flex-direction: column; align-items: center;
-    justify-content: flex-start; padding: 40px 20px 60px; gap: 20px;
-    max-width: none; width: 100%;
+    gap: 20px; width: 100%; max-width: none; padding: 30px 20px 60px;
   }
   header {
     width: 100%; padding: 18px 32px; display: flex;
@@ -650,7 +650,9 @@ function endGame(){
   clearInterval(revealInterval);
   document.getElementById('gameArea').style.display='none';
   document.getElementById('progressFill').style.width='100%';
+  document.body.classList.add('score-visible');
   document.getElementById('screenEnd').classList.add('active');
+  window.scrollTo(0,0);
   const maxPossible = queue.reduce((s,a)=>s+(a.part2?FIXED_DOUBLE*2:FIXED_SIMPLE)+BONUS_MAX,0);
   const pct=Math.round((totalScore/maxPossible)*100);
   document.getElementById('endTitle').textContent=totalScore+' pts';
@@ -666,6 +668,7 @@ function endGame(){
 }
 
 function restartGame(){
+  document.body.classList.remove('score-visible');
   document.getElementById('screenEnd').classList.remove('active');
   document.getElementById('headerScore').textContent='0';
   document.getElementById('gameArea').style.display='flex';
@@ -710,7 +713,7 @@ function toggleSound(){
   }
 }
 
-function goHome(){ window.location.href='index.html'; }
+function goHome(){ document.body.classList.remove('score-visible'); window.location.href='index.html'; }
 </script>
 </body>
 </html>

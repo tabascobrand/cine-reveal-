@@ -16,6 +16,9 @@
     height: 100vh; height: 100dvh; display: flex; flex-direction: column;
     align-items: center; padding: 0; overflow: hidden;
   }
+  body.score-visible {
+    height: auto; min-height: 100vh; overflow-y: auto;
+  }
   header {
     width: 100%; padding: 18px 32px; display: flex;
     align-items: center; justify-content: space-between; border-bottom: 1px solid #1e1e2e;
@@ -149,7 +152,7 @@
 
 <div class="game-area" id="gameArea" style="display:none">
   <div class="round-info">
-    <span id="roundLabel">AFFICHE 1 / 20</span>
+    <span id="roundLabel">AFFICHE 1 / 15</span>
     <span id="revealPct">0% révélé</span>
   </div>
   <div class="poster-container" id="posterContainer">
@@ -169,7 +172,7 @@
   <div class="feedback" id="feedback"></div>
 </div>
 
-<div class="screen" id="screenEnd" style="margin-top:40px">
+<div class="screen" id="screenEnd" style="padding:30px 20px 60px;max-width:none;width:100%;">
   <div class="screen-title" id="endTitle">RÉSULTAT</div>
   <div class="screen-sub" id="endSub"></div>
   <div class="final-breakdown" id="breakdown"></div>
@@ -606,7 +609,7 @@ function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Mat
 
 let queue,currentIdx,totalScore,roundScores,revealPct=0,revealInterval=null,currentPts=100,answered=false;
 const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=100;
-const SESSION_SIZE = 20;
+const SESSION_SIZE = 15;
 
 // File globale : garantit qu'on voit tous les films avant d'en revoir un
 let globalQueue = [];
@@ -787,7 +790,9 @@ function endGame(){
   clearInterval(revealInterval);
   document.getElementById('gameArea').style.display='none';
   document.getElementById('progressFill').style.width='100%';
+  document.body.classList.add('score-visible');
   document.getElementById('screenEnd').classList.add('active');
+  window.scrollTo(0,0);
   const max=queue.length*MAX_PTS, pct=Math.round((totalScore/max)*100);
   document.getElementById('endTitle').textContent=totalScore+' pts';
   document.getElementById('endSub').textContent=
@@ -801,6 +806,7 @@ function endGame(){
 }
 
 function restartGame(){
+  document.body.classList.remove('score-visible');
   document.getElementById('screenEnd').classList.remove('active');
   document.getElementById('headerScore').textContent='0';
   document.getElementById('gameArea').style.display='flex';
@@ -847,7 +853,12 @@ function toggleForest(){
 }
 
 function goHome(){
-  window.location.href = 'index.html';
+  document.body.classList.remove('score-visible');
+  clearInterval(revealInterval);
+  document.getElementById('gameArea').style.display='none';
+  document.getElementById('screenEnd').classList.remove('active');
+  document.getElementById('screenStart').classList.add('active');
+  document.getElementById('headerScore').textContent='0';
 }
 </script>
 </body>

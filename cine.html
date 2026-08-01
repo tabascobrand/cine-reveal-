@@ -2,7 +2,6 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" type="image/png" href="favicon.ico.cine.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CINÉ REVEAL — Devine l'affiche</title>
 <style>
@@ -16,6 +15,11 @@
     background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif;
     height: 100vh; height: 100dvh; display: flex; flex-direction: column;
     align-items: center; padding: 0; overflow: hidden;
+  }
+  body.score-visible { height: auto; min-height: 100vh; overflow-y: auto; }
+  #screenEnd.active {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 20px; width: 100%; max-width: none; padding: 30px 20px 60px;
   }
   header {
     width: 100%; padding: 18px 32px; display: flex;
@@ -43,7 +47,7 @@
   }
   .round-info {
     display: flex; justify-content: space-between; width: 100%;
-    font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray);
+    font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold);
   }
   .poster-container {
     position: relative; width: 100%; max-width: 340px; aspect-ratio: 2/3;
@@ -170,7 +174,7 @@
   <div class="feedback" id="feedback"></div>
 </div>
 
-<div class="screen" id="screenEnd" style="margin-top:40px">
+<div class="screen" id="screenEnd">
   <div class="screen-title" id="endTitle">RÉSULTAT</div>
   <div class="screen-sub" id="endSub"></div>
   <div class="final-breakdown" id="breakdown"></div>
@@ -607,7 +611,7 @@ function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Mat
 
 let queue,currentIdx,totalScore,roundScores,revealPct=0,revealInterval=null,currentPts=100,answered=false;
 const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=100;
-const SESSION_SIZE = 20;
+const SESSION_SIZE = 10;
 
 // File globale : garantit qu'on voit tous les films avant d'en revoir un
 let globalQueue = [];
@@ -700,8 +704,8 @@ function startReveal(){
         answered=true;
         playWrong();
         showFullPoster();
-        document.getElementById('feedback').textContent='';
-        document.getElementById('feedback').className='feedback';
+        document.getElementById('feedback').textContent='→ '+queue[currentIdx].title;
+        document.getElementById('feedback').className='feedback ko';
         roundScores.push({title:queue[currentIdx].title,pts:0,missed:true});
         setTimeout(nextFilm,2000);
       }
@@ -752,7 +756,7 @@ function triggerCorrect(film,inp,wasFuzzy){
   const earned=currentPts; totalScore+=earned;
   roundScores.push({title:film.title,pts:earned,fuzzy:wasFuzzy});
   const fb=document.getElementById('feedback');
-  fb.textContent=wasFuzzy?`✓ +${earned} pts (approximatif accepté !)`:`✓ +${earned} pts`;
+  fb.textContent=`✓ +${earned} pts`;
   fb.className='feedback '+(wasFuzzy?'fuzzy':'ok');
   document.getElementById('headerScore').textContent=totalScore;
   document.getElementById('skipBtn').disabled=true;
@@ -775,8 +779,8 @@ function skipFilm(){
   playWrong();
   roundScores.push({title:queue[currentIdx].title,pts:0,skipped:true});
   showFullPoster();
-  document.getElementById('feedback').textContent='';
-  document.getElementById('feedback').className='feedback';
+  document.getElementById('feedback').textContent='→ '+queue[currentIdx].title;
+  document.getElementById('feedback').className='feedback ko';
   document.getElementById('answerInput').disabled=true;
   document.getElementById('skipBtn').disabled=true;
   setTimeout(nextFilm,1500);
@@ -788,7 +792,9 @@ function endGame(){
   clearInterval(revealInterval);
   document.getElementById('gameArea').style.display='none';
   document.getElementById('progressFill').style.width='100%';
+  document.body.classList.add('score-visible');
   document.getElementById('screenEnd').classList.add('active');
+  window.scrollTo(0,0);
   const max=queue.length*MAX_PTS, pct=Math.round((totalScore/max)*100);
   document.getElementById('endTitle').textContent=totalScore+' pts';
   document.getElementById('endSub').textContent=
@@ -802,6 +808,7 @@ function endGame(){
 }
 
 function restartGame(){
+  document.body.classList.remove('score-visible');
   document.getElementById('screenEnd').classList.remove('active');
   document.getElementById('headerScore').textContent='0';
   document.getElementById('gameArea').style.display='flex';
@@ -847,13 +854,7 @@ function toggleForest(){
   }
 }
 
-function goHome(){
-  clearInterval(revealInterval);
-  document.getElementById('gameArea').style.display='none';
-  document.getElementById('screenEnd').classList.remove('active');
-  document.getElementById('screenStart').classList.add('active');
-  document.getElementById('headerScore').textContent='0';
-}
+function goHome(){ document.body.classList.remove('score-visible'); window.location.href='index.html'; }
 </script>
 </body>
 </html>

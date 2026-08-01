@@ -48,7 +48,7 @@
   }
   .round-info {
     display: flex; justify-content: space-between; width: 100%;
-    font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray);
+    font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent);
   }
   .photo-container {
     position: relative; width: 100%; max-width: 340px; aspect-ratio: 2/3;
@@ -283,32 +283,13 @@ function isFuzzyMatch(input,target){
 // Format nom simple  : {title:"Abeille", part1:["abeille"], part2:null, src:"animal-images/animal-images/abeille.jpg"}
 // Format nom double  : {title:"Canard colvert", part1:["canard"], part2:["colvert"], src:"animal-images/animal-images/canard-colvert.jpg"}
 const ANIMALS = [
-  {title:"Bec-en-sabot du Nil", part1:["bec en sabot"], part2:["bec en sabot du nil","du nil"], src:"animal-images/animal-images/becensabot-dunil.jpg"},
-  {title:"Calopsitte élégante", part1:["calopsitte"], part2:["calopsitte elegante","elegante"], src:"animal-images/animal-images/calopsitte-elegante.jpg"},
-  {title:"Casoar à casque", part1:["casoar"], part2:["casoar a casque","a casque"], src:"animal-images/animal-images/casoar-acasque.jpg"},
-  {title:"Chouette effraie", part1:["chouette"], part2:["chouette effraie","effraie"], src:"animal-images/animal-images/chouette-effraie.jpg"},
-  {title:"Crécerelle d'Amérique", part1:["crecerelle"], part2:["crecerelle d amerique","d amerique"], src:"animal-images/animal-images/crecerelle-damerique.jpg"},
-  {title:"Flamant rose", part1:["flamant"], part2:["flamant rose","rose"], src:"animal-images/animal-images/flamant-rose.jpg"},
-  {title:"Gazelle de Thomson", part1:["gazelle"], part2:["gazelle de thomson","de thomson","thomson"], src:"animal-images/animal-images/gazelle-dethomson.jpg"},
-  {title:"Geai bleu", part1:["geai"], part2:["geai bleu","bleu"], src:"animal-images/animal-images/geai-bleu.jpg"},
-  {title:"Girafe", part1:["girafe"], part2:null, src:"animal-images/animal-images/girafe.jpg"},
-  {title:"Gorille", part1:["gorille"], part2:null, src:"animal-images/animal-images/gorille.jpg"},
-  {title:"Grue royale", part1:["grue"], part2:["grue royale","royale"], src:"animal-images/animal-images/grue-royale.jpg"},
-  {title:"Guépard", part1:["guepard"], part2:null, src:"animal-images/animal-images/guepard.jpg"},
-  {title:"Lion", part1:["lion"], part2:null, src:"animal-images/animal-images/lion.jpg"},
-  {title:"Ouakari chauve", part1:["ouakari"], part2:["ouakari chauve","chauve"], src:"animal-images/animal-images/ouakari-chauve.jpg"},
-  {title:"Papillon caniche du Venezuela", part1:["papillon"], part2:["papillon caniche du venezuela","caniche du venezuela","caniche"], src:"animal-images/animal-images/papillon-canicheduvenezuela.jpg"},
-  {title:"Python albinos", part1:["python"], part2:["python albinos","albinos"], src:"animal-images/animal-images/python-albinos.jpg"},
-  {title:"Scorpion empereur", part1:["scorpion"], part2:["scorpion empereur","empereur"], src:"animal-images/animal-images/scorpion-empereur.jpg"},
-  {title:"Tarsier des Philippines", part1:["tarsier"], part2:["tarsier des philippines","des philippines","philippines"], src:"animal-images/animal-images/tarsier-desphilippines.jpg"},
-  {title:"Zèbre", part1:["zebre"], part2:null, src:"animal-images/animal-images/zebre.jpg"},
   {title:"Abeille", part1:["abeille"], part2:null, src:"animal-images/animal-images/abeille.jpg"},
   {title:"Araignée crabe épineuse", part1:["araignee"], part2:["araignee crabe epineuse","crabe epineuse"], src:"animal-images/animal-images/araignée-crabeépineuse.jpg"},
   {title:"Araignée souriante d'Hawaï", part1:["araignee","araignee souriante"], part2:["araignee souriante d hawaii","souriante d hawaii"], src:"animal-images/animal-images/araignée-souriantedhawaï.jpg"},
   {title:"Autruche", part1:["autruche"], part2:null, src:"animal-images/animal-images/autruche.jpg"},
   {title:"Canard colvert", part1:["canard"], part2:["colvert"], src:"animal-images/animal-images/canard-colvert.jpg"},
   {title:"Canard mandarin", part1:["canard"], part2:["mandarin"], src:"animal-images/animal-images/canard-mandarin.jpg"},
-  {title:"Cerf blanc", part1:["cerf"], part2:["cerf blanc","blanc"], src:"animal-images/animal-images/cerf-blanc.png"},
+  {title:"Cerf blanc", part1:["cerf"], part2:["cerf blanc","blanc"], src:"animal-images/animal-images/cerf-blanc.jpg"},
   {title:"Chien", part1:["chien"], part2:null, src:"animal-images/animal-images/chien.jpg"},
   {title:"Coccinelle", part1:["coccinelle"], part2:null, src:"animal-images/animal-images/coccinelle.jpg"},
   {title:"Coq", part1:["coq"], part2:null, src:"animal-images/animal-images/coq.jpg"},
@@ -316,6 +297,7 @@ const ANIMALS = [
   {title:"Gypaète barbu", part1:["gypaete"], part2:["gypaete barbu","barbu"], src:"animal-images/animal-images/gypaète-barbu.jpg"},
   {title:"Grand-duc (hibou)", part1:["hibou"], part2:["grand duc"], src:"animal-images/animal-images/hibou-grandduc.jpg"},
   {title:"Loup à crinière", part1:["loup"], part2:["loup a criniere","criniere"], src:"animal-images/animal-images/loup-àcrinière.jpg"},
+  {title:"Loutre de mer", part1:["loutre"], part2:["loutre de mer","de mer"], src:"animal-images/animal-images/loutre-demer.jpg"},
   {title:"Macareux moine", part1:["macareux"], part2:["macareux moine","moine"], src:"animal-images/animal-images/macareux-moine.jpg"},
   {title:"Manchot royal", part1:["manchot"], part2:["manchot royal","royal"], src:"animal-images/animal-images/manchot-royal.jpg"},
   {title:"Mandrill", part1:["mandrill"], part2:null, src:"animal-images/animal-images/mandrill.jpg"},
@@ -337,7 +319,7 @@ const FIXED_SIMPLE = 50;
 const FIXED_DOUBLE = 50; // par partie
 const BONUS_MAX = 50;
 const REVEAL_STEP = 0.4, TICK_MS = 120;
-const SESSION_SIZE = 15;
+const SESSION_SIZE = 10;
 
 let globalQueue = [];
 let lastSession = [];

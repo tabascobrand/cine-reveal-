@@ -745,7 +745,7 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       document.getElementById('animalTitle').textContent=animal.title;
       document.getElementById('animalTitle').style.display='block';
       document.getElementById('skipBtn').disabled=true;
-      document.getElementById('feedback').textContent='✓';
+      document.getElementById('feedback').textContent='';
       document.getElementById('feedback').className='feedback ok';
       roundScores.push({title:animal.title, pts:FIXED_DOUBLE*2, bonus, missed:false, partial:false});
       setTimeout(()=>{pc.classList.remove('correct-flash');nextAnimal();},1800);
@@ -782,7 +782,7 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       const pc=document.getElementById('photoContainer');
       pc.classList.add('flash-half','half-flash');
       setTimeout(()=>pc.classList.remove('half-flash','flash-half'),700);
-      document.getElementById('feedback').textContent='✓';
+      document.getElementById('feedback').textContent='';
       document.getElementById('feedback').className='feedback half';
       document.getElementById('animalTitle').textContent='(50 / 100 pts)';
       document.getElementById('animalTitle').style.display='block';
@@ -800,7 +800,7 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       const pc=document.getElementById('photoContainer');
       pc.classList.add('flash-half','half-flash');
       setTimeout(()=>pc.classList.remove('half-flash','flash-half'),700);
-      document.getElementById('feedback').textContent='✓';
+      document.getElementById('feedback').textContent='';
       document.getElementById('feedback').className='feedback half';
       document.getElementById('animalTitle').textContent='(50 / 100 pts)';
       document.getElementById('animalTitle').style.display='block';
@@ -826,7 +826,7 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       document.getElementById('skipBtn').disabled=true;
       document.getElementById('animalTitle').textContent=animal.title;
       document.getElementById('animalTitle').style.display='block';
-      document.getElementById('feedback').textContent='✓';
+      document.getElementById('feedback').textContent='';
       document.getElementById('feedback').className='feedback ok';
       roundScores.push({title:animal.title, pts:FIXED_DOUBLE*2, bonus, missed:false, partial:false});
       setTimeout(()=>{pc.classList.remove('correct-flash');nextAnimal();},1800);
@@ -882,7 +882,7 @@ function triggerCorrectSimple(animal,inp,wasFuzzy){
   document.getElementById('animalTitle').textContent=animal.title;
   document.getElementById('animalTitle').style.display='block';
   const fb=document.getElementById('feedback');
-  fb.textContent=`✓${wasFuzzy?' ~':''}`;
+  fb.textContent=`${wasFuzzy?'~':''}`;
   fb.className='feedback ok';
   roundScores.push({title:animal.title, pts:FIXED_SIMPLE, bonus, missed:false, partial:false});
   setTimeout(()=>{pc.classList.remove('correct-flash');nextAnimal();},1500);

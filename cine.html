@@ -127,6 +127,7 @@
     100%{ box-shadow:none; }
   }
   .poster-container.correct-flash { animation: flashGreen 0.6s ease; }
+
   .score-popup {
     position: fixed; top: 42%; left: 50%;
     font-family: 'Bebas Neue', sans-serif; font-size: 3.4rem; letter-spacing: 3px;
@@ -516,6 +517,7 @@ const FILMS = [
   {title:"The Doors", accept:["the doors"], clean:"images/doors-clean.jpg", full:"images/doors.jpg"},
   {title:"Mrs. Doubtfire", accept:["mrs doubtfire", "madame doubtfire"], clean:"images/doubtfire-clean.jpg", full:"images/doubtfire.jpg"},
   {title:"Le Doudou", accept:["le doudou"], clean:"images/doudou-clean.jpg", full:"images/doudou.jpg"},
+  {title:"Drama", accept:["drama"], clean:"images/drama-clean.jpg", full:"images/drama.jpg"},
   {title:"Drunk", accept:["drunk", "another round"], clean:"images/drunk-clean.jpg", full:"images/drunk.jpg"},
   {title:"L'Élève Ducobu", accept:["l eleve ducobu"], clean:"images/ducobu-clean.jpg", full:"images/ducobu.jpg"},
   {title:"Dumb and Dumber 2", accept:["dumb and dumber 2"], clean:"images/dumb2-clean.jpg", full:"images/dumb2.jpg"},
@@ -691,9 +693,6 @@ function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Mat
 let queue,currentIdx,totalScore,roundScores,revealPct=0,revealInterval=null,currentPts=100,answered=false;
 const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=100;
 const SESSION_SIZE = 10;
-// Série de bonnes réponses consécutives
-let streak = 0;
-const STREAK_BONUSES = {3:220, 6:700, 9:1000, 10:3000};
 
 function showScorePopup(text, variant){
   const el=document.getElementById('scorePopup');
@@ -717,6 +716,10 @@ function showScorePopup(text, variant){
   }
   el.classList.add('show');
 }
+
+// Série de bonnes réponses consécutives
+let streak = 0;
+const STREAK_BONUSES = {3:220, 6:700, 9:1000, 10:3000};
 
 // ── Indicateur de série, collé au cadre de l'affiche ──
 function updateStreakIndicator(){
@@ -1005,7 +1008,7 @@ function triggerCorrect(film,inp,wasFuzzy){
   handleStreakSuccess();
   roundScores.push({title:film.title,pts:earned,fuzzy:wasFuzzy});
   const fb=document.getElementById('feedback');
-  fb.textContent='✓';
+  fb.textContent='';
   fb.className='feedback '+(wasFuzzy?'fuzzy':'ok');
   document.getElementById('headerScore').textContent=totalScore;
   document.getElementById('skipBtn').disabled=true;

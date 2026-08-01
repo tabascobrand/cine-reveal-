@@ -146,7 +146,7 @@
     position: fixed; top: 42%; left: 50%;
     font-family: 'Bebas Neue', sans-serif; font-size: 3.4rem; letter-spacing: 3px;
     color: var(--accent); text-shadow: 0 0 24px rgba(106,191,105,0.65), 0 2px 6px rgba(0,0,0,0.85);
-    pointer-events: none; opacity: 0; z-index: 200;
+    pointer-events: none; opacity: 0; z-index: 200; white-space: nowrap;
     transform: translate(-50%, -50%) scale(0.7);
   }
   .score-popup.show { animation: scorePop 1.1s cubic-bezier(.2,.9,.3,1) forwards; }
@@ -156,6 +156,71 @@
     28%  { transform: translate(-50%, -50%) scale(1); }
     72%  { opacity: 1; transform: translate(-50%, calc(-50% - 34px)) scale(1); }
     100% { opacity: 0; transform: translate(-50%, calc(-50% - 64px)) scale(0.92); }
+  }
+
+  /* ── Indicateur de série ── */
+  .streak-indicator {
+    position: fixed; top: 50%; right: 12px; transform: translateY(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    background: rgba(0,0,0,0.55); border: 1px solid rgba(255,106,61,0.5); border-radius: 10px;
+    padding: 10px 9px; z-index: 140; pointer-events: none;
+    opacity: 0; transition: opacity 0.25s, transform 0.25s;
+  }
+  .streak-indicator.show { opacity: 1; }
+  .streak-indicator .flame-icon { font-size: 1.3rem; line-height: 1; }
+  .streak-indicator .streak-count {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.7rem; color: #ff6a3d; line-height: 1;
+  }
+
+  /* ── Couche d'effets (flammes, explosions, feux d'artifice, nuages) ── */
+  .streak-fx { position: fixed; inset: 0; pointer-events: none; z-index: 150; overflow: hidden; }
+  .fx-flame {
+    position: absolute; bottom: -30px; width: 34px; height: 60px;
+    background: radial-gradient(circle at 50% 85%, #fff2b8 0%, #ffb347 35%, #ff7b19 62%, #ff4500 80%, transparent 88%);
+    border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%;
+    filter: blur(0.5px);
+    transform: scale(var(--scale,1));
+    animation: fxFlameRise 1.5s ease-out forwards, fxFlameFlicker 0.16s ease-in-out infinite alternate;
+  }
+  @keyframes fxFlameRise {
+    0%   { transform: translateY(0) scale(var(--scale,1)); opacity: 0; }
+    12%  { opacity: 1; }
+    100% { transform: translateY(-260px) scale(calc(var(--scale,1)*1.15)); opacity: 0; }
+  }
+  @keyframes fxFlameFlicker {
+    from { filter: hue-rotate(-4deg) brightness(1); }
+    to   { filter: hue-rotate(4deg) brightness(1.18); }
+  }
+  .fx-explosion {
+    position: absolute; width: 12px; height: 12px; margin: -6px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff6d0 0%, #ffae42 35%, #ff5b1f 65%, transparent 76%);
+    animation: fxExplode 0.7s ease-out forwards;
+  }
+  @keyframes fxExplode {
+    0%   { transform: scale(0.2); opacity: 1; }
+    100% { transform: scale(9); opacity: 0; }
+  }
+  .fx-firework-particle {
+    position: absolute; width: 5px; height: 5px; border-radius: 50%;
+    animation: fxFireworkOut 1s ease-out forwards;
+  }
+  @keyframes fxFireworkOut {
+    0%   { transform: translate(0,0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
+  }
+  .fx-cloud {
+    position: absolute; width: 240px; height: 100px;
+    background: radial-gradient(ellipse at center, #ffffff 0%, #ffffff 55%, rgba(255,255,255,0) 76%);
+    filter: blur(2px);
+    opacity: 0;
+    animation: fxCloudDrift 4.2s ease-in-out forwards;
+  }
+  @keyframes fxCloudDrift {
+    0%   { opacity: 0; transform: translateX(0); }
+    12%  { opacity: 0.95; }
+    82%  { opacity: 0.95; }
+    100% { opacity: 0; transform: translateX(70px); }
   }
 </style>
 </head>
@@ -178,6 +243,11 @@
 </header>
 <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
 <div class="score-popup" id="scorePopup"></div>
+<div class="streak-fx" id="streakFX"></div>
+<div class="streak-indicator" id="streakIndicator">
+  <span class="flame-icon">🔥</span>
+  <span class="streak-count" id="streakCount">0</span>
+</div>
 
 <div class="screen active" id="screenStart">
   <div class="screen-title">ANIMAL REVEAL</div>
@@ -386,22 +456,174 @@ let part1Found = false, part2Found = false;
 let streak = 0;
 const STREAK_BONUSES = {3:220, 6:700, 9:1000, 10:3000};
 
+// ── Indicateur de série visible en permanence ──
+function updateStreakIndicator(){
+  const el=document.getElementById('streakIndicator');
+  const countEl=document.getElementById('streakCount');
+  if(streak>0){
+    countEl.textContent=streak;
+    el.classList.add('show');
+  } else {
+    el.classList.remove('show');
+  }
+}
+
+// ── Sons de palier de série ──
+function playGong(){
+  const t=AC.currentTime;
+  const master=AC.createGain(); master.gain.value=0.35; master.connect(AC.destination);
+  [112,175,233,311,389].forEach((f,i)=>{
+    const osc=AC.createOscillator(); osc.type='sine'; osc.frequency.value=f*(1+Math.random()*0.01);
+    const g=AC.createGain();
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(0.5/(i+1), t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, t+2.4-i*0.15);
+    osc.connect(g); g.connect(master);
+    osc.start(t); osc.stop(t+2.5);
+  });
+  const nBuf=AC.createBuffer(1,Math.floor(AC.sampleRate*0.08),AC.sampleRate);
+  const nd=nBuf.getChannelData(0);
+  for(let i=0;i<nd.length;i++) nd[i]=(Math.random()*2-1)*Math.pow(1-i/nd.length,2);
+  const noise=AC.createBufferSource(); noise.buffer=nBuf;
+  const bp=AC.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=900; bp.Q.value=0.8;
+  const ng=AC.createGain(); ng.gain.value=0.4;
+  noise.connect(bp); bp.connect(ng); ng.connect(master);
+  noise.start(t);
+}
+function playStreakSynth(){
+  const t=AC.currentTime;
+  const osc=AC.createOscillator(); osc.type='sawtooth'; osc.frequency.setValueAtTime(392,t);
+  const filter=AC.createBiquadFilter(); filter.type='lowpass'; filter.frequency.setValueAtTime(300,t);
+  filter.frequency.linearRampToValueAtTime(2200,t+0.15);
+  filter.frequency.exponentialRampToValueAtTime(400,t+0.8);
+  const g=AC.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.3,t+0.03); g.gain.exponentialRampToValueAtTime(0.001,t+0.9);
+  osc.connect(filter); filter.connect(g); g.connect(AC.destination);
+  osc.start(t); osc.stop(t+0.95);
+}
+function playStreakFlute(){
+  const t=AC.currentTime;
+  const osc=AC.createOscillator(); osc.type='sine'; osc.frequency.setValueAtTime(880,t);
+  const g=AC.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.28,t+0.06); g.gain.setValueAtTime(0.22,t+0.5); g.gain.exponentialRampToValueAtTime(0.001,t+0.9);
+  osc.connect(g); g.connect(AC.destination);
+  osc.start(t); osc.stop(t+0.95);
+}
+function playChoir(){
+  const t=AC.currentTime;
+  const master=AC.createGain(); master.gain.value=0; master.connect(AC.destination);
+  master.gain.setValueAtTime(0,t);
+  master.gain.linearRampToValueAtTime(0.18,t+0.8);
+  master.gain.setValueAtTime(0.18,t+2.6);
+  master.gain.linearRampToValueAtTime(0,t+4.2);
+  [523.25,659.25,783.99,987.77].forEach((f,i)=>{
+    const osc=AC.createOscillator(); osc.type='triangle'; osc.frequency.setValueAtTime(f,t);
+    const lfo=AC.createOscillator(); lfo.frequency.value=4+i*0.3;
+    const lfoGain=AC.createGain(); lfoGain.gain.value=2.5;
+    lfo.connect(lfoGain); lfoGain.connect(osc.frequency);
+    lfo.start(t); lfo.stop(t+4.4);
+    const g=AC.createGain(); g.gain.value=0.5/(i+1);
+    osc.connect(g); g.connect(master);
+    osc.start(t); osc.stop(t+4.4);
+  });
+}
+
+// ── Particules visuelles de célébration ──
+function spawnFlame(container, xPercent, delay, sizeScale){
+  const el=document.createElement('div');
+  el.className='fx-flame';
+  el.style.left=xPercent+'%';
+  el.style.animationDelay=delay+'s';
+  el.style.setProperty('--scale', sizeScale);
+  container.appendChild(el);
+  setTimeout(()=>el.remove(), (delay+1.6)*1000);
+}
+function spawnFlames(container, count){
+  for(let i=0;i<count;i++){
+    spawnFlame(container, Math.random()*100, Math.random()*0.4, (0.7+Math.random()*0.8).toFixed(2));
+  }
+}
+function spawnExplosion(container, xPercent, yPercent, delay){
+  const el=document.createElement('div');
+  el.className='fx-explosion';
+  el.style.left=xPercent+'%'; el.style.top=yPercent+'%';
+  el.style.animationDelay=delay+'s';
+  container.appendChild(el);
+  setTimeout(()=>el.remove(), (delay+0.7)*1000);
+}
+function spawnExplosions(container, count){
+  for(let i=0;i<count;i++){
+    spawnExplosion(container, 15+Math.random()*70, 20+Math.random()*50, Math.random()*0.9);
+  }
+}
+function spawnFireworkBurst(container, xPercent, yPercent, delay){
+  const colors=['#ffd85c','#ff6a3d','#5ce1ff','#8cff5c','#ff5cd0'];
+  for(let i=0;i<24;i++){
+    const angle=(Math.PI*2*i)/24 + Math.random()*0.2;
+    const dist=40+Math.random()*60;
+    const el=document.createElement('div');
+    el.className='fx-firework-particle';
+    const color=colors[i%colors.length];
+    el.style.left=xPercent+'%'; el.style.top=yPercent+'%';
+    el.style.background=color;
+    el.style.boxShadow='0 0 6px 2px '+color;
+    el.style.setProperty('--dx', Math.cos(angle)*dist+'px');
+    el.style.setProperty('--dy', Math.sin(angle)*dist+'px');
+    el.style.animationDelay=delay+'s';
+    container.appendChild(el);
+    setTimeout(()=>el.remove(), (delay+1.0)*1000);
+  }
+}
+function spawnFireworks(container, bursts){
+  for(let i=0;i<bursts;i++){
+    spawnFireworkBurst(container, 20+Math.random()*60, 15+Math.random()*40, i*0.35+Math.random()*0.15);
+  }
+}
+function spawnClouds(container){
+  for(let i=0;i<6;i++){
+    const el=document.createElement('div');
+    el.className='fx-cloud';
+    el.style.top=(5+Math.random()*35)+'%';
+    el.style.left=(-20+Math.random()*40)+'%';
+    el.style.animationDelay=(Math.random()*0.6)+'s';
+    el.style.transform='scale('+(0.7+Math.random()*0.8).toFixed(2)+')';
+    container.appendChild(el);
+    setTimeout(()=>el.remove(), 4300);
+  }
+}
+
+function triggerStreakCelebration(tier, bonus){
+  const fx=document.getElementById('streakFX');
+  if(tier===3){
+    showScorePopup('+'+bonus,'streak');
+    playGong(); spawnFlames(fx,14);
+  } else if(tier===6){
+    showScorePopup('+'+bonus,'streak');
+    playStreakSynth(); spawnFlames(fx,16); spawnExplosions(fx,6);
+  } else if(tier===9){
+    showScorePopup('+'+bonus,'streak');
+    playStreakFlute(); spawnFlames(fx,18); spawnExplosions(fx,8); spawnFireworks(fx,4);
+  } else if(tier===10){
+    showScorePopup('+'+bonus,'streak-heaven');
+    playChoir(); spawnClouds(fx);
+  }
+}
+
 function handleStreakSuccess(){
   streak++;
+  updateStreakIndicator();
   const bonus = STREAK_BONUSES[streak];
   if(bonus){
     totalScore+=bonus;
     document.getElementById('headerScore').textContent=totalScore;
-    setTimeout(()=>{ showScorePopup('🔥 +'+bonus+' SÉRIE','streak'); }, 650);
+    setTimeout(()=>{ triggerStreakCelebration(streak, bonus); }, 650);
   }
 }
-function handleStreakBreak(){ streak=0; }
+function handleStreakBreak(){ streak=0; updateStreakIndicator(); }
 
 function startGame(){
   document.getElementById('screenStart').classList.remove('active');
   document.getElementById('gameArea').style.display='flex';
   queue = getNextSession();
-  currentIdx=0; totalScore=0; roundScores=[]; streak=0;
+  currentIdx=0; totalScore=0; roundScores=[]; streak=0; updateStreakIndicator();
   startSound();
   loadAnimal();
 }
@@ -653,6 +875,8 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
 function showScorePopup(text, variant){
   const el=document.getElementById('scorePopup');
   el.classList.remove('show');
+  el.style.animationDuration='';
+  el.style.fontSize='';
   void el.offsetWidth;
   el.textContent=text;
   if(variant==='orange'){
@@ -663,7 +887,13 @@ function showScorePopup(text, variant){
     el.style.textShadow='0 0 24px rgba(106,191,105,0.65), 0 2px 6px rgba(0,0,0,0.85)';
   } else if(variant==='streak'){
     el.style.color='#ff6a3d';
-    el.style.textShadow='0 0 26px rgba(255,106,61,0.7), 0 2px 6px rgba(0,0,0,0.85)';
+    el.style.textShadow='0 0 30px rgba(255,106,61,0.8), 0 3px 10px rgba(0,0,0,0.9)';
+    el.style.fontSize='clamp(4.5rem, 22vw, 11rem)';
+  } else if(variant==='streak-heaven'){
+    el.style.color='#fffbe8';
+    el.style.textShadow='0 0 40px rgba(255,245,200,0.95), 0 0 90px rgba(255,215,120,0.65)';
+    el.style.fontSize='clamp(4.5rem, 22vw, 11rem)';
+    el.style.animationDuration='3.8s';
   } else {
     el.style.color='';
     el.style.textShadow='';
@@ -754,7 +984,7 @@ function restartGame(){
   document.getElementById('screenEnd').classList.remove('active');
   document.getElementById('headerScore').textContent='0';
   document.getElementById('gameArea').style.display='flex';
-  queue=getNextSession(); currentIdx=0; totalScore=0; roundScores=[]; streak=0;
+  queue=getNextSession(); currentIdx=0; totalScore=0; roundScores=[]; streak=0; updateStreakIndicator();
   startSound();
   loadAnimal();
 }

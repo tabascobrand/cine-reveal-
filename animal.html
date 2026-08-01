@@ -142,6 +142,21 @@
     100%{ box-shadow:none; }
   }
   .photo-container.half-flash { animation: flashHalf 0.6s ease; }
+  .score-popup {
+    position: fixed; top: 78px; left: 50%;
+    font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; letter-spacing: 3px;
+    color: var(--accent); text-shadow: 0 0 24px rgba(106,191,105,0.65), 0 2px 6px rgba(0,0,0,0.85);
+    pointer-events: none; opacity: 0; z-index: 200;
+    transform: translate(-50%, -12px) scale(0.7);
+  }
+  .score-popup.show { animation: scorePop 1.1s cubic-bezier(.2,.9,.3,1) forwards; }
+  @keyframes scorePop {
+    0%   { opacity: 0; transform: translate(-50%, -12px) scale(0.7); }
+    15%  { opacity: 1; transform: translate(-50%, 0) scale(1.18); }
+    28%  { transform: translate(-50%, 0) scale(1); }
+    72%  { opacity: 1; transform: translate(-50%, 0) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -18px) scale(0.92); }
+  }
 </style>
 </head>
 <body>
@@ -162,6 +177,7 @@
   </div>
 </header>
 <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+<div class="score-popup" id="scorePopup"></div>
 
 <div class="screen active" id="screenStart">
   <div class="screen-title">ANIMAL REVEAL</div>
@@ -557,6 +573,7 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       const earned=FIXED_DOUBLE;
       totalScore+=earned;
       document.getElementById('headerScore').textContent=totalScore;
+      showScorePopup('+'+earned+' pts');
       playHalf();
       inp.value=''; inp.className='half';
       setTimeout(()=>{inp.className='';},600);
@@ -574,6 +591,7 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       const earned=FIXED_DOUBLE;
       totalScore+=earned;
       document.getElementById('headerScore').textContent=totalScore;
+      showScorePopup('+'+earned+' pts');
       inp.value=''; inp.className='half';
       setTimeout(()=>{inp.className='';},600);
       const pc=document.getElementById('photoContainer');
@@ -592,6 +610,7 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       const bonus = bonusCaptured ? currentBonus : 0;
       totalScore+=bonus;
       document.getElementById('headerScore').textContent=totalScore;
+      if(bonus>0) showScorePopup('+'+bonus+' pts');
       clearInterval(revealInterval); answered=true;
       inp.disabled=true; inp.className='correct';
       playCorrect();
@@ -611,11 +630,20 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
   }
 });
 
+function showScorePopup(text){
+  const el=document.getElementById('scorePopup');
+  el.classList.remove('show');
+  void el.offsetWidth;
+  el.textContent=text;
+  el.classList.add('show');
+}
+
 function triggerCorrectSimple(animal,inp,wasFuzzy){
   clearInterval(revealInterval); answered=true;
   const bonus = currentBonus;
   const earned = FIXED_SIMPLE + bonus;
   totalScore+=earned;
+  showScorePopup('+'+earned+' pts');
   inp.className='correct'; inp.disabled=true;
   playCorrect();
   const pc=document.getElementById('photoContainer');

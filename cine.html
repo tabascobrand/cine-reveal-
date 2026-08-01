@@ -127,21 +127,6 @@
     100%{ box-shadow:none; }
   }
   .poster-container.correct-flash { animation: flashGreen 0.6s ease; }
-  .score-popup {
-    position: fixed; top: 42%; left: 50%;
-    font-family: 'Bebas Neue', sans-serif; font-size: 3.4rem; letter-spacing: 3px;
-    color: var(--gold); text-shadow: 0 0 24px rgba(245,200,66,0.65), 0 2px 6px rgba(0,0,0,0.85);
-    pointer-events: none; opacity: 0; z-index: 200;
-    transform: translate(-50%, -50%) scale(0.7);
-  }
-  .score-popup.show { animation: scorePop 1.1s cubic-bezier(.2,.9,.3,1) forwards; }
-  @keyframes scorePop {
-    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
-    15%  { opacity: 1; transform: translate(-50%, -50%) scale(1.18); }
-    28%  { transform: translate(-50%, -50%) scale(1); }
-    72%  { opacity: 1; transform: translate(-50%, calc(-50% - 34px)) scale(1); }
-    100% { opacity: 0; transform: translate(-50%, calc(-50% - 64px)) scale(0.92); }
-  }
 </style>
 </head>
 <body>
@@ -162,7 +147,6 @@
   </div>
 </header>
 <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
-<div class="score-popup" id="scorePopup"></div>
 
 <div class="screen active" id="screenStart" style="margin-top:60px">
   <div class="screen-title">CINÉ REVEAL</div>
@@ -178,13 +162,6 @@
     <img class="poster-img hide" id="posterImgFull"  src="" alt="affiche révélée">
     <img class="poster-img hide" id="posterImgClean" src="" alt="affiche">
     <canvas class="reveal-mask" id="revealCanvas"></canvas>
-    <div id="filmTitle" style="
-      position:absolute; bottom:0; left:0; right:0;
-      background:rgba(0,0,0,0.72); color:#f0eeea;
-      font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:2px;
-      text-align:center; padding:7px 12px;
-      display:none; text-transform:uppercase; line-height:1.4;
-    "></div>
     <div class="pts-badge" id="ptsBadge">100 pts</div>
   </div>
   <div class="timer-wrap">
@@ -573,7 +550,7 @@ const FILMS = [
   {title:"Qui veut la peau de Roger Rabbit", accept:["qui veut la peau de roger rabbit"], clean:"images/roger-clean.jpg", full:"images/roger.jpg"},
   {title:"RRR", accept:["rrr", "rrrrrrr"], clean:"images/rrr-clean.jpg", full:"images/rrr.jpg"},
   {title:"Scarface", accept:["scarface"], clean:"images/scarface-clean.jpg", full:"images/scarface.jpg"},
-  {title:"Les Segpa", accept:["segpa", "les segpa"], clean:"images/segpa-clean.jpg", full:"images/segpa.jpg"},
+  {title:"Segpa", accept:["segpa"], clean:"images/segpa-clean.jpg", full:"images/segpa.jpg"},
   {title:"Le Seigneur des Anneaux : La Communauté de l'Anneau", accept:["le seigneur des anneaux la communaute de l anneau", "la communaute de l anneau","le seigneur des anneaux 1"], clean:"images/seigneur1-clean.jpg", full:"images/seigneur1.jpg"},
   {title:"Le Seigneur des Anneaux : Les Deux Tours", accept:["le seigneur des anneaux les deux tours", "les deux tours", "le seigneur des anneaux 2"], clean:"images/seigneur2-clean.jpg", full:"images/seigneur2.jpg"},
   {title:"Le Seigneur des Anneaux : Le Retour du Roi", accept:["le seigneur des anneaux le retour du roi", "le retour du roi", "le seigneur des anneaux 3"], clean:"images/seigneur3-clean.jpg", full:"images/seigneur3.jpg"},
@@ -632,20 +609,6 @@ function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Mat
 let queue,currentIdx,totalScore,roundScores,revealPct=0,revealInterval=null,currentPts=100,answered=false;
 const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=100;
 const SESSION_SIZE = 10;
-// Série de bonnes réponses consécutives
-let streak = 0;
-const STREAK_BONUSES = {3:220, 6:700, 9:1000, 10:3000};
-
-function handleStreakSuccess(){
-  streak++;
-  const bonus = STREAK_BONUSES[streak];
-  if(bonus){
-    totalScore+=bonus;
-    document.getElementById('headerScore').textContent=totalScore;
-    setTimeout(()=>{ showScorePopup('🔥 +'+bonus+' SÉRIE','streak'); }, 650);
-  }
-}
-function handleStreakBreak(){ streak=0; }
 
 // File globale : garantit qu'on voit tous les films avant d'en revoir un
 let globalQueue = [];
@@ -664,7 +627,7 @@ function startGame(){
   document.getElementById('screenStart').classList.remove('active');
   document.getElementById('gameArea').style.display='flex';
   queue = getNextSession();
-  currentIdx=0; totalScore=0; roundScores=[]; streak=0;
+  currentIdx=0; totalScore=0; roundScores=[];
   startForest();
   loadFilm();
 }
@@ -676,8 +639,6 @@ function loadFilm(){
   const imgF=document.getElementById('posterImgFull');
   imgC.className='poster-img hide';
   imgF.className='poster-img hide';
-  document.getElementById('filmTitle').style.display='none';
-  document.getElementById('filmTitle').textContent='';
   const canvas=document.getElementById('revealCanvas');
   const container=document.getElementById('posterContainer');
   canvas.width=container.offsetWidth; canvas.height=container.offsetHeight;
@@ -738,12 +699,9 @@ function startReveal(){
       clearInterval(revealInterval);
       if(!answered){
         answered=true;
-        handleStreakBreak();
         playWrong();
         showFullPoster();
-        document.getElementById('filmTitle').textContent=queue[currentIdx].title;
-        document.getElementById('filmTitle').style.display='block';
-        document.getElementById('feedback').textContent='';
+        document.getElementById('feedback').textContent='→ '+queue[currentIdx].title;
         document.getElementById('feedback').className='feedback ko';
         roundScores.push({title:queue[currentIdx].title,pts:0,missed:true});
         setTimeout(nextFilm,2000);
@@ -785,21 +743,6 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
   else triggerWrong(this);
 });
 
-function showScorePopup(text, variant){
-  const el=document.getElementById('scorePopup');
-  el.classList.remove('show');
-  void el.offsetWidth;
-  el.textContent=text;
-  if(variant==='streak'){
-    el.style.color='#ff6a3d';
-    el.style.textShadow='0 0 26px rgba(255,106,61,0.7), 0 2px 6px rgba(0,0,0,0.85)';
-  } else {
-    el.style.color='';
-    el.style.textShadow='';
-  }
-  el.classList.add('show');
-}
-
 function triggerCorrect(film,inp,wasFuzzy){
   clearInterval(revealInterval); answered=true;
   inp.className='correct'; inp.disabled=true;
@@ -807,14 +750,10 @@ function triggerCorrect(film,inp,wasFuzzy){
   const pc=document.getElementById('posterContainer');
   pc.classList.add('flash-correct','correct-flash');
   showFullPoster();
-  document.getElementById('filmTitle').textContent=film.title;
-  document.getElementById('filmTitle').style.display='block';
   const earned=currentPts; totalScore+=earned;
-  showScorePopup('+'+earned+' pts');
-  handleStreakSuccess();
   roundScores.push({title:film.title,pts:earned,fuzzy:wasFuzzy});
   const fb=document.getElementById('feedback');
-  fb.textContent='✓';
+  fb.textContent=`✓ +${earned} pts`;
   fb.className='feedback '+(wasFuzzy?'fuzzy':'ok');
   document.getElementById('headerScore').textContent=totalScore;
   document.getElementById('skipBtn').disabled=true;
@@ -823,11 +762,10 @@ function triggerCorrect(film,inp,wasFuzzy){
 
 function triggerWrong(inp){
   playWrong(); inp.className='wrong'; inp.select();
-  handleStreakBreak();
   const pc=document.getElementById('posterContainer');
   pc.classList.add('flash-wrong','shaking');
   pc.addEventListener('animationend',()=>pc.classList.remove('shaking','flash-wrong'),{once:true});
-  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').textContent='✗ Mauvaise réponse…';
   document.getElementById('feedback').className='feedback ko';
   setTimeout(()=>{inp.className='';},600);
 }
@@ -835,13 +773,10 @@ function triggerWrong(inp){
 function skipFilm(){
   if(answered) return;
   clearInterval(revealInterval); answered=true;
-  handleStreakBreak();
   playWrong();
   roundScores.push({title:queue[currentIdx].title,pts:0,skipped:true});
   showFullPoster();
-  document.getElementById('filmTitle').textContent=queue[currentIdx].title;
-  document.getElementById('filmTitle').style.display='block';
-  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').textContent='→ '+queue[currentIdx].title;
   document.getElementById('feedback').className='feedback ko';
   document.getElementById('answerInput').disabled=true;
   document.getElementById('skipBtn').disabled=true;
@@ -875,7 +810,7 @@ function restartGame(){
   document.getElementById('headerScore').textContent='0';
   document.getElementById('gameArea').style.display='flex';
   queue = getNextSession();
-  currentIdx=0; totalScore=0; roundScores=[]; streak=0;
+  currentIdx=0; totalScore=0; roundScores=[];
   startForest();
   loadFilm();
 }

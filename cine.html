@@ -852,14 +852,7 @@ function toggleForest(){
   }
 }
 
-function goHome(){
-  document.body.classList.remove('score-visible');
-  clearInterval(revealInterval);
-  document.getElementById('gameArea').style.display='none';
-  document.getElementById('screenEnd').classList.remove('active');
-  document.getElementById('screenStart').classList.add('active');
-  document.getElementById('headerScore').textContent='0';
-}
+function goHome(){ document.body.classList.remove('score-visible'); window.location.href='index.html'; }
 </script>
 </body>
 </html>

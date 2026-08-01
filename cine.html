@@ -143,69 +143,60 @@
     100% { opacity: 0; transform: translate(-50%, calc(-50% - 64px)) scale(0.92); }
   }
 
-  /* ── Indicateur de série ── */
-  .streak-indicator {
-    position: fixed; top: 50%; right: 12px; transform: translateY(-50%);
-    display: flex; flex-direction: column; align-items: center; gap: 2px;
-    background: rgba(0,0,0,0.55); border: 1px solid rgba(255,106,61,0.5); border-radius: 10px;
-    padding: 10px 9px; z-index: 140; pointer-events: none;
-    opacity: 0; transition: opacity 0.25s, transform 0.25s;
+  /* ── Mini-badge de série, collé au bord du cadre ── */
+  .streak-mini {
+    position: absolute; top: 10px; right: -8px; transform: translateX(100%);
+    display: none; align-items: baseline; gap: 2px;
+    background: rgba(0,0,0,0.6); border: 1px solid rgba(255,106,61,0.4); border-radius: 4px;
+    padding: 4px 8px; margin-left: 6px; z-index: 20;
+    font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;
+    opacity: 0; transition: opacity 0.3s;
   }
-  .streak-indicator.show { opacity: 1; }
-  .streak-indicator .flame-icon { font-size: 1.3rem; line-height: 1; }
-  .streak-indicator .streak-count {
-    font-family: 'Bebas Neue', sans-serif; font-size: 1.7rem; color: #ff6a3d; line-height: 1;
+  .streak-mini.show { opacity: 0.7; }
+  .streak-mini .streak-mini-count { font-size: 0.95rem; color: #ff6a3d; }
+  .streak-mini .streak-mini-max { font-size: 0.68rem; color: var(--gray); }
+  .streak-mini.pulse { animation: streakMiniPulse 0.35s ease; }
+  @keyframes streakMiniPulse {
+    0%   { transform: translateX(100%) scale(1); }
+    45%  { transform: translateX(100%) scale(1.3); }
+    100% { transform: translateX(100%) scale(1); }
   }
 
-  /* ── Couche d'effets (flammes, explosions, feux d'artifice, nuages) ── */
+  /* ── Couche d'effets sobres pour les paliers de série ── */
   .streak-fx { position: fixed; inset: 0; pointer-events: none; z-index: 150; overflow: hidden; }
-  .fx-flame {
-    position: absolute; bottom: -30px; width: 34px; height: 60px;
-    background: radial-gradient(circle at 50% 85%, #fff2b8 0%, #ffb347 35%, #ff7b19 62%, #ff4500 80%, transparent 88%);
-    border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%;
-    filter: blur(0.5px);
-    transform: scale(var(--scale,1));
-    animation: fxFlameRise 1.5s ease-out forwards, fxFlameFlicker 0.16s ease-in-out infinite alternate;
-  }
-  @keyframes fxFlameRise {
-    0%   { transform: translateY(0) scale(var(--scale,1)); opacity: 0; }
-    12%  { opacity: 1; }
-    100% { transform: translateY(-260px) scale(calc(var(--scale,1)*1.15)); opacity: 0; }
-  }
-  @keyframes fxFlameFlicker {
-    from { filter: hue-rotate(-4deg) brightness(1); }
-    to   { filter: hue-rotate(4deg) brightness(1.18); }
-  }
-  .fx-explosion {
-    position: absolute; width: 12px; height: 12px; margin: -6px;
-    border-radius: 50%;
-    background: radial-gradient(circle, #fff6d0 0%, #ffae42 35%, #ff5b1f 65%, transparent 76%);
-    animation: fxExplode 0.7s ease-out forwards;
-  }
-  @keyframes fxExplode {
-    0%   { transform: scale(0.2); opacity: 1; }
-    100% { transform: scale(9); opacity: 0; }
-  }
-  .fx-firework-particle {
-    position: absolute; width: 5px; height: 5px; border-radius: 50%;
-    animation: fxFireworkOut 1s ease-out forwards;
-  }
-  @keyframes fxFireworkOut {
-    0%   { transform: translate(0,0) scale(1); opacity: 1; }
-    100% { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
-  }
-  .fx-cloud {
-    position: absolute; width: 240px; height: 100px;
-    background: radial-gradient(ellipse at center, #ffffff 0%, #ffffff 55%, rgba(255,255,255,0) 76%);
-    filter: blur(2px);
+  .streak-glow {
+    position: absolute; top: 42%; left: 50%; width: 280px; height: 280px;
+    transform: translate(-50%,-50%); border-radius: 50%;
+    background: radial-gradient(circle, var(--glow-color, rgba(255,106,61,0.35)) 0%, transparent 72%);
     opacity: 0;
-    animation: fxCloudDrift 4.2s ease-in-out forwards;
+    animation: streakGlowPulse 1s ease-out forwards;
   }
-  @keyframes fxCloudDrift {
-    0%   { opacity: 0; transform: translateX(0); }
-    12%  { opacity: 0.95; }
-    82%  { opacity: 0.95; }
-    100% { opacity: 0; transform: translateX(70px); }
+  @keyframes streakGlowPulse {
+    0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.6); }
+    30%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%,-50%) scale(1.6); }
+  }
+  .streak-ring {
+    position: absolute; top: 42%; left: 50%; width: 10px; height: 10px; border-radius: 50%;
+    border: 2px solid var(--ring-color, #ff6a3d);
+    transform: translate(-50%,-50%) scale(1); opacity: 0.85;
+    animation: streakRingExpand 0.9s ease-out forwards;
+  }
+  @keyframes streakRingExpand {
+    0%   { transform: translate(-50%,-50%) scale(1); opacity: 0.85; }
+    100% { transform: translate(-50%,-50%) scale(42); opacity: 0; }
+  }
+  .streak-heaven-wash {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 40%, rgba(255,251,232,0.55) 0%, rgba(255,215,120,0.16) 45%, rgba(255,251,232,0) 75%);
+    opacity: 0;
+    animation: streakHeavenWash 3.8s ease-in-out forwards;
+  }
+  @keyframes streakHeavenWash {
+    0%   { opacity: 0; }
+    15%  { opacity: 1; }
+    75%  { opacity: 1; }
+    100% { opacity: 0; }
   }
 </style>
 </head>
@@ -229,10 +220,6 @@
 <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
 <div class="score-popup" id="scorePopup"></div>
 <div class="streak-fx" id="streakFX"></div>
-<div class="streak-indicator" id="streakIndicator">
-  <span class="flame-icon">🔥</span>
-  <span class="streak-count" id="streakCount">0</span>
-</div>
 
 <div class="screen active" id="screenStart" style="margin-top:60px">
   <div class="screen-title">CINÉ REVEAL</div>
@@ -255,6 +242,9 @@
       text-align:center; padding:7px 12px;
       display:none; text-transform:uppercase; line-height:1.4;
     "></div>
+    <div class="streak-mini" id="streakMini">
+      <span class="streak-mini-count" id="streakMiniCount">0</span><span class="streak-mini-max">/10</span>
+    </div>
     <div class="pts-badge" id="ptsBadge">100 pts</div>
   </div>
   <div class="timer-wrap">
@@ -729,15 +719,20 @@ function showScorePopup(text, variant){
   el.classList.add('show');
 }
 
-// ── Indicateur de série visible en permanence ──
+// ── Indicateur de série, collé au cadre de l'affiche ──
 function updateStreakIndicator(){
-  const el=document.getElementById('streakIndicator');
-  const countEl=document.getElementById('streakCount');
+  const el=document.getElementById('streakMini');
+  const countEl=document.getElementById('streakMiniCount');
   if(streak>0){
     countEl.textContent=streak;
+    el.style.display='flex';
     el.classList.add('show');
+    el.classList.remove('pulse');
+    void el.offsetWidth;
+    el.classList.add('pulse');
   } else {
     el.classList.remove('show');
+    setTimeout(()=>{ if(streak===0) el.style.display='none'; }, 300);
   }
 }
 
@@ -799,84 +794,51 @@ function playChoir(){
   });
 }
 
-// ── Particules visuelles de célébration ──
-function spawnFlame(container, xPercent, delay, sizeScale){
+// ── Effets visuels sobres de célébration ──
+function spawnGlow(container, color, delay){
   const el=document.createElement('div');
-  el.className='fx-flame';
-  el.style.left=xPercent+'%';
-  el.style.animationDelay=delay+'s';
-  el.style.setProperty('--scale', sizeScale);
+  el.className='streak-glow';
+  el.style.setProperty('--glow-color', color);
+  el.style.animationDelay=(delay||0)+'s';
   container.appendChild(el);
-  setTimeout(()=>el.remove(), (delay+1.6)*1000);
+  setTimeout(()=>el.remove(), ((delay||0)+1.1)*1000);
 }
-function spawnFlames(container, count){
-  for(let i=0;i<count;i++){
-    spawnFlame(container, Math.random()*100, Math.random()*0.4, (0.7+Math.random()*0.8).toFixed(2));
-  }
-}
-function spawnExplosion(container, xPercent, yPercent, delay){
+function spawnRing(container, color, delay){
   const el=document.createElement('div');
-  el.className='fx-explosion';
-  el.style.left=xPercent+'%'; el.style.top=yPercent+'%';
-  el.style.animationDelay=delay+'s';
+  el.className='streak-ring';
+  el.style.setProperty('--ring-color', color);
+  el.style.animationDelay=(delay||0)+'s';
   container.appendChild(el);
-  setTimeout(()=>el.remove(), (delay+0.7)*1000);
+  setTimeout(()=>el.remove(), ((delay||0)+1)*1000);
 }
-function spawnExplosions(container, count){
-  for(let i=0;i<count;i++){
-    spawnExplosion(container, 15+Math.random()*70, 20+Math.random()*50, Math.random()*0.9);
-  }
-}
-function spawnFireworkBurst(container, xPercent, yPercent, delay){
-  const colors=['#ffd85c','#ff6a3d','#5ce1ff','#8cff5c','#ff5cd0'];
-  for(let i=0;i<24;i++){
-    const angle=(Math.PI*2*i)/24 + Math.random()*0.2;
-    const dist=40+Math.random()*60;
-    const el=document.createElement('div');
-    el.className='fx-firework-particle';
-    const color=colors[i%colors.length];
-    el.style.left=xPercent+'%'; el.style.top=yPercent+'%';
-    el.style.background=color;
-    el.style.boxShadow='0 0 6px 2px '+color;
-    el.style.setProperty('--dx', Math.cos(angle)*dist+'px');
-    el.style.setProperty('--dy', Math.sin(angle)*dist+'px');
-    el.style.animationDelay=delay+'s';
-    container.appendChild(el);
-    setTimeout(()=>el.remove(), (delay+1.0)*1000);
-  }
-}
-function spawnFireworks(container, bursts){
-  for(let i=0;i<bursts;i++){
-    spawnFireworkBurst(container, 20+Math.random()*60, 15+Math.random()*40, i*0.35+Math.random()*0.15);
-  }
-}
-function spawnClouds(container){
-  for(let i=0;i<6;i++){
-    const el=document.createElement('div');
-    el.className='fx-cloud';
-    el.style.top=(5+Math.random()*35)+'%';
-    el.style.left=(-20+Math.random()*40)+'%';
-    el.style.animationDelay=(Math.random()*0.6)+'s';
-    el.style.transform='scale('+(0.7+Math.random()*0.8).toFixed(2)+')';
-    container.appendChild(el);
-    setTimeout(()=>el.remove(), 4300);
-  }
+function spawnHeavenWash(container){
+  const el=document.createElement('div');
+  el.className='streak-heaven-wash';
+  container.appendChild(el);
+  setTimeout(()=>el.remove(), 4000);
 }
 
 function triggerStreakCelebration(tier, bonus){
   const fx=document.getElementById('streakFX');
   if(tier===3){
     showScorePopup('+'+bonus,'streak');
-    playGong(); spawnFlames(fx,14);
+    playGong();
+    spawnGlow(fx,'rgba(255,106,61,0.35)',0);
   } else if(tier===6){
     showScorePopup('+'+bonus,'streak');
-    playStreakSynth(); spawnFlames(fx,16); spawnExplosions(fx,6);
+    playStreakSynth();
+    spawnGlow(fx,'rgba(255,106,61,0.4)',0);
+    spawnRing(fx,'#ff6a3d',0.05);
   } else if(tier===9){
     showScorePopup('+'+bonus,'streak');
-    playStreakFlute(); spawnFlames(fx,18); spawnExplosions(fx,8); spawnFireworks(fx,4);
+    playStreakFlute();
+    spawnGlow(fx,'rgba(255,106,61,0.45)',0);
+    spawnRing(fx,'#ff6a3d',0.05);
+    spawnRing(fx,'#ffd85c',0.28);
   } else if(tier===10){
     showScorePopup('+'+bonus,'streak-heaven');
-    playChoir(); spawnClouds(fx);
+    playChoir();
+    spawnHeavenWash(fx);
   }
 }
 

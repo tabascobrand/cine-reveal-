@@ -765,7 +765,7 @@ function triggerWrong(inp){
   const pc=document.getElementById('posterContainer');
   pc.classList.add('flash-wrong','shaking');
   pc.addEventListener('animationend',()=>pc.classList.remove('shaking','flash-wrong'),{once:true});
-  document.getElementById('feedback').textContent='✗ Mauvaise réponse…';
+  document.getElementById('feedback').textContent='';
   document.getElementById('feedback').className='feedback ko';
   setTimeout(()=>{inp.className='';},600);
 }

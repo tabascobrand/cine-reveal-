@@ -444,7 +444,7 @@ let bonusCaptured = false, currentBonus = BONUS_MAX;
 let part1Found = false, part2Found = false;
 // Série de bonnes réponses consécutives
 let streak = 0;
-const STREAK_BONUSES = {3:220, 6:700, 9:1000, 10:3000};
+const STREAK_BONUSES = {3:220, 6:700, 10:3000};
 
 // ── Indicateur de série, collé au cadre de la photo ──
 function updateStreakIndicator(){
@@ -493,13 +493,6 @@ function playStreakSynth(){
   filter.frequency.exponentialRampToValueAtTime(400,t+0.8);
   const g=AC.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.3,t+0.03); g.gain.exponentialRampToValueAtTime(0.001,t+0.9);
   osc.connect(filter); filter.connect(g); g.connect(AC.destination);
-  osc.start(t); osc.stop(t+0.95);
-}
-function playStreakFlute(){
-  const t=AC.currentTime;
-  const osc=AC.createOscillator(); osc.type='sine'; osc.frequency.setValueAtTime(880,t);
-  const g=AC.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.28,t+0.06); g.gain.setValueAtTime(0.22,t+0.5); g.gain.exponentialRampToValueAtTime(0.001,t+0.9);
-  osc.connect(g); g.connect(AC.destination);
   osc.start(t); osc.stop(t+0.95);
 }
 function playChoir(){
@@ -556,12 +549,6 @@ function triggerStreakCelebration(tier, bonus){
     playStreakSynth();
     spawnGlow(fx,'rgba(255,106,61,0.4)',0);
     spawnRing(fx,'#ff6a3d',0.05);
-  } else if(tier===9){
-    showScorePopup('+'+bonus,'streak');
-    playStreakFlute();
-    spawnGlow(fx,'rgba(255,106,61,0.45)',0);
-    spawnRing(fx,'#ff6a3d',0.05);
-    spawnRing(fx,'#ffd85c',0.28);
   } else if(tier===10){
     showScorePopup('+'+bonus,'streak-heaven');
     playChoir();

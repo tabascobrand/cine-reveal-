@@ -128,8 +128,8 @@
   }
   .poster-container.correct-flash { animation: flashGreen 0.6s ease; }
   .score-popup {
-    position: fixed; top: 50%; left: 50%;
-    font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; letter-spacing: 3px;
+    position: fixed; top: 42%; left: 50%;
+    font-family: 'Bebas Neue', sans-serif; font-size: 3.4rem; letter-spacing: 3px;
     color: var(--gold); text-shadow: 0 0 24px rgba(245,200,66,0.65), 0 2px 6px rgba(0,0,0,0.85);
     pointer-events: none; opacity: 0; z-index: 200;
     transform: translate(-50%, -50%) scale(0.7);
@@ -632,6 +632,20 @@ function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Mat
 let queue,currentIdx,totalScore,roundScores,revealPct=0,revealInterval=null,currentPts=100,answered=false;
 const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=100;
 const SESSION_SIZE = 10;
+// Série de bonnes réponses consécutives
+let streak = 0;
+const STREAK_BONUSES = {3:220, 6:700, 9:1000, 10:3000};
+
+function handleStreakSuccess(){
+  streak++;
+  const bonus = STREAK_BONUSES[streak];
+  if(bonus){
+    totalScore+=bonus;
+    document.getElementById('headerScore').textContent=totalScore;
+    setTimeout(()=>{ showScorePopup('🔥 +'+bonus+' SÉRIE','streak'); }, 650);
+  }
+}
+function handleStreakBreak(){ streak=0; }
 
 // File globale : garantit qu'on voit tous les films avant d'en revoir un
 let globalQueue = [];
@@ -650,7 +664,7 @@ function startGame(){
   document.getElementById('screenStart').classList.remove('active');
   document.getElementById('gameArea').style.display='flex';
   queue = getNextSession();
-  currentIdx=0; totalScore=0; roundScores=[];
+  currentIdx=0; totalScore=0; roundScores=[]; streak=0;
   startForest();
   loadFilm();
 }
@@ -724,6 +738,7 @@ function startReveal(){
       clearInterval(revealInterval);
       if(!answered){
         answered=true;
+        handleStreakBreak();
         playWrong();
         showFullPoster();
         document.getElementById('filmTitle').textContent=queue[currentIdx].title;
@@ -770,11 +785,18 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
   else triggerWrong(this);
 });
 
-function showScorePopup(text){
+function showScorePopup(text, variant){
   const el=document.getElementById('scorePopup');
   el.classList.remove('show');
   void el.offsetWidth;
   el.textContent=text;
+  if(variant==='streak'){
+    el.style.color='#ff6a3d';
+    el.style.textShadow='0 0 26px rgba(255,106,61,0.7), 0 2px 6px rgba(0,0,0,0.85)';
+  } else {
+    el.style.color='';
+    el.style.textShadow='';
+  }
   el.classList.add('show');
 }
 
@@ -789,6 +811,7 @@ function triggerCorrect(film,inp,wasFuzzy){
   document.getElementById('filmTitle').style.display='block';
   const earned=currentPts; totalScore+=earned;
   showScorePopup('+'+earned+' pts');
+  handleStreakSuccess();
   roundScores.push({title:film.title,pts:earned,fuzzy:wasFuzzy});
   const fb=document.getElementById('feedback');
   fb.textContent='✓';
@@ -800,6 +823,7 @@ function triggerCorrect(film,inp,wasFuzzy){
 
 function triggerWrong(inp){
   playWrong(); inp.className='wrong'; inp.select();
+  handleStreakBreak();
   const pc=document.getElementById('posterContainer');
   pc.classList.add('flash-wrong','shaking');
   pc.addEventListener('animationend',()=>pc.classList.remove('shaking','flash-wrong'),{once:true});
@@ -811,6 +835,7 @@ function triggerWrong(inp){
 function skipFilm(){
   if(answered) return;
   clearInterval(revealInterval); answered=true;
+  handleStreakBreak();
   playWrong();
   roundScores.push({title:queue[currentIdx].title,pts:0,skipped:true});
   showFullPoster();
@@ -850,7 +875,7 @@ function restartGame(){
   document.getElementById('headerScore').textContent='0';
   document.getElementById('gameArea').style.display='flex';
   queue = getNextSession();
-  currentIdx=0; totalScore=0; roundScores=[];
+  currentIdx=0; totalScore=0; roundScores=[]; streak=0;
   startForest();
   loadFilm();
 }

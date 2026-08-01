@@ -143,8 +143,8 @@
   }
   .photo-container.half-flash { animation: flashHalf 0.6s ease; }
   .score-popup {
-    position: fixed; top: 50%; left: 50%;
-    font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; letter-spacing: 3px;
+    position: fixed; top: 42%; left: 50%;
+    font-family: 'Bebas Neue', sans-serif; font-size: 3.4rem; letter-spacing: 3px;
     color: var(--accent); text-shadow: 0 0 24px rgba(106,191,105,0.65), 0 2px 6px rgba(0,0,0,0.85);
     pointer-events: none; opacity: 0; z-index: 200;
     transform: translate(-50%, -50%) scale(0.7);
@@ -382,12 +382,26 @@ let revealPct = 0, revealInterval = null, answered = false;
 let bonusCaptured = false, currentBonus = BONUS_MAX;
 // Pour les noms doubles : suivi des parties trouvées
 let part1Found = false, part2Found = false;
+// Série de bonnes réponses consécutives
+let streak = 0;
+const STREAK_BONUSES = {3:220, 6:700, 9:1000, 10:3000};
+
+function handleStreakSuccess(){
+  streak++;
+  const bonus = STREAK_BONUSES[streak];
+  if(bonus){
+    totalScore+=bonus;
+    document.getElementById('headerScore').textContent=totalScore;
+    setTimeout(()=>{ showScorePopup('🔥 +'+bonus+' SÉRIE','streak'); }, 650);
+  }
+}
+function handleStreakBreak(){ streak=0; }
 
 function startGame(){
   document.getElementById('screenStart').classList.remove('active');
   document.getElementById('gameArea').style.display='flex';
   queue = getNextSession();
-  currentIdx=0; totalScore=0; roundScores=[];
+  currentIdx=0; totalScore=0; roundScores=[]; streak=0;
   startSound();
   loadAnimal();
 }
@@ -476,6 +490,7 @@ function startReveal(){
       clearInterval(revealInterval);
       if(!answered){
         answered=true;
+        handleStreakBreak();
         playWrong();
         document.getElementById('photoImg').className='photo-img ready';
         const canvas=document.getElementById('revealCanvas');
@@ -533,7 +548,8 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       const bonus = currentBonus;
       totalScore+=bonus;
       document.getElementById('headerScore').textContent=totalScore;
-      showScorePopup('+'+(FIXED_DOUBLE*2+bonus)+' pts');
+      showScorePopup('+'+(FIXED_DOUBLE*2+bonus)+' pts','green');
+      handleStreakSuccess();
       clearInterval(revealInterval); answered=true;
       inp.disabled=true; inp.className='correct';
       playCorrect();
@@ -570,11 +586,12 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
     if(!bonusCaptured){ bonusCaptured=true; }
 
     if(matchedP1 && !part1Found){
+      const firstFound=!part2Found;
       part1Found=true;
       const earned=FIXED_DOUBLE;
       totalScore+=earned;
       document.getElementById('headerScore').textContent=totalScore;
-      showScorePopup('+'+earned+' pts');
+      if(firstFound) showScorePopup('+'+earned+' pts','orange');
       playHalf();
       inp.value=''; inp.className='half';
       setTimeout(()=>{inp.className='';},600);
@@ -588,11 +605,12 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       updateBadge();
     }
     if(matchedP2 && !part2Found){
+      const firstFound=!part1Found;
       part2Found=true;
       const earned=FIXED_DOUBLE;
       totalScore+=earned;
       document.getElementById('headerScore').textContent=totalScore;
-      showScorePopup('+'+earned+' pts');
+      if(firstFound) showScorePopup('+'+earned+' pts','orange');
       inp.value=''; inp.className='half';
       setTimeout(()=>{inp.className='';},600);
       const pc=document.getElementById('photoContainer');
@@ -611,7 +629,8 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       const bonus = bonusCaptured ? currentBonus : 0;
       totalScore+=bonus;
       document.getElementById('headerScore').textContent=totalScore;
-      if(bonus>0) showScorePopup('+'+bonus+' pts');
+      showScorePopup('+'+(FIXED_DOUBLE*2+bonus)+' pts','green');
+      handleStreakSuccess();
       clearInterval(revealInterval); answered=true;
       inp.disabled=true; inp.className='correct';
       playCorrect();
@@ -631,11 +650,24 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
   }
 });
 
-function showScorePopup(text){
+function showScorePopup(text, variant){
   const el=document.getElementById('scorePopup');
   el.classList.remove('show');
   void el.offsetWidth;
   el.textContent=text;
+  if(variant==='orange'){
+    el.style.color='#f5a623';
+    el.style.textShadow='0 0 24px rgba(245,166,35,0.65), 0 2px 6px rgba(0,0,0,0.85)';
+  } else if(variant==='green'){
+    el.style.color='#6abf69';
+    el.style.textShadow='0 0 24px rgba(106,191,105,0.65), 0 2px 6px rgba(0,0,0,0.85)';
+  } else if(variant==='streak'){
+    el.style.color='#ff6a3d';
+    el.style.textShadow='0 0 26px rgba(255,106,61,0.7), 0 2px 6px rgba(0,0,0,0.85)';
+  } else {
+    el.style.color='';
+    el.style.textShadow='';
+  }
   el.classList.add('show');
 }
 
@@ -645,6 +677,7 @@ function triggerCorrectSimple(animal,inp,wasFuzzy){
   const earned = FIXED_SIMPLE + bonus;
   totalScore+=earned;
   showScorePopup('+'+earned+' pts');
+  handleStreakSuccess();
   inp.className='correct'; inp.disabled=true;
   playCorrect();
   const pc=document.getElementById('photoContainer');
@@ -665,6 +698,7 @@ function triggerCorrectSimple(animal,inp,wasFuzzy){
 
 function triggerWrong(inp){
   playWrong(); inp.className='wrong'; inp.select();
+  handleStreakBreak();
   const pc=document.getElementById('photoContainer');
   pc.classList.add('flash-wrong','shaking');
   pc.addEventListener('animationend',()=>pc.classList.remove('shaking','flash-wrong'),{once:true});
@@ -676,6 +710,7 @@ function triggerWrong(inp){
 function skipAnimal(){
   if(answered) return;
   clearInterval(revealInterval); answered=true;
+  handleStreakBreak();
   playWrong();
   const animal=queue[currentIdx];
   const pts=(part1Found?FIXED_DOUBLE:0)+(part2Found?FIXED_DOUBLE:0);
@@ -719,7 +754,7 @@ function restartGame(){
   document.getElementById('screenEnd').classList.remove('active');
   document.getElementById('headerScore').textContent='0';
   document.getElementById('gameArea').style.display='flex';
-  queue=getNextSession(); currentIdx=0; totalScore=0; roundScores=[];
+  queue=getNextSession(); currentIdx=0; totalScore=0; roundScores=[]; streak=0;
   startSound();
   loadAnimal();
 }

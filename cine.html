@@ -110,15 +110,43 @@
     cursor: pointer; transition: opacity 0.2s; margin-top: 8px;
   }
   .btn-primary:hover { opacity: 0.85; }
+
+  /* ── Leaderboard (aperçu grisé, non fonctionnel) ── */
+  .leaderboard-preview {
+    width: 100%; max-width: 340px; margin-top: 40px;
+    opacity: 0.5; pointer-events: none; user-select: none;
+  }
+  .leaderboard-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; letter-spacing: 4px;
+    text-align: center; color: var(--gray); margin-bottom: 4px;
+  }
+  .leaderboard-soon {
+    font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase;
+    text-align: center; color: var(--gray); margin-bottom: 14px;
+  }
+  .leaderboard-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; background: var(--panel); border-left: 3px solid var(--dim);
+    margin-bottom: 6px;
+  }
+  .leaderboard-rank {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: var(--gray); width: 16px;
+  }
+  .leaderboard-name {
+    flex: 1; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;
+    font-size: 0.85rem; color: var(--white);
+  }
+  .leaderboard-score {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; color: var(--gray);
+  }
+
   .final-breakdown { width: 100%; display: flex; flex-direction: column; gap: 8px; }
   .breakdown-row {
     display: flex; justify-content: space-between; align-items: center;
     padding: 10px 14px; background: var(--panel); border-left: 3px solid var(--dim); font-size: 0.85rem;
   }
-  .breakdown-row.scored { border-left-color: #4caf6e; }
-  .breakdown-row.missed { border-left-color: var(--red); }
-  .breakdown-row .pts { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: #4caf6e; }
-  .breakdown-row.missed .pts { color: var(--red); }
+  .breakdown-row.scored { border-left-color: var(--gold); }
+  .breakdown-row .pts { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--gold); }
   @keyframes shake {
     0%,100%{ transform:translateX(0); } 15%{ transform:translateX(-7px); }
     30%{ transform:translateX(7px); } 45%{ transform:translateX(-5px); }
@@ -233,6 +261,15 @@
 <div class="screen active" id="screenStart" style="margin-top:60px">
   <div class="screen-title">CINÉ REVEAL</div>
   <button class="btn-primary" onclick="startGame()">JOUER</button>
+  <div class="leaderboard-preview">
+    <div class="leaderboard-title">CLASSEMENT MONDIAL</div>
+    <div class="leaderboard-soon">Bientôt disponible</div>
+    <div class="leaderboard-row"><span class="leaderboard-rank">1</span><span class="leaderboard-name">BAZOOKA12</span><span class="leaderboard-score">8420</span></div>
+    <div class="leaderboard-row"><span class="leaderboard-rank">2</span><span class="leaderboard-name">LUCIE_R</span><span class="leaderboard-score">7150</span></div>
+    <div class="leaderboard-row"><span class="leaderboard-rank">3</span><span class="leaderboard-name">MAXPLAYER</span><span class="leaderboard-score">6800</span></div>
+    <div class="leaderboard-row"><span class="leaderboard-rank">4</span><span class="leaderboard-name">NOVA</span><span class="leaderboard-score">5990</span></div>
+    <div class="leaderboard-row"><span class="leaderboard-rank">5</span><span class="leaderboard-name">ZEPHYR</span><span class="leaderboard-score">5410</span></div>
+  </div>
 </div>
 
 <div class="game-area" id="gameArea" style="display:none">
@@ -388,10 +425,6 @@ function isFuzzyMatch(input,target){
 }
 
 const FILMS = [
-  {title:"Drive", accept:["drive"], clean:"images/drive-clean.jpg", full:"images/drive.jpg"},
-  {title:"Kinds of Kindness", accept:["kinds of kindness","kind of kindness"], clean:"images/kindof-clean.jpg", full:"images/kindof.jpg"},
-  {title:"Porco Rosso", accept:["porco rosso"], clean:"images/porcorosso-clean.jpg", full:"images/porcorosso.jpg"},
-  {title:"Rebelle", accept:["rebelle","brave"], clean:"images/rebelle-clean.jpg", full:"images/rebelle.jpg"},
   {title:"Little Miss Sunshine", accept:["little miss sunshine"], clean:"images/littlemiss-clean.jpg", full:"images/littlemiss.jpg"},
   {title:"Once Upon a Time in Hollywood", accept:["once upon a time in hollywood", "il etait une fois a hollywood"], clean:"images/onceupon-clean.jpg", full:"images/onceupon.jpg"},
   {title:"Brazil", accept:["brazil"], clean:"images/brazil-clean.jpg", full:"images/brazil.jpg"},
@@ -1069,9 +1102,11 @@ function endGame(){
   window.scrollTo(0,0);
   const max=queue.length*MAX_PTS, pct=Math.round((totalScore/max)*100);
   document.getElementById('endTitle').textContent=totalScore+' pts';
-  document.getElementById('endSub').textContent='';
+  document.getElementById('endSub').textContent=
+    pct>=80?' ':
+    pct>=50?' ':'';
   document.getElementById('breakdown').innerHTML=roundScores.map(r=>`
-    <div class="breakdown-row ${r.pts>0?'scored':'missed'}">
+    <div class="breakdown-row ${r.pts>0?'scored':''}">
       <span>${r.title}${r.fuzzy?' <span style="color:#f5a623;font-size:0.7em">~</span>':''}</span>
       <span class="pts">${r.pts>0?'+'+r.pts:r.skipped?'PASSÉ':'MANQUÉ'}</span>
     </div>`).join('');

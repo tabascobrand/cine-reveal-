@@ -118,6 +118,36 @@
     cursor: pointer; transition: opacity 0.2s; margin-top: 8px;
   }
   .btn-primary:hover { opacity: 0.85; }
+
+  /* ── Leaderboard (aperçu grisé, non fonctionnel) ── */
+  .leaderboard-preview {
+    width: 100%; max-width: 340px; margin-top: 40px;
+    opacity: 0.5; pointer-events: none; user-select: none;
+  }
+  .leaderboard-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; letter-spacing: 4px;
+    text-align: center; color: var(--gray); margin-bottom: 4px;
+  }
+  .leaderboard-soon {
+    font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase;
+    text-align: center; color: var(--gray); margin-bottom: 14px;
+  }
+  .leaderboard-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; background: var(--panel); border-left: 3px solid var(--dim);
+    margin-bottom: 6px;
+  }
+  .leaderboard-rank {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: var(--gray); width: 16px;
+  }
+  .leaderboard-name {
+    flex: 1; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;
+    font-size: 0.85rem; color: var(--white);
+  }
+  .leaderboard-score {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; color: var(--gray);
+  }
+
   .final-breakdown { width: 100%; display: flex; flex-direction: column; gap: 8px; }
   .breakdown-row {
     display: flex; justify-content: space-between; align-items: center;
@@ -248,6 +278,15 @@
 <div class="screen active" id="screenStart">
   <div class="screen-title">ANIMAL REVEAL</div>
   <button class="btn-primary" onclick="startGame()">JOUER</button>
+  <div class="leaderboard-preview">
+    <div class="leaderboard-title">CLASSEMENT MONDIAL</div>
+    <div class="leaderboard-soon">Bientôt disponible</div>
+    <div class="leaderboard-row"><span class="leaderboard-rank">1</span><span class="leaderboard-name">BAZOOKA12</span><span class="leaderboard-score">8420</span></div>
+    <div class="leaderboard-row"><span class="leaderboard-rank">2</span><span class="leaderboard-name">LUCIE_R</span><span class="leaderboard-score">7150</span></div>
+    <div class="leaderboard-row"><span class="leaderboard-rank">3</span><span class="leaderboard-name">MAXPLAYER</span><span class="leaderboard-score">6800</span></div>
+    <div class="leaderboard-row"><span class="leaderboard-rank">4</span><span class="leaderboard-name">NOVA</span><span class="leaderboard-score">5990</span></div>
+    <div class="leaderboard-row"><span class="leaderboard-rank">5</span><span class="leaderboard-name">ZEPHYR</span><span class="leaderboard-score">5410</span></div>
+  </div>
 </div>
 
 <div class="game-area" id="gameArea" style="display:none">

@@ -21,24 +21,28 @@
   }
   .title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 4rem; letter-spacing: 10px;
+    font-size: clamp(3.6rem, 15vw, 4.9rem); letter-spacing: 8px;
     color: var(--white);
   }
-  .title-wrap { position: relative; display: inline-block; margin-bottom: 8px; }
+  .title-wrap {
+    position: relative; width: 100%; max-width: 360px;
+    margin: 0 auto 24px; text-align: center;
+  }
   #titleMask { position: absolute; top: 0; left: 0; pointer-events: none; }
   .subtitle {
     font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
     color: var(--gray); margin-bottom: 56px;
   }
   .cards {
-    display: flex; flex-direction: column; gap: 16px;
+    display: flex; flex-direction: column; gap: 24px;
     width: 100%; max-width: 360px;
   }
   .card {
     border: 1px solid var(--gold); border-radius: 2px;
     padding: 24px 28px; cursor: pointer;
     transition: all 0.2s; text-decoration: none;
-    display: flex; flex-direction: column; gap: 5px;
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    text-align: center;
   }
   .card:hover { background: rgba(245,200,66,0.06); transform: translateY(-2px); }
   .card.soon {

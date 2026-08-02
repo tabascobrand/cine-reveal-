@@ -113,31 +113,31 @@
 
   /* ── Leaderboard (aperçu grisé, non fonctionnel) ── */
   .leaderboard-preview {
-    width: 100%; max-width: 340px; margin-top: 40px;
+    width: 100%; max-width: 440px; margin-top: 44px;
     opacity: 0.5; pointer-events: none; user-select: none;
   }
   .leaderboard-title {
-    font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; letter-spacing: 4px;
-    text-align: center; color: var(--gray); margin-bottom: 4px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 4px;
+    text-align: center; color: var(--gray); margin-bottom: 6px;
   }
   .leaderboard-soon {
-    font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase;
-    text-align: center; color: var(--gray); margin-bottom: 14px;
+    font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase;
+    text-align: center; color: var(--gray); margin-bottom: 18px;
   }
   .leaderboard-row {
-    display: flex; align-items: center; gap: 10px;
-    padding: 8px 12px; background: var(--panel); border-left: 3px solid var(--dim);
-    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 16px; background: var(--panel); border-left: 3px solid var(--dim);
+    margin-bottom: 8px;
   }
   .leaderboard-rank {
-    font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: var(--gray); width: 16px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--gray); width: 22px;
   }
   .leaderboard-name {
     flex: 1; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;
-    font-size: 0.85rem; color: var(--white);
+    font-size: 1.05rem; color: var(--white);
   }
   .leaderboard-score {
-    font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; color: var(--gray);
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--gray);
   }
 
   .final-breakdown { width: 100%; display: flex; flex-direction: column; gap: 8px; }
@@ -258,7 +258,7 @@
 <div class="score-popup" id="scorePopup"></div>
 <div class="streak-fx" id="streakFX"></div>
 
-<div class="screen active" id="screenStart" style="margin-top:60px">
+<div class="screen active" id="screenStart">
   <div class="screen-title">CINÉ REVEAL</div>
   <button class="btn-primary" onclick="startGame()">JOUER</button>
   <div class="leaderboard-preview">
@@ -308,6 +308,15 @@
   <div class="screen-title" id="endTitle">RÉSULTAT</div>
   <div class="screen-sub" id="endSub"></div>
   <div class="final-breakdown" id="breakdown"></div>
+  <div class="leaderboard-preview">
+    <div class="leaderboard-title">CLASSEMENT MONDIAL</div>
+    <div class="leaderboard-soon">Bientôt disponible</div>
+    <div class="leaderboard-row"><span class="leaderboard-rank">1</span><span class="leaderboard-name">BAZOOKA12</span><span class="leaderboard-score">8420</span></div>
+    <div class="leaderboard-row"><span class="leaderboard-rank">2</span><span class="leaderboard-name">LUCIE_R</span><span class="leaderboard-score">7150</span></div>
+    <div class="leaderboard-row"><span class="leaderboard-rank">3</span><span class="leaderboard-name">MAXPLAYER</span><span class="leaderboard-score">6800</span></div>
+    <div class="leaderboard-row"><span class="leaderboard-rank">4</span><span class="leaderboard-name">NOVA</span><span class="leaderboard-score">5990</span></div>
+    <div class="leaderboard-row"><span class="leaderboard-rank">5</span><span class="leaderboard-name">ZEPHYR</span><span class="leaderboard-score">5410</span></div>
+  </div>
   <button class="btn-primary" onclick="restartGame()">REJOUER</button>
 </div>
 
@@ -425,10 +434,6 @@ function isFuzzyMatch(input,target){
 }
 
 const FILMS = [
-  {title:"Drive", accept:["drive"], clean:"images/drive-clean.jpg", full:"images/drive.jpg"},
-  {title:"Kinds of Kindness", accept:["kinds of kindness","kind of kindness"], clean:"images/kindof-clean.jpg", full:"images/kindof.jpg"},
-  {title:"Porco Rosso", accept:["porco rosso"], clean:"images/porcorosso-clean.jpg", full:"images/porcorosso.jpg"},
-  {title:"Rebelle", accept:["rebelle","brave"], clean:"images/rebelle-clean.jpg", full:"images/rebelle.jpg"},
   {title:"Little Miss Sunshine", accept:["little miss sunshine"], clean:"images/littlemiss-clean.jpg", full:"images/littlemiss.jpg"},
   {title:"Once Upon a Time in Hollywood", accept:["once upon a time in hollywood", "il etait une fois a hollywood"], clean:"images/onceupon-clean.jpg", full:"images/onceupon.jpg"},
   {title:"Brazil", accept:["brazil"], clean:"images/brazil-clean.jpg", full:"images/brazil.jpg"},
@@ -561,7 +566,7 @@ const FILMS = [
   {title:"Le Dernier Samouraï", accept:["le dernier samourai"], clean:"images/derniersamourai-clean.jpg", full:"images/derniersamourai.jpg"},
   {title:"Didier", accept:["didier"], clean:"images/didier-clean.jpg", full:"images/didier.jpg"},
   {title:"Disco", accept:["disco"], clean:"images/disco-clean.jpg", full:"images/disco.jpg"},
-  {title:"Le Discours d'un roi", accept:["le discours d un roi", "the king s speech", "discours d un roi"], clean:"images/discours-clean.jpg", full:"images/discours.jpg"},
+  {title:"Le Discours d'un roi", accept:["le discours d un roi", "the king s speech"], clean:"images/discours-clean.jpg", full:"images/discours.jpg"},
   {title:"Donnie Darko", accept:["donnie darko"], clean:"images/donnie-clean.jpg", full:"images/donnie.jpg"},
   {title:"The Doors", accept:["the doors"], clean:"images/doors-clean.jpg", full:"images/doors.jpg"},
   {title:"Mrs. Doubtfire", accept:["mrs doubtfire", "madame doubtfire"], clean:"images/doubtfire-clean.jpg", full:"images/doubtfire.jpg"},

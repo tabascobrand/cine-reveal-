@@ -34,8 +34,10 @@
   .score-display { display: flex; flex-direction: column; align-items: flex-end; }
   .score-label { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gray); }
   .score-value { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--accent); line-height: 1; }
-  .progress-bar-wrap { width: 100%; height: 3px; background: var(--dim); flex-shrink: 0; }
-  .progress-bar-fill { height: 100%; background: var(--accent); transition: width 0.3s ease; }
+  .progress-bar-wrap { width: 100%; height: 5px; display: flex; gap: 3px; flex-shrink: 0; }
+  .progress-seg { flex: 1; height: 100%; background: var(--dim); border-radius: 1px; transition: background 0.3s ease; }
+  .progress-seg.pg-correct { background: #4caf6e; }
+  .progress-seg.pg-missed { background: #e2564f; }
   .game-area {
     width: 100%; max-width: 700px; padding: 16px 20px;
     display: flex; flex-direction: column; align-items: center; gap: 14px;
@@ -150,6 +152,10 @@
     transform: translate(-50%, -50%) scale(0.7);
   }
   .score-popup.show { animation: scorePop 1.1s cubic-bezier(.2,.9,.3,1) forwards; }
+  .score-popup-sub {
+    font-size: 0.22em; letter-spacing: 2px; opacity: 0.7;
+    margin-top: 4px; text-align: center;
+  }
   @keyframes scorePop {
     0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
     15%  { opacity: 1; transform: translate(-50%, -50%) scale(1.18); }
@@ -232,7 +238,7 @@
     <div class="score-value" id="headerScore">0</div>
   </div>
 </header>
-<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+<div class="progress-bar-wrap" id="progressBarWrap"></div>
 <div class="score-popup" id="scorePopup"></div>
 <div class="streak-fx" id="streakFX"></div>
 
@@ -353,6 +359,28 @@ function isFuzzyMatch(input,target){
   const dist=levenshtein(a,b);
   const maxDist=b.length<=5?1:b.length<=10?2:3;
   return dist<=maxDist?'fuzzy':false;
+}
+
+// Vérifie si l'input matche une des alias, soit dans son ensemble (comportement d'origine),
+// soit via l'un de ses mots pris isolément (permet de créditer "flamant" dans "flamant bleu")
+function matchesAnyAlias(inputRaw, aliases){
+  let matched=false, fuzzy=false;
+  for(const a of aliases){
+    const r=isFuzzyMatch(inputRaw,a);
+    if(r==='exact') return {matched:true, fuzzy:false};
+    if(r==='fuzzy'){ matched=true; fuzzy=true; }
+  }
+  const tokens=inputRaw.trim().split(/\s+/).filter(Boolean);
+  if(tokens.length>1){
+    for(const tok of tokens){
+      for(const a of aliases){
+        const r=isFuzzyMatch(tok,a);
+        if(r==='exact') return {matched:true, fuzzy:false};
+        if(r==='fuzzy'){ matched=true; fuzzy=true; }
+      }
+    }
+  }
+  return {matched, fuzzy};
 }
 
 // ── ANIMAUX ───────────────────────────────────────────────────────
@@ -541,16 +569,16 @@ function spawnHeavenWash(container){
 function triggerStreakCelebration(tier, bonus){
   const fx=document.getElementById('streakFX');
   if(tier===3){
-    showScorePopup('+'+bonus,'streak');
+    showScorePopup('+'+bonus,'streak','3/3');
     playGong();
     spawnGlow(fx,'rgba(255,106,61,0.35)',0);
   } else if(tier===6){
-    showScorePopup('+'+bonus,'streak');
+    showScorePopup('+'+bonus,'streak','6/6');
     playStreakSynth();
     spawnGlow(fx,'rgba(255,106,61,0.4)',0);
     spawnRing(fx,'#ff6a3d',0.05);
   } else if(tier===10){
-    showScorePopup('+'+bonus,'streak-heaven');
+    showScorePopup('+'+bonus,'streak-heaven','10/10');
     playChoir();
     spawnHeavenWash(fx);
   }
@@ -569,11 +597,27 @@ function handleStreakSuccess(){
 }
 function handleStreakBreak(){ streak=0; updateStreakIndicator(); }
 
+function initProgressSegments(){
+  const wrap=document.getElementById('progressBarWrap');
+  wrap.innerHTML='';
+  for(let i=0;i<SESSION_SIZE;i++){
+    const seg=document.createElement('div');
+    seg.className='progress-seg';
+    seg.id='progressSeg'+i;
+    wrap.appendChild(seg);
+  }
+}
+function markProgressSegment(index, correct){
+  const seg=document.getElementById('progressSeg'+index);
+  if(seg) seg.classList.add(correct?'pg-correct':'pg-missed');
+}
+
 function startGame(){
   document.getElementById('screenStart').classList.remove('active');
   document.getElementById('gameArea').style.display='flex';
   queue = getNextSession();
   currentIdx=0; totalScore=0; roundScores=[]; streak=0; updateStreakIndicator();
+  initProgressSegments();
   startSound();
   loadAnimal();
 }
@@ -595,7 +639,6 @@ function loadAnimal(){
   document.getElementById('feedback').textContent='';
   document.getElementById('feedback').className='feedback';
   document.getElementById('skipBtn').disabled=false;
-  document.getElementById('progressFill').style.width=(currentIdx/queue.length*100)+'%';
   document.getElementById('roundLabel').textContent=`ANIMAL ${currentIdx+1} / ${queue.length}`;
   document.getElementById('photoContainer').className='photo-container';
   document.getElementById('animalTitle').style.display='none';
@@ -663,6 +706,7 @@ function startReveal(){
       if(!answered){
         answered=true;
         handleStreakBreak();
+        markProgressSegment(currentIdx, false);
         playWrong();
         document.getElementById('photoImg').className='photo-img ready';
         const canvas=document.getElementById('revealCanvas');
@@ -722,6 +766,7 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       document.getElementById('headerScore').textContent=totalScore;
       showScorePopup('+'+(FIXED_DOUBLE*2+bonus)+' pts','green');
       handleStreakSuccess();
+      markProgressSegment(currentIdx, true);
       clearInterval(revealInterval); answered=true;
       inp.disabled=true; inp.className='correct';
       playCorrect();
@@ -741,15 +786,13 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
     }
 
     let matchedP1=false, matchedP2=false, fuzzy=false;
-    for(const a of animal.part1){
-      const r=isFuzzyMatch(inp.value,a);
-      if(r==='exact'){matchedP1=true;break;}
-      if(r==='fuzzy'){matchedP1=true;fuzzy=true;}
+    {
+      const r=matchesAnyAlias(inp.value, animal.part1);
+      matchedP1=r.matched; if(r.fuzzy) fuzzy=true;
     }
-    for(const a of animal.part2){
-      const r=isFuzzyMatch(inp.value,a);
-      if(r==='exact'){matchedP2=true;fuzzy=false;break;}
-      if(r==='fuzzy'){matchedP2=true;fuzzy=true;}
+    {
+      const r=matchesAnyAlias(inp.value, animal.part2);
+      matchedP2=r.matched; if(r.fuzzy) fuzzy=true;
     }
 
     if(!matchedP1 && !matchedP2){ triggerWrong(inp); return; }
@@ -803,6 +846,7 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       document.getElementById('headerScore').textContent=totalScore;
       showScorePopup('+'+(FIXED_DOUBLE*2+bonus)+' pts','green');
       handleStreakSuccess();
+      markProgressSegment(currentIdx, true);
       clearInterval(revealInterval); answered=true;
       inp.disabled=true; inp.className='correct';
       playCorrect();
@@ -822,13 +866,13 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
   }
 });
 
-function showScorePopup(text, variant){
+function showScorePopup(text, variant, sublabel){
   const el=document.getElementById('scorePopup');
   el.classList.remove('show');
   el.style.animationDuration='';
   el.style.fontSize='';
   void el.offsetWidth;
-  el.textContent=text;
+  el.innerHTML = sublabel ? (text+'<div class="score-popup-sub">'+sublabel+'</div>') : text;
   if(variant==='orange'){
     el.style.color='#f5a623';
     el.style.textShadow='0 0 24px rgba(245,166,35,0.65), 0 2px 6px rgba(0,0,0,0.85)';
@@ -858,6 +902,7 @@ function triggerCorrectSimple(animal,inp,wasFuzzy){
   totalScore+=earned;
   showScorePopup('+'+earned+' pts');
   handleStreakSuccess();
+  markProgressSegment(currentIdx, true);
   inp.className='correct'; inp.disabled=true;
   playCorrect();
   const pc=document.getElementById('photoContainer');
@@ -878,7 +923,6 @@ function triggerCorrectSimple(animal,inp,wasFuzzy){
 
 function triggerWrong(inp){
   playWrong(); inp.className='wrong'; inp.select();
-  handleStreakBreak();
   const pc=document.getElementById('photoContainer');
   pc.classList.add('flash-wrong','shaking');
   pc.addEventListener('animationend',()=>pc.classList.remove('shaking','flash-wrong'),{once:true});
@@ -891,6 +935,7 @@ function skipAnimal(){
   if(answered) return;
   clearInterval(revealInterval); answered=true;
   handleStreakBreak();
+  markProgressSegment(currentIdx, false);
   playWrong();
   const animal=queue[currentIdx];
   const pts=(part1Found?FIXED_DOUBLE:0)+(part2Found?FIXED_DOUBLE:0);
@@ -911,7 +956,6 @@ function nextAnimal(){ currentIdx++; if(currentIdx>=queue.length) endGame(); els
 function endGame(){
   clearInterval(revealInterval);
   document.getElementById('gameArea').style.display='none';
-  document.getElementById('progressFill').style.width='100%';
   document.body.classList.add('score-visible');
   document.getElementById('screenEnd').classList.add('active');
   window.scrollTo(0,0);
@@ -935,6 +979,7 @@ function restartGame(){
   document.getElementById('headerScore').textContent='0';
   document.getElementById('gameArea').style.display='flex';
   queue=getNextSession(); currentIdx=0; totalScore=0; roundScores=[]; streak=0; updateStreakIndicator();
+  initProgressSegments();
   startSound();
   loadAnimal();
 }

@@ -31,8 +31,10 @@
   .score-display { display: flex; flex-direction: column; align-items: flex-end; }
   .score-label { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gray); }
   .score-value { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold); line-height: 1; }
-  .progress-bar-wrap { width: 100%; height: 3px; background: var(--dim); }
-  .progress-bar-fill { height: 100%; background: var(--gold); transition: width 0.3s ease; }
+  .progress-bar-wrap { width: 100%; height: 5px; display: flex; gap: 3px; }
+  .progress-seg { flex: 1; height: 100%; background: var(--dim); border-radius: 1px; transition: background 0.3s ease; }
+  .progress-seg.pg-correct { background: #4caf6e; }
+  .progress-seg.pg-missed { background: #e2564f; }
   .game-area {
     width: 100%; max-width: 700px; padding: 16px 20px 16px;
     display: flex; flex-direction: column; align-items: center; gap: 14px;
@@ -136,6 +138,10 @@
     transform: translate(-50%, -50%) scale(0.7);
   }
   .score-popup.show { animation: scorePop 1.1s cubic-bezier(.2,.9,.3,1) forwards; }
+  .score-popup-sub {
+    font-size: 0.22em; letter-spacing: 2px; opacity: 0.7;
+    margin-top: 4px; text-align: center;
+  }
   @keyframes scorePop {
     0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
     15%  { opacity: 1; transform: translate(-50%, -50%) scale(1.18); }
@@ -218,7 +224,7 @@
     <div class="score-value" id="headerScore">0</div>
   </div>
 </header>
-<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+<div class="progress-bar-wrap" id="progressBarWrap"></div>
 <div class="score-popup" id="scorePopup"></div>
 <div class="streak-fx" id="streakFX"></div>
 
@@ -694,12 +700,12 @@ let queue,currentIdx,totalScore,roundScores,revealPct=0,revealInterval=null,curr
 const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=100;
 const SESSION_SIZE = 10;
 
-function showScorePopup(text, variant){
+function showScorePopup(text, variant, sublabel){
   const el=document.getElementById('scorePopup');
   el.classList.remove('show');
   el.style.animationDuration='';
   void el.offsetWidth;
-  el.textContent=text;
+  el.innerHTML = sublabel ? (text+'<div class="score-popup-sub">'+sublabel+'</div>') : text;
   if(variant==='streak'){
     el.style.color='#ff6a3d';
     el.style.textShadow='0 0 30px rgba(255,106,61,0.8), 0 3px 10px rgba(0,0,0,0.9)';
@@ -816,16 +822,16 @@ function spawnHeavenWash(container){
 function triggerStreakCelebration(tier, bonus){
   const fx=document.getElementById('streakFX');
   if(tier===3){
-    showScorePopup('+'+bonus,'streak');
+    showScorePopup('+'+bonus,'streak','3/3');
     playGong();
     spawnGlow(fx,'rgba(255,106,61,0.35)',0);
   } else if(tier===6){
-    showScorePopup('+'+bonus,'streak');
+    showScorePopup('+'+bonus,'streak','6/6');
     playStreakSynth();
     spawnGlow(fx,'rgba(255,106,61,0.4)',0);
     spawnRing(fx,'#ff6a3d',0.05);
   } else if(tier===10){
-    showScorePopup('+'+bonus,'streak-heaven');
+    showScorePopup('+'+bonus,'streak-heaven','10/10');
     playChoir();
     spawnHeavenWash(fx);
   }
@@ -857,11 +863,27 @@ function getNextSession(){
   return session;
 }
 
+function initProgressSegments(){
+  const wrap=document.getElementById('progressBarWrap');
+  wrap.innerHTML='';
+  for(let i=0;i<SESSION_SIZE;i++){
+    const seg=document.createElement('div');
+    seg.className='progress-seg';
+    seg.id='progressSeg'+i;
+    wrap.appendChild(seg);
+  }
+}
+function markProgressSegment(index, correct){
+  const seg=document.getElementById('progressSeg'+index);
+  if(seg) seg.classList.add(correct?'pg-correct':'pg-missed');
+}
+
 function startGame(){
   document.getElementById('screenStart').classList.remove('active');
   document.getElementById('gameArea').style.display='flex';
   queue = getNextSession();
   currentIdx=0; totalScore=0; roundScores=[]; streak=0; updateStreakIndicator();
+  initProgressSegments();
   startForest();
   loadFilm();
 }
@@ -887,7 +909,6 @@ function loadFilm(){
   document.getElementById('feedback').textContent='';
   document.getElementById('feedback').className='feedback';
   document.getElementById('skipBtn').disabled=false;
-  document.getElementById('progressFill').style.width=(currentIdx/queue.length*100)+'%';
   document.getElementById('roundLabel').textContent=`AFFICHE ${currentIdx+1} / ${queue.length}`;
   document.getElementById('posterContainer').className='poster-container';
   function onReady(){
@@ -936,6 +957,7 @@ function startReveal(){
       if(!answered){
         answered=true;
         handleStreakBreak();
+        markProgressSegment(currentIdx, false);
         playWrong();
         showFullPoster();
         document.getElementById('filmTitle').textContent=queue[currentIdx].title;
@@ -994,6 +1016,7 @@ function triggerCorrect(film,inp,wasFuzzy){
   const earned=currentPts; totalScore+=earned;
   showScorePopup('+'+earned+' pts');
   handleStreakSuccess();
+  markProgressSegment(currentIdx, true);
   roundScores.push({title:film.title,pts:earned,fuzzy:wasFuzzy});
   const fb=document.getElementById('feedback');
   fb.textContent='';
@@ -1005,7 +1028,6 @@ function triggerCorrect(film,inp,wasFuzzy){
 
 function triggerWrong(inp){
   playWrong(); inp.className='wrong'; inp.select();
-  handleStreakBreak();
   const pc=document.getElementById('posterContainer');
   pc.classList.add('flash-wrong','shaking');
   pc.addEventListener('animationend',()=>pc.classList.remove('shaking','flash-wrong'),{once:true});
@@ -1018,6 +1040,7 @@ function skipFilm(){
   if(answered) return;
   clearInterval(revealInterval); answered=true;
   handleStreakBreak();
+  markProgressSegment(currentIdx, false);
   playWrong();
   roundScores.push({title:queue[currentIdx].title,pts:0,skipped:true});
   showFullPoster();
@@ -1035,7 +1058,6 @@ function nextFilm(){ currentIdx++; if(currentIdx>=queue.length) endGame(); else 
 function endGame(){
   clearInterval(revealInterval);
   document.getElementById('gameArea').style.display='none';
-  document.getElementById('progressFill').style.width='100%';
   document.body.classList.add('score-visible');
   document.getElementById('screenEnd').classList.add('active');
   window.scrollTo(0,0);
@@ -1058,6 +1080,7 @@ function restartGame(){
   document.getElementById('gameArea').style.display='flex';
   queue = getNextSession();
   currentIdx=0; totalScore=0; roundScores=[]; streak=0; updateStreakIndicator();
+  initProgressSegments();
   startForest();
   loadFilm();
 }

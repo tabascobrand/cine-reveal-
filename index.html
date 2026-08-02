@@ -113,23 +113,33 @@
         ctx.clearRect(cx-w*f/2, cy-h*f/2, w*f, h*f);
       }
 
-      fitTitleWidth();
-      sizeCanvas();
-      draw(0);
-
-      setTimeout(function(){
+      function init(){
         fitTitleWidth();
         sizeCanvas();
-        const duration = 3000;
-        const start = performance.now();
-        function step(now){
-          const t = Math.min(1, (now-start)/duration);
-          const eased = t*t*(3-2*t); // smoothstep : ouverture régulière sur toute la durée
-          draw(eased);
-          if(t < 1) requestAnimationFrame(step);
-        }
-        requestAnimationFrame(step);
-      }, 500);
+        draw(0);
+
+        setTimeout(function(){
+          fitTitleWidth();
+          sizeCanvas();
+          const duration = 3000;
+          const start = performance.now();
+          function step(now){
+            const t = Math.min(1, (now-start)/duration);
+            const eased = t*t*(3-2*t); // smoothstep : ouverture régulière sur toute la durée
+            draw(eased);
+            if(t < 1) requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+        }, 500);
+      }
+
+      // On attend que la police Bebas Neue soit réellement chargée avant de mesurer quoi que ce soit,
+      // sinon le calcul se base sur la police de secours (largeur différente) et fausse tout.
+      if(document.fonts && document.fonts.ready){
+        document.fonts.ready.then(init);
+      } else {
+        init();
+      }
     })();
   </script>
 </body>

@@ -116,7 +116,9 @@
     padding: 10px 14px; background: var(--panel); border-left: 3px solid var(--dim); font-size: 0.85rem;
   }
   .breakdown-row.scored { border-left-color: var(--gold); }
+  .breakdown-row.missed { border-left-color: var(--red); }
   .breakdown-row .pts { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--gold); }
+  .breakdown-row.missed .pts { color: var(--red); }
   @keyframes shake {
     0%,100%{ transform:translateX(0); } 15%{ transform:translateX(-7px); }
     30%{ transform:translateX(7px); } 45%{ transform:translateX(-5px); }
@@ -1065,7 +1067,7 @@ function endGame(){
   document.getElementById('endTitle').textContent=totalScore+' pts';
   document.getElementById('endSub').textContent='';
   document.getElementById('breakdown').innerHTML=roundScores.map(r=>`
-    <div class="breakdown-row ${r.pts>0?'scored':''}">
+    <div class="breakdown-row ${r.pts>0?'scored':'missed'}">
       <span>${r.title}${r.fuzzy?' <span style="color:#f5a623;font-size:0.7em">~</span>':''}</span>
       <span class="pts">${r.pts>0?'+'+r.pts:r.skipped?'PASSÉ':'MANQUÉ'}</span>
     </div>`).join('');

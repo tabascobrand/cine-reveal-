@@ -21,8 +21,8 @@
   }
   .title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(3.6rem, 15vw, 4.9rem); letter-spacing: 8px;
-    color: var(--white);
+    font-size: 4rem; letter-spacing: 0.13em;
+    color: var(--white); white-space: nowrap;
   }
   .title-wrap {
     position: relative; width: 100%; max-width: 360px;
@@ -84,9 +84,19 @@
   </div>
   <script>
     (function(){
+      const wrap = document.getElementById('titleWrap');
       const canvas = document.getElementById('titleMask');
       const titleEl = document.querySelector('.title');
       const ctx = canvas.getContext('2d');
+
+      // Ajuste la taille du titre pour qu'il fasse pile la même largeur que les boutons
+      function fitTitleWidth(){
+        const targetWidth = wrap.clientWidth;
+        titleEl.style.fontSize = '60px';
+        const measuredWidth = titleEl.offsetWidth;
+        const scale = targetWidth / measuredWidth;
+        titleEl.style.fontSize = (60 * scale) + 'px';
+      }
 
       function sizeCanvas(){
         canvas.width = titleEl.offsetWidth;
@@ -103,21 +113,23 @@
         ctx.clearRect(cx-w*f/2, cy-h*f/2, w*f, h*f);
       }
 
+      fitTitleWidth();
       sizeCanvas();
       draw(0);
 
       setTimeout(function(){
-        sizeCanvas(); // re-synchro au cas où la police viendrait de finir de charger
+        fitTitleWidth();
+        sizeCanvas();
         const duration = 3000;
         const start = performance.now();
         function step(now){
           const t = Math.min(1, (now-start)/duration);
-          const eased = 1 - Math.pow(1-t, 3); // ease-out
+          const eased = t*t*(3-2*t); // smoothstep : ouverture régulière sur toute la durée
           draw(eased);
           if(t < 1) requestAnimationFrame(step);
         }
         requestAnimationFrame(step);
-      }, 1000);
+      }, 500);
     })();
   </script>
 </body>

@@ -444,7 +444,7 @@ let bonusCaptured = false, currentBonus = BONUS_MAX;
 let part1Found = false, part2Found = false;
 // Série de bonnes réponses consécutives
 let streak = 0;
-const STREAK_BONUSES = {3:220, 6:700, 10:3000};
+const STREAK_BONUSES = {3:220, 6:440, 10:2000};
 
 // ── Indicateur de série, collé au cadre de la photo ──
 function updateStreakIndicator(){
@@ -558,12 +558,13 @@ function triggerStreakCelebration(tier, bonus){
 
 function handleStreakSuccess(){
   streak++;
+  const streakAtThisAnswer = streak; // figé immédiatement, insensible aux réponses suivantes
   updateStreakIndicator();
-  const bonus = STREAK_BONUSES[streak];
+  const bonus = STREAK_BONUSES[streakAtThisAnswer];
   if(bonus){
     totalScore+=bonus;
     document.getElementById('headerScore').textContent=totalScore;
-    setTimeout(()=>{ triggerStreakCelebration(streak, bonus); }, 650);
+    setTimeout(()=>{ triggerStreakCelebration(streakAtThisAnswer, bonus); }, 650);
   }
 }
 function handleStreakBreak(){ streak=0; updateStreakIndicator(); }

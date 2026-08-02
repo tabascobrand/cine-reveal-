@@ -22,8 +22,10 @@
   .title {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 4rem; letter-spacing: 10px;
-    color: var(--white); margin-bottom: 8px;
+    color: var(--white);
   }
+  .title-wrap { position: relative; display: inline-block; margin-bottom: 8px; }
+  #titleMask { position: absolute; top: 0; left: 0; pointer-events: none; }
   .subtitle {
     font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
     color: var(--gray); margin-bottom: 56px;
@@ -55,7 +57,10 @@
 </style>
 </head>
 <body>
-  <div class="title">REVEAL</div>
+  <div class="title-wrap" id="titleWrap">
+    <div class="title">REVEAL</div>
+    <canvas id="titleMask"></canvas>
+  </div>
   <div class="cards">
     <a class="card" href="cine.html">
       <div class="card-name">CINÉ REVEAL</div>
@@ -73,5 +78,43 @@
       <div class="card-name">OBJET REVEAL</div>
     </div>
   </div>
+  <script>
+    (function(){
+      const canvas = document.getElementById('titleMask');
+      const titleEl = document.querySelector('.title');
+      const ctx = canvas.getContext('2d');
+
+      function sizeCanvas(){
+        canvas.width = titleEl.offsetWidth;
+        canvas.height = titleEl.offsetHeight;
+      }
+
+      function draw(frac){
+        const w = canvas.width, h = canvas.height;
+        ctx.clearRect(0,0,w,h);
+        ctx.fillStyle = '#0a0a0f';
+        ctx.fillRect(0,0,w,h);
+        const cx=w/2, cy=h/2;
+        const f = 0.02 + (1-0.02)*frac;
+        ctx.clearRect(cx-w*f/2, cy-h*f/2, w*f, h*f);
+      }
+
+      sizeCanvas();
+      draw(0);
+
+      setTimeout(function(){
+        sizeCanvas(); // re-synchro au cas où la police viendrait de finir de charger
+        const duration = 3000;
+        const start = performance.now();
+        function step(now){
+          const t = Math.min(1, (now-start)/duration);
+          const eased = 1 - Math.pow(1-t, 3); // ease-out
+          draw(eased);
+          if(t < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }, 1000);
+    })();
+  </script>
 </body>
 </html>

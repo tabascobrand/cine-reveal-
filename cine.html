@@ -140,6 +140,17 @@
     font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--gray);
   }
 
+  /* ── Mise en page deux colonnes de l'écran de fin (résultats / classement) ── */
+  .end-columns {
+    display: flex; gap: 36px; width: 100%; max-width: 1000px;
+    align-items: flex-start;
+  }
+  .end-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+  .end-col-leaderboard .leaderboard-preview { margin-top: 0; max-width: 100%; }
+  @media (max-width: 760px) {
+    .end-columns { flex-direction: column; }
+  }
+
   .final-breakdown { width: 100%; display: flex; flex-direction: column; gap: 8px; }
   .breakdown-row {
     display: flex; justify-content: space-between; align-items: center;
@@ -307,15 +318,21 @@
 <div class="screen" id="screenEnd">
   <div class="screen-title" id="endTitle">RÉSULTAT</div>
   <div class="screen-sub" id="endSub"></div>
-  <div class="final-breakdown" id="breakdown"></div>
-  <div class="leaderboard-preview">
-    <div class="leaderboard-title">CLASSEMENT MONDIAL</div>
-    <div class="leaderboard-soon">Bientôt disponible</div>
-    <div class="leaderboard-row"><span class="leaderboard-rank">1</span><span class="leaderboard-name">BAZOOKA12</span><span class="leaderboard-score">8420</span></div>
-    <div class="leaderboard-row"><span class="leaderboard-rank">2</span><span class="leaderboard-name">LUCIE_R</span><span class="leaderboard-score">7150</span></div>
-    <div class="leaderboard-row"><span class="leaderboard-rank">3</span><span class="leaderboard-name">MAXPLAYER</span><span class="leaderboard-score">6800</span></div>
-    <div class="leaderboard-row"><span class="leaderboard-rank">4</span><span class="leaderboard-name">NOVA</span><span class="leaderboard-score">5990</span></div>
-    <div class="leaderboard-row"><span class="leaderboard-rank">5</span><span class="leaderboard-name">ZEPHYR</span><span class="leaderboard-score">5410</span></div>
+  <div class="end-columns">
+    <div class="end-col end-col-results">
+      <div class="final-breakdown" id="breakdown"></div>
+    </div>
+    <div class="end-col end-col-leaderboard">
+      <div class="leaderboard-preview">
+        <div class="leaderboard-title">CLASSEMENT MONDIAL</div>
+        <div class="leaderboard-soon">Bientôt disponible</div>
+        <div class="leaderboard-row"><span class="leaderboard-rank">1</span><span class="leaderboard-name">BAZOOKA12</span><span class="leaderboard-score">8420</span></div>
+        <div class="leaderboard-row"><span class="leaderboard-rank">2</span><span class="leaderboard-name">LUCIE_R</span><span class="leaderboard-score">7150</span></div>
+        <div class="leaderboard-row"><span class="leaderboard-rank">3</span><span class="leaderboard-name">MAXPLAYER</span><span class="leaderboard-score">6800</span></div>
+        <div class="leaderboard-row"><span class="leaderboard-rank">4</span><span class="leaderboard-name">NOVA</span><span class="leaderboard-score">5990</span></div>
+        <div class="leaderboard-row"><span class="leaderboard-rank">5</span><span class="leaderboard-name">ZEPHYR</span><span class="leaderboard-score">5410</span></div>
+      </div>
+    </div>
   </div>
   <button class="btn-primary" onclick="restartGame()">REJOUER</button>
 </div>

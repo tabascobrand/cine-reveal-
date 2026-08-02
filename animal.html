@@ -121,31 +121,42 @@
 
   /* ── Leaderboard (aperçu grisé, non fonctionnel) ── */
   .leaderboard-preview {
-    width: 100%; max-width: 340px; margin-top: 40px;
+    width: 100%; max-width: 440px; margin-top: 44px;
     opacity: 0.5; pointer-events: none; user-select: none;
   }
   .leaderboard-title {
-    font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; letter-spacing: 4px;
-    text-align: center; color: var(--gray); margin-bottom: 4px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 4px;
+    text-align: center; color: var(--gray); margin-bottom: 6px;
   }
   .leaderboard-soon {
-    font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase;
-    text-align: center; color: var(--gray); margin-bottom: 14px;
+    font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase;
+    text-align: center; color: var(--gray); margin-bottom: 18px;
   }
   .leaderboard-row {
-    display: flex; align-items: center; gap: 10px;
-    padding: 8px 12px; background: var(--panel); border-left: 3px solid var(--dim);
-    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 16px; background: var(--panel); border-left: 3px solid var(--dim);
+    margin-bottom: 8px;
   }
   .leaderboard-rank {
-    font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: var(--gray); width: 16px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--gray); width: 22px;
   }
   .leaderboard-name {
     flex: 1; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;
-    font-size: 0.85rem; color: var(--white);
+    font-size: 1.05rem; color: var(--white);
   }
   .leaderboard-score {
-    font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; color: var(--gray);
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--gray);
+  }
+
+  /* ── Mise en page deux colonnes de l'écran de fin (résultats / classement) ── */
+  .end-columns {
+    display: flex; gap: 36px; width: 100%; max-width: 1000px;
+    align-items: flex-start;
+  }
+  .end-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+  .end-col-leaderboard .leaderboard-preview { margin-top: 0; max-width: 100%; }
+  @media (max-width: 760px) {
+    .end-columns { flex-direction: column; }
   }
 
   .final-breakdown { width: 100%; display: flex; flex-direction: column; gap: 8px; }
@@ -326,7 +337,22 @@
 <div class="screen" id="screenEnd">
   <div class="screen-title" id="endTitle">RÉSULTAT</div>
   <div class="screen-sub" id="endSub"></div>
-  <div class="final-breakdown" id="breakdown"></div>
+  <div class="end-columns">
+    <div class="end-col end-col-results">
+      <div class="final-breakdown" id="breakdown"></div>
+    </div>
+    <div class="end-col end-col-leaderboard">
+      <div class="leaderboard-preview">
+        <div class="leaderboard-title">CLASSEMENT MONDIAL</div>
+        <div class="leaderboard-soon">Bientôt disponible</div>
+        <div class="leaderboard-row"><span class="leaderboard-rank">1</span><span class="leaderboard-name">BAZOOKA12</span><span class="leaderboard-score">8420</span></div>
+        <div class="leaderboard-row"><span class="leaderboard-rank">2</span><span class="leaderboard-name">LUCIE_R</span><span class="leaderboard-score">7150</span></div>
+        <div class="leaderboard-row"><span class="leaderboard-rank">3</span><span class="leaderboard-name">MAXPLAYER</span><span class="leaderboard-score">6800</span></div>
+        <div class="leaderboard-row"><span class="leaderboard-rank">4</span><span class="leaderboard-name">NOVA</span><span class="leaderboard-score">5990</span></div>
+        <div class="leaderboard-row"><span class="leaderboard-rank">5</span><span class="leaderboard-name">ZEPHYR</span><span class="leaderboard-score">5410</span></div>
+      </div>
+    </div>
+  </div>
   <button class="btn-primary" onclick="restartGame()">REJOUER</button>
 </div>
 

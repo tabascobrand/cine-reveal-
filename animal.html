@@ -38,6 +38,7 @@
   .progress-seg { flex: 1; height: 100%; background: var(--dim); border-radius: 1px; transition: background 0.3s ease; }
   .progress-seg.pg-correct { background: #4caf6e; }
   .progress-seg.pg-missed { background: #e2564f; }
+  .progress-seg.pg-partial { background: var(--orange); }
   .game-area {
     width: 100%; max-width: 700px; padding: 16px 20px;
     display: flex; flex-direction: column; align-items: center; gap: 14px;
@@ -607,9 +608,11 @@ function initProgressSegments(){
     wrap.appendChild(seg);
   }
 }
-function markProgressSegment(index, correct){
+function markProgressSegment(index, status){
   const seg=document.getElementById('progressSeg'+index);
-  if(seg) seg.classList.add(correct?'pg-correct':'pg-missed');
+  if(!seg) return;
+  if(status==='partial') seg.classList.add('pg-partial');
+  else seg.classList.add(status?'pg-correct':'pg-missed');
 }
 
 function startGame(){
@@ -706,7 +709,7 @@ function startReveal(){
       if(!answered){
         answered=true;
         handleStreakBreak();
-        markProgressSegment(currentIdx, false);
+        markProgressSegment(currentIdx, (part1Found||part2Found) ? 'partial' : false);
         playWrong();
         document.getElementById('photoImg').className='photo-img ready';
         const canvas=document.getElementById('revealCanvas');
@@ -771,6 +774,7 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       inp.disabled=true; inp.className='correct';
       playCorrect();
       const pc=document.getElementById('photoContainer');
+      pc.classList.remove('flash-half');
       pc.classList.add('flash-correct','correct-flash');
       document.getElementById('photoImg').className='photo-img ready';
       const canvas=document.getElementById('revealCanvas');
@@ -809,10 +813,9 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       if(firstFound) showScorePopup('+'+earned+' pts','orange');
       playHalf();
       inp.value=''; inp.className='half';
-      setTimeout(()=>{inp.className='';},600);
       const pc=document.getElementById('photoContainer');
       pc.classList.add('flash-half','half-flash');
-      setTimeout(()=>pc.classList.remove('half-flash','flash-half'),700);
+      setTimeout(()=>pc.classList.remove('half-flash'),700);
       document.getElementById('feedback').textContent='';
       document.getElementById('feedback').className='feedback half';
       document.getElementById('animalTitle').textContent='(50 / 100 pts)';
@@ -827,10 +830,9 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       document.getElementById('headerScore').textContent=totalScore;
       if(firstFound) showScorePopup('+'+earned+' pts','orange');
       inp.value=''; inp.className='half';
-      setTimeout(()=>{inp.className='';},600);
       const pc=document.getElementById('photoContainer');
       pc.classList.add('flash-half','half-flash');
-      setTimeout(()=>pc.classList.remove('half-flash','flash-half'),700);
+      setTimeout(()=>pc.classList.remove('half-flash'),700);
       document.getElementById('feedback').textContent='';
       document.getElementById('feedback').className='feedback half';
       document.getElementById('animalTitle').textContent='(50 / 100 pts)';
@@ -851,6 +853,7 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
       inp.disabled=true; inp.className='correct';
       playCorrect();
       const pc=document.getElementById('photoContainer');
+      pc.classList.remove('flash-half');
       pc.classList.add('flash-correct','correct-flash');
       document.getElementById('photoImg').className='photo-img ready';
       const canvas=document.getElementById('revealCanvas');
@@ -935,7 +938,7 @@ function skipAnimal(){
   if(answered) return;
   clearInterval(revealInterval); answered=true;
   handleStreakBreak();
-  markProgressSegment(currentIdx, false);
+  markProgressSegment(currentIdx, (part1Found||part2Found) ? 'partial' : false);
   playWrong();
   const animal=queue[currentIdx];
   const pts=(part1Found?FIXED_DOUBLE:0)+(part2Found?FIXED_DOUBLE:0);

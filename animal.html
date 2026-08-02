@@ -965,7 +965,7 @@ function endGame(){
   const maxPossible = queue.reduce((s,a)=>s+(a.part2?FIXED_DOUBLE*2:FIXED_SIMPLE)+BONUS_MAX,0);
   const pct=Math.round((totalScore/maxPossible)*100);
   document.getElementById('endTitle').textContent=totalScore+' pts';
-  document.getElementById('endSub').textContent=pct>=80?'Expert en faune !':pct>=50?'Pas mal…':'';
+  document.getElementById('endSub').textContent='';
   document.getElementById('breakdown').innerHTML=roundScores.map(r=>{
     const rowClass = r.pts>0&&!r.partial ? 'scored' : r.partial ? 'half-scored' : '';
     const ptsDisplay = r.skipped ? 'PASSÉ' : r.missed&&r.pts===0 ? 'MANQUÉ' : `+${r.pts+(r.bonus||0)}`;

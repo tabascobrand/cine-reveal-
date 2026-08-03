@@ -110,9 +110,10 @@
         ctx.clearRect(0,0,w,h);
         ctx.fillStyle = '#0a0a0f';
         ctx.fillRect(0,0,w,h);
-        const cx=w/2, cy=h/2;
-        const f = frac;
-        ctx.clearRect(cx-w*f/2, cy-h*f/2, w*f, h*f);
+        // Rideau qui s'ouvre horizontalement depuis le centre, pleine hauteur à chaque instant
+        const revealWidth = w * frac;
+        const x0 = (w - revealWidth) / 2;
+        ctx.clearRect(x0, 0, revealWidth, h);
       }
 
       function init(){

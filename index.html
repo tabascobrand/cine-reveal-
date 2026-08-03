@@ -21,7 +21,7 @@
   }
   .title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 4rem; letter-spacing: 0.13em;
+    font-size: 4rem; letter-spacing: 0.13em; line-height: 1;
     color: var(--white); white-space: nowrap;
   }
   .title-wrap {
@@ -121,7 +121,7 @@
         setTimeout(function(){
           fitTitleWidth();
           sizeCanvas();
-          const duration = 3000;
+          const duration = 1300;
           const start = performance.now();
           function step(now){
             const t = Math.min(1, (now-start)/duration);
@@ -130,7 +130,7 @@
             if(t < 1) requestAnimationFrame(step);
           }
           requestAnimationFrame(step);
-        }, 500);
+        }, 150);
       }
 
       // On attend que la police Bebas Neue soit réellement chargée avant de mesurer quoi que ce soit,

@@ -29,6 +29,7 @@
     margin: 0 auto 24px; text-align: center;
   }
   #titleMask { position: absolute; top: 0; left: 0; pointer-events: none; }
+  .title-cover { position: absolute; inset: 0; background: var(--bg); }
   .subtitle {
     font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
     color: var(--gray); margin-bottom: 56px;
@@ -63,6 +64,7 @@
 <body>
   <div class="title-wrap" id="titleWrap">
     <div class="title">REVEAL</div>
+    <div class="title-cover" id="titleCover"></div>
     <canvas id="titleMask"></canvas>
   </div>
   <div class="cards">
@@ -117,6 +119,7 @@
         fitTitleWidth();
         sizeCanvas();
         draw(0);
+        document.getElementById('titleCover').style.display = 'none'; // le canvas prend le relais, déjà fermé à l'identique
 
         setTimeout(function(){
           fitTitleWidth();

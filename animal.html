@@ -477,6 +477,20 @@ async function submitLeaderboardScore(){
 }
 
 loadLeaderboard();
+
+// Entrée dans le pseudo ou le code secret = clic sur VALIDER
+['leaderboardName', 'leaderboardSecret'].forEach(id => {
+  const field = document.getElementById(id);
+  if (field) {
+    field.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        submitLeaderboardScore();
+      }
+    });
+  }
+});
+
 const AC = new (window.AudioContext || window.webkitAudioContext)();
 
 function playWrong() {

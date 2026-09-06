@@ -136,8 +136,9 @@
     font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--gray); width: 22px;
   }
   .leaderboard-name {
-    flex: 1; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;
+    flex: 1; min-width: 0; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;
     font-size: 1.05rem; color: var(--white);
+    white-space: normal; overflow-wrap: anywhere; word-break: break-word;
   }
   .leaderboard-score {
     font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--accent);
@@ -361,9 +362,9 @@
       <div class="leaderboard-preview">
         <div class="leaderboard-title">CLASSEMENT MONDIAL</div>
         <div class="leaderboard-submit">
-          <input id="leaderboardName" type="text" maxlength="20" placeholder="TON PSEUDO" autocomplete="off" spellcheck="false">
+          <input id="leaderboardName" type="text" maxlength="19" placeholder="TON PSEUDO" autocomplete="off" spellcheck="false">
           <div class="leaderboard-secret-wrap">
-            <input id="leaderboardSecret" type="password" maxlength="30" placeholder="CODE SECRET — 4 CARACTÈRES MIN." autocomplete="off" spellcheck="false">
+            <input id="leaderboardSecret" type="password" maxlength="30" placeholder="****" autocomplete="off" spellcheck="false">
             <div class="leaderboard-secret-note">À CONSERVER POUR METTRE LE SCORE À JOUR</div>
           </div>
           <button id="leaderboardSubmitBtn" type="button" onclick="submitLeaderboardScore()">VALIDER</button>
@@ -429,8 +430,8 @@ async function submitLeaderboardScore(){
   const playerName=(input?.value||'').trim();
   const secret=(secretInput?.value||'').trim();
 
-  if(playerName.length<2 || playerName.length>20 || !/^[a-zA-Z0-9À-ÿ _.-]+$/.test(playerName)){
-    if(status) status.textContent='PSEUDO : 2 À 20 CARACTÈRES';
+  if(playerName.length<1 || playerName.length>19 || !/^[a-zA-Z0-9À-ÿ _.-]+$/.test(playerName)){
+    if(status) status.textContent='PSEUDO : 1 À 19 CARACTÈRES';
     return;
   }
   if(secret.length<4 || secret.length>30){

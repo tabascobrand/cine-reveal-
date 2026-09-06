@@ -146,6 +146,13 @@
     color: var(--white); font-family: 'Inter', sans-serif; padding: 11px 12px; outline: none;
   }
   .leaderboard-submit input:focus { border-color: var(--gold); }
+  .leaderboard-secret-wrap {
+    flex: 1 1 150px; min-width: 0; display: flex; flex-direction: column; gap: 4px;
+  }
+  .leaderboard-secret-wrap input { width: 100%; flex: none; }
+  .leaderboard-secret-note {
+    color: var(--gray); font-size: 0.56rem; letter-spacing: 0.7px; text-align: left;
+  }
   .leaderboard-submit button {
     background: var(--gold); color: #000; border: 0; padding: 0 18px;
     font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 2px; cursor: pointer;
@@ -347,7 +354,10 @@
         <div class="leaderboard-title">CLASSEMENT MONDIAL</div>
         <div class="leaderboard-submit">
           <input id="leaderboardName" type="text" maxlength="20" placeholder="TON PSEUDO" autocomplete="off" spellcheck="false">
-          <input id="leaderboardSecret" type="password" maxlength="30" placeholder="CODE SECRET" autocomplete="off" spellcheck="false">
+          <div class="leaderboard-secret-wrap">
+            <input id="leaderboardSecret" type="password" maxlength="30" placeholder="CODE SECRET — 4 CARACTÈRES MIN." autocomplete="off" spellcheck="false">
+            <div class="leaderboard-secret-note">À CONSERVER POUR METTRE LE SCORE À JOUR</div>
+          </div>
           <button id="leaderboardSubmitBtn" type="button" onclick="submitLeaderboardScore()">VALIDER</button>
         </div>
         <div class="leaderboard-status" id="leaderboardStatus"></div>

@@ -5,6 +5,7 @@
 <link rel="icon" type="image/png" href="favicon.ico.cine.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CINÉ REVEAL — Devine l'affiche</title>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -160,6 +161,10 @@
   }
   .leaderboard-status {
     min-height: 18px; color: var(--gray); font-size: 0.7rem; letter-spacing: 1px; text-align: center;
+  }
+
+  .turnstile-wrap {
+    width: 100%; max-width: 440px; display: flex; justify-content: center;
   }
 
   /* ── Mise en page deux colonnes de l'écran de fin (résultats / classement) ── */
@@ -351,6 +356,13 @@
           </div>
           <button id="leaderboardSubmitBtn" type="button" onclick="submitLeaderboardScore()">VALIDER</button>
         </div>
+        <div class="turnstile-wrap">
+          <div class="cf-turnstile"
+               data-sitekey="0x4AAAAAAAEqf2RvQ4qfsj-V5"
+               data-theme="dark"
+               data-appearance="interaction-only"
+               data-refresh-expired="auto"></div>
+        </div>
         <div class="leaderboard-status" id="leaderboardStatus"></div>
         <div id="leaderboardEnd"><div class="leaderboard-empty">Chargement…</div></div>
       </div>
@@ -424,6 +436,16 @@ async function submitLeaderboardScore(){
     return;
   }
 
+  const turnstileToken =
+    (window.turnstile && typeof window.turnstile.getResponse === 'function')
+      ? window.turnstile.getResponse()
+      : '';
+
+  if(!turnstileToken){
+    if(status) status.textContent='VÉRIFICATION DE SÉCURITÉ EN COURS — RÉESSAIE';
+    return;
+  }
+
   try{
     if(btn) btn.disabled=true;
     if(status) status.textContent='ENVOI…';
@@ -435,7 +457,8 @@ async function submitLeaderboardScore(){
         game:'cine',
         player_name:playerName,
         score:totalScore,
-        secret:secret
+        secret:secret,
+        turnstile_token:turnstileToken
       })
     });
 
@@ -444,12 +467,21 @@ async function submitLeaderboardScore(){
     if(!res.ok){
       if(res.status===409 && data.error==='Player name already taken'){
         if(status) status.textContent='PSEUDO DÉJÀ PRIS OU CODE INCORRECT';
+        if(window.turnstile && typeof window.turnstile.reset === 'function') window.turnstile.reset();
         if(btn) btn.disabled=false;
         return;
       }
 
       if(res.status===409 && data.error==='Reserved legacy player'){
         if(status) status.textContent='PSEUDO DE TEST RÉSERVÉ — CHOISIS-EN UN AUTRE';
+        if(window.turnstile && typeof window.turnstile.reset === 'function') window.turnstile.reset();
+        if(btn) btn.disabled=false;
+        return;
+      }
+
+      if(res.status===403 && data.error==='Turnstile verification failed'){
+        if(status) status.textContent='VÉRIFICATION DE SÉCURITÉ ÉCHOUÉE — RÉESSAIE';
+        if(window.turnstile && typeof window.turnstile.reset === 'function') window.turnstile.reset();
         if(btn) btn.disabled=false;
         return;
       }
@@ -469,6 +501,7 @@ async function submitLeaderboardScore(){
     await loadLeaderboard();
 
   }catch(err){
+    if(window.turnstile && typeof window.turnstile.reset === 'function') window.turnstile.reset();
     if(btn) btn.disabled=false;
     if(status) status.textContent='ERREUR — RÉESSAIE';
   }

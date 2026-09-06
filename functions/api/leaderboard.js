@@ -44,8 +44,8 @@ export async function onRequestPost(context) {
     }
 
     if (
-      playerName.length < 2 ||
-      playerName.length > 20 ||
+      playerName.length < 1 ||
+      playerName.length > 19 ||
       !/^[a-zA-Z0-9À-ÿ _.-]+$/.test(playerName)
     ) {
       return Response.json({ error: "Invalid player name" }, { status: 400 });

@@ -17,6 +17,19 @@ export async function onRequestGet(context) {
   return Response.json({ scores: results });
 }
 
+async function hashSecret(secret) {
+  const data = new TextEncoder().encode(secret);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+
+  return Array.from(new Uint8Array(hashBuffer))
+    .map(byte => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function createPlayerKey() {
+  return crypto.randomUUID();
+}
+
 export async function onRequestPost(context) {
   try {
     const body = await context.request.json();
@@ -24,6 +37,7 @@ export async function onRequestPost(context) {
     const game = String(body.game || "").trim();
     const playerName = String(body.player_name || "").trim();
     const score = Number(body.score);
+    const secret = String(body.secret || "").trim();
 
     if (!["cine", "animal"].includes(game)) {
       return Response.json({ error: "Invalid game" }, { status: 400 });
@@ -41,13 +55,89 @@ export async function onRequestPost(context) {
       return Response.json({ error: "Invalid score" }, { status: 400 });
     }
 
-    await context.env.DB.prepare(`
-      INSERT INTO scores (game, player_name, score)
-      VALUES (?, ?, ?)
-    `).bind(game, playerName, score).run();
+    if (
+      secret.length < 4 ||
+      secret.length > 30
+    ) {
+      return Response.json({ error: "Invalid secret" }, { status: 400 });
+    }
 
-    return Response.json({ success: true });
-  } catch {
-    return Response.json({ error: "Invalid request" }, { status: 400 });
+    const secretHash = await hashSecret(secret);
+
+    const existingPlayer = await context.env.DB.prepare(`
+      SELECT id, player_name, score, player_key, secret_hash
+      FROM scores
+      WHERE game = ? AND player_name = ? COLLATE NOCASE
+      LIMIT 1
+    `).bind(game, playerName).first();
+
+    // Le pseudo existe déjà.
+    if (existingPlayer) {
+      // Ancienne entrée créée avant le système de codes.
+      if (!existingPlayer.secret_hash) {
+        return Response.json(
+          { error: "Reserved legacy player" },
+          { status: 409 }
+        );
+      }
+
+      // Mauvais code : impossible de prendre le pseudo.
+      if (existingPlayer.secret_hash !== secretHash) {
+        return Response.json(
+          { error: "Player name already taken" },
+          { status: 409 }
+        );
+      }
+
+      // Bon code : c'est bien le propriétaire du pseudo.
+      // On ne remplace le score que s'il a battu son record.
+      const bestScore = Math.max(existingPlayer.score, score);
+
+      await context.env.DB.prepare(`
+        UPDATE scores
+        SET score = ?
+        WHERE id = ?
+      `).bind(bestScore, existingPlayer.id).run();
+
+      return Response.json({
+        success: true,
+        status: "updated",
+        player_key: existingPlayer.player_key,
+        score: bestScore
+      });
+    }
+
+    // Nouveau pseudo : création du joueur.
+    const playerKey = createPlayerKey();
+
+    await context.env.DB.prepare(`
+      INSERT INTO scores (
+        game,
+        player_name,
+        score,
+        player_key,
+        secret_hash
+      )
+      VALUES (?, ?, ?, ?, ?)
+    `).bind(
+      game,
+      playerName,
+      score,
+      playerKey,
+      secretHash
+    ).run();
+
+    return Response.json({
+      success: true,
+      status: "created",
+      player_key: playerKey,
+      score
+    });
+
+  } catch (error) {
+    return Response.json(
+      { error: "Invalid request" },
+      { status: 400 }
+    );
   }
 }

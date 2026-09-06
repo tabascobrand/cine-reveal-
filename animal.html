@@ -119,18 +119,13 @@
   }
   .btn-primary:hover { opacity: 0.85; }
 
-  /* ── Leaderboard (aperçu grisé, non fonctionnel) ── */
+  /* ── Leaderboard réel ── */
   .leaderboard-preview {
     width: 100%; max-width: 440px; margin-top: 44px;
-    opacity: 0.5; pointer-events: none; user-select: none;
   }
   .leaderboard-title {
     font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 4px;
-    text-align: center; color: var(--gray); margin-bottom: 6px;
-  }
-  .leaderboard-soon {
-    font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase;
-    text-align: center; color: var(--gray); margin-bottom: 18px;
+    text-align: center; color: var(--accent); margin-bottom: 14px;
   }
   .leaderboard-row {
     display: flex; align-items: center; gap: 14px;
@@ -145,7 +140,26 @@
     font-size: 1.05rem; color: var(--white);
   }
   .leaderboard-score {
-    font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--gray);
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--accent);
+  }
+  .leaderboard-empty {
+    color: var(--gray); font-size: 0.75rem; letter-spacing: 1px;
+    text-align: center; padding: 14px 8px;
+  }
+  .leaderboard-submit {
+    width: 100%; max-width: 440px; display: flex; gap: 8px; margin-top: 4px;
+  }
+  .leaderboard-submit input {
+    flex: 1; min-width: 0; background: var(--panel); border: 1px solid var(--gray);
+    color: var(--white); font-family: 'Inter', sans-serif; padding: 11px 12px; outline: none;
+  }
+  .leaderboard-submit input:focus { border-color: var(--accent); }
+  .leaderboard-submit button {
+    background: var(--accent); color: #000; border: 0; padding: 0 18px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 2px; cursor: pointer;
+  }
+  .leaderboard-status {
+    min-height: 18px; color: var(--gray); font-size: 0.7rem; letter-spacing: 1px; text-align: center;
   }
 
   /* ── Mise en page deux colonnes de l'écran de fin (résultats / classement) ── */
@@ -291,12 +305,7 @@
   <button class="btn-primary" onclick="startGame()">JOUER</button>
   <div class="leaderboard-preview">
     <div class="leaderboard-title">CLASSEMENT MONDIAL</div>
-    <div class="leaderboard-soon">Bientôt disponible</div>
-    <div class="leaderboard-row"><span class="leaderboard-rank">1</span><span class="leaderboard-name">BAZOOKA12</span><span class="leaderboard-score">8420</span></div>
-    <div class="leaderboard-row"><span class="leaderboard-rank">2</span><span class="leaderboard-name">LUCIE_R</span><span class="leaderboard-score">7150</span></div>
-    <div class="leaderboard-row"><span class="leaderboard-rank">3</span><span class="leaderboard-name">MAXPLAYER</span><span class="leaderboard-score">6800</span></div>
-    <div class="leaderboard-row"><span class="leaderboard-rank">4</span><span class="leaderboard-name">NOVA</span><span class="leaderboard-score">5990</span></div>
-    <div class="leaderboard-row"><span class="leaderboard-rank">5</span><span class="leaderboard-name">ZEPHYR</span><span class="leaderboard-score">5410</span></div>
+    <div id="leaderboardStart"><div class="leaderboard-empty">Chargement…</div></div>
   </div>
 </div>
 
@@ -344,12 +353,12 @@
     <div class="end-col end-col-leaderboard">
       <div class="leaderboard-preview">
         <div class="leaderboard-title">CLASSEMENT MONDIAL</div>
-        <div class="leaderboard-soon">Bientôt disponible</div>
-        <div class="leaderboard-row"><span class="leaderboard-rank">1</span><span class="leaderboard-name">BAZOOKA12</span><span class="leaderboard-score">8420</span></div>
-        <div class="leaderboard-row"><span class="leaderboard-rank">2</span><span class="leaderboard-name">LUCIE_R</span><span class="leaderboard-score">7150</span></div>
-        <div class="leaderboard-row"><span class="leaderboard-rank">3</span><span class="leaderboard-name">MAXPLAYER</span><span class="leaderboard-score">6800</span></div>
-        <div class="leaderboard-row"><span class="leaderboard-rank">4</span><span class="leaderboard-name">NOVA</span><span class="leaderboard-score">5990</span></div>
-        <div class="leaderboard-row"><span class="leaderboard-rank">5</span><span class="leaderboard-name">ZEPHYR</span><span class="leaderboard-score">5410</span></div>
+        <div class="leaderboard-submit">
+          <input id="leaderboardName" type="text" maxlength="20" placeholder="TON PSEUDO" autocomplete="off" spellcheck="false">
+          <button id="leaderboardSubmitBtn" type="button" onclick="submitLeaderboardScore()">VALIDER</button>
+        </div>
+        <div class="leaderboard-status" id="leaderboardStatus"></div>
+        <div id="leaderboardEnd"><div class="leaderboard-empty">Chargement…</div></div>
       </div>
     </div>
   </div>
@@ -357,6 +366,85 @@
 </div>
 
 <script>
+const LEADERBOARD_API = '/api/leaderboard';
+let leaderboardScoreSubmitted = false;
+
+function escapeLeaderboardHTML(value){
+  return String(value ?? '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
+
+function renderLeaderboard(targetId, scores){
+  const target=document.getElementById(targetId);
+  if(!target) return;
+  if(!Array.isArray(scores) || scores.length===0){
+    target.innerHTML='<div class="leaderboard-empty">AUCUN SCORE POUR LE MOMENT</div>';
+    return;
+  }
+  target.innerHTML=scores.slice(0,5).map((row,index)=>`
+    <div class="leaderboard-row">
+      <span class="leaderboard-rank">${index+1}</span>
+      <span class="leaderboard-name">${escapeLeaderboardHTML(row.player_name)}</span>
+      <span class="leaderboard-score">${Number(row.score)||0}</span>
+    </div>`).join('');
+}
+
+async function loadLeaderboard(){
+  try{
+    const res=await fetch(LEADERBOARD_API+'?game=animal',{cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    renderLeaderboard('leaderboardStart',data.scores);
+    renderLeaderboard('leaderboardEnd',data.scores);
+  }catch(err){
+    const msg='<div class="leaderboard-empty">CLASSEMENT INDISPONIBLE</div>';
+    const a=document.getElementById('leaderboardStart');
+    const b=document.getElementById('leaderboardEnd');
+    if(a) a.innerHTML=msg;
+    if(b) b.innerHTML=msg;
+  }
+}
+
+async function submitLeaderboardScore(){
+  if(leaderboardScoreSubmitted) return;
+  const input=document.getElementById('leaderboardName');
+  const btn=document.getElementById('leaderboardSubmitBtn');
+  const status=document.getElementById('leaderboardStatus');
+  const playerName=(input?.value||'').trim();
+
+  if(playerName.length<2 || playerName.length>20 || !/^[a-zA-Z0-9À-ÿ _.-]+$/.test(playerName)){
+    if(status) status.textContent='PSEUDO : 2 À 20 CARACTÈRES';
+    return;
+  }
+
+  try{
+    if(btn) btn.disabled=true;
+    if(status) status.textContent='ENVOI…';
+
+    const res=await fetch(LEADERBOARD_API,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({game:'animal',player_name:playerName,score:totalScore})
+    });
+
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(data.error||('HTTP '+res.status));
+
+    leaderboardScoreSubmitted=true;
+    if(input) input.disabled=true;
+    if(status) status.textContent='SCORE ENREGISTRÉ';
+    await loadLeaderboard();
+  }catch(err){
+    if(btn) btn.disabled=false;
+    if(status) status.textContent='ERREUR — RÉESSAIE';
+  }
+}
+
+loadLeaderboard();
 const AC = new (window.AudioContext || window.webkitAudioContext)();
 
 function playWrong() {
@@ -783,7 +871,7 @@ function startGame(){
   document.getElementById('screenStart').classList.remove('active');
   document.getElementById('gameArea').style.display='flex';
   queue = getNextSession();
-  currentIdx=0; totalScore=0; roundScores=[]; streak=0; updateStreakIndicator();
+  currentIdx=0; totalScore=0; roundScores=[]; streak=0; leaderboardScoreSubmitted=false; updateStreakIndicator();
   initProgressSegments();
   startSound();
   loadAnimal();
@@ -1130,6 +1218,13 @@ function endGame(){
   const pct=Math.round((totalScore/maxPossible)*100);
   document.getElementById('endTitle').textContent=totalScore+' pts';
   document.getElementById('endSub').textContent='';
+  loadLeaderboard();
+  const lbName=document.getElementById('leaderboardName');
+  const lbBtn=document.getElementById('leaderboardSubmitBtn');
+  const lbStatus=document.getElementById('leaderboardStatus');
+  if(lbName){ lbName.disabled=false; lbName.value=''; }
+  if(lbBtn) lbBtn.disabled=false;
+  if(lbStatus) lbStatus.textContent='';
   document.getElementById('breakdown').innerHTML=roundScores.map(r=>{
     const rowClass = r.partial ? 'half-scored' : (r.pts>0 ? 'scored' : 'missed');
     const ptsDisplay = r.skipped ? 'PASSÉ' : r.missed&&r.pts===0 ? 'MANQUÉ' : `+${r.pts+(r.bonus||0)}`;
@@ -1145,7 +1240,7 @@ function restartGame(){
   document.getElementById('screenEnd').classList.remove('active');
   document.getElementById('headerScore').textContent='0';
   document.getElementById('gameArea').style.display='flex';
-  queue=getNextSession(); currentIdx=0; totalScore=0; roundScores=[]; streak=0; updateStreakIndicator();
+  queue=getNextSession(); currentIdx=0; totalScore=0; roundScores=[]; streak=0; leaderboardScoreSubmitted=false; updateStreakIndicator();
   initProgressSegments();
   startSound();
   loadAnimal();

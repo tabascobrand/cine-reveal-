@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ANIMAL REVEAL — Devine l'animal</title>
 <link rel="icon" type="image/png" href="favicon.ico.animal.png">
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -368,7 +367,6 @@
             <input id="leaderboardSecret" type="password" maxlength="30" placeholder="****" autocomplete="off" spellcheck="false">
             <div class="leaderboard-secret-note">À CONSERVER POUR METTRE LE SCORE À JOUR</div>
           </div>
-          <div class="cf-turnstile" data-sitekey="0x4AAAAAAAEqf2RvQ4qfsj-V5" data-theme="dark" data-callback="onTurnstileSuccess" data-expired-callback="onTurnstileExpired" data-error-callback="onTurnstileError"></div>
           <button id="leaderboardSubmitBtn" type="button" onclick="submitLeaderboardScore()">VALIDER</button>
         </div>
         <div class="leaderboard-status" id="leaderboardStatus"></div>
@@ -382,10 +380,6 @@
 <script>
 const LEADERBOARD_API = '/api/leaderboard';
 let leaderboardScoreSubmitted = false;
-let turnstileToken = '';
-function onTurnstileSuccess(token){ turnstileToken=token; }
-function onTurnstileExpired(){ turnstileToken=''; }
-function onTurnstileError(){ turnstileToken=''; }
 
 function escapeLeaderboardHTML(value){
   return String(value ?? '')
@@ -445,22 +439,15 @@ async function submitLeaderboardScore(){
     return;
   }
 
-  if(!turnstileToken){
-    if(status) status.textContent='VÉRIFICATION ANTI-BOT REQUISE';
-    return;
-  }
-
   try{
     if(btn) btn.disabled=true;
     if(status) status.textContent='ENVOI…';
     const res=await fetch(LEADERBOARD_API,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({game:'animal',player_name:playerName,score:totalScore,secret:secret,turnstileToken:turnstileToken})
+      body:JSON.stringify({game:'animal',player_name:playerName,score:totalScore,secret:secret})
     });
     const data=await res.json().catch(()=>({}));
-    turnstileToken='';
-    if(window.turnstile) turnstile.reset();
 
     if(!res.ok){
       if(res.status===409 && data.error==='Player name already taken'){
@@ -1287,8 +1274,7 @@ function restartGame(){
   document.getElementById('screenEnd').classList.remove('active');
   document.getElementById('headerScore').textContent='0';
   document.getElementById('gameArea').style.display='flex';
-  queue=getNextSession(); currentIdx=0; totalScore=0; roundScores=[]; streak=0; leaderboardScoreSubmitted=false; turnstileToken=''; updateStreakIndicator();
-  if(window.turnstile) turnstile.reset();
+  queue=getNextSession(); currentIdx=0; totalScore=0; roundScores=[]; streak=0; leaderboardScoreSubmitted=false; updateStreakIndicator();
   initProgressSegments();
   startSound();
   loadAnimal();

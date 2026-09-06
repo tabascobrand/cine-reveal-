@@ -30,59 +30,6 @@ function createPlayerKey() {
   return crypto.randomUUID();
 }
 
-async function verifyTurnstile(context, token) {
-  const secretKey = context.env.TURNSTILE_SECRET_KEY;
-
-  if (!secretKey) {
-    return {
-      success: false,
-      error: "Turnstile secret missing"
-    };
-  }
-
-  if (!token) {
-    return {
-      success: false,
-      error: "Turnstile token missing"
-    };
-  }
-
-  const formData = new FormData();
-  formData.append("secret", secretKey);
-  formData.append("response", token);
-
-  const remoteIp = context.request.headers.get("CF-Connecting-IP");
-
-  if (remoteIp) {
-    formData.append("remoteip", remoteIp);
-  }
-
-  try {
-    const response = await fetch(
-      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-      {
-        method: "POST",
-        body: formData
-      }
-    );
-
-    if (!response.ok) {
-      return {
-        success: false,
-        error: "Turnstile verification unavailable"
-      };
-    }
-
-    return await response.json();
-
-  } catch (error) {
-    return {
-      success: false,
-      error: "Turnstile verification failed"
-    };
-  }
-}
-
 export async function onRequestPost(context) {
   try {
     const body = await context.request.json();
@@ -91,7 +38,6 @@ export async function onRequestPost(context) {
     const playerName = String(body.player_name || "").trim();
     const score = Number(body.score);
     const secret = String(body.secret || "").trim();
-    const turnstileToken = String(body.turnstile_token || "").trim();
 
     if (!["cine", "animal"].includes(game)) {
       return Response.json({ error: "Invalid game" }, { status: 400 });
@@ -114,19 +60,6 @@ export async function onRequestPost(context) {
       secret.length > 30
     ) {
       return Response.json({ error: "Invalid secret" }, { status: 400 });
-    }
-
-    // Vérification anti-bot Cloudflare Turnstile.
-    const turnstileResult = await verifyTurnstile(
-      context,
-      turnstileToken
-    );
-
-    if (!turnstileResult.success) {
-      return Response.json(
-        { error: "Turnstile verification failed" },
-        { status: 403 }
-      );
     }
 
     const secretHash = await hashSecret(secret);

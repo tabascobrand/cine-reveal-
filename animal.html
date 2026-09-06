@@ -147,13 +147,20 @@
     text-align: center; padding: 14px 8px;
   }
   .leaderboard-submit {
-    width: 100%; max-width: 440px; display: flex; gap: 8px; margin-top: 4px;
+    width: 100%; max-width: 440px; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px;
   }
   .leaderboard-submit input {
-    flex: 1; min-width: 0; background: var(--panel); border: 1px solid var(--gray);
+    flex: 1 1 150px; min-width: 0; background: var(--panel); border: 1px solid var(--gray);
     color: var(--white); font-family: 'Inter', sans-serif; padding: 11px 12px; outline: none;
   }
   .leaderboard-submit input:focus { border-color: var(--accent); }
+  .leaderboard-secret-wrap {
+    flex: 1 1 150px; min-width: 0; display: flex; flex-direction: column; gap: 4px;
+  }
+  .leaderboard-secret-wrap input { width: 100%; flex: none; }
+  .leaderboard-secret-note {
+    color: var(--gray); font-size: 0.56rem; letter-spacing: 0.7px; text-align: left;
+  }
   .leaderboard-submit button {
     background: var(--accent); color: #000; border: 0; padding: 0 18px;
     font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 2px; cursor: pointer;
@@ -355,6 +362,10 @@
         <div class="leaderboard-title">CLASSEMENT MONDIAL</div>
         <div class="leaderboard-submit">
           <input id="leaderboardName" type="text" maxlength="20" placeholder="TON PSEUDO" autocomplete="off" spellcheck="false">
+          <div class="leaderboard-secret-wrap">
+            <input id="leaderboardSecret" type="password" maxlength="30" placeholder="CODE SECRET — 4 CARACTÈRES MIN." autocomplete="off" spellcheck="false">
+            <div class="leaderboard-secret-note">À CONSERVER POUR METTRE LE SCORE À JOUR</div>
+          </div>
           <button id="leaderboardSubmitBtn" type="button" onclick="submitLeaderboardScore()">VALIDER</button>
         </div>
         <div class="leaderboard-status" id="leaderboardStatus"></div>
@@ -412,31 +423,51 @@ async function loadLeaderboard(){
 async function submitLeaderboardScore(){
   if(leaderboardScoreSubmitted) return;
   const input=document.getElementById('leaderboardName');
+  const secretInput=document.getElementById('leaderboardSecret');
   const btn=document.getElementById('leaderboardSubmitBtn');
   const status=document.getElementById('leaderboardStatus');
   const playerName=(input?.value||'').trim();
+  const secret=(secretInput?.value||'').trim();
 
   if(playerName.length<2 || playerName.length>20 || !/^[a-zA-Z0-9À-ÿ _.-]+$/.test(playerName)){
     if(status) status.textContent='PSEUDO : 2 À 20 CARACTÈRES';
+    return;
+  }
+  if(secret.length<4 || secret.length>30){
+    if(status) status.textContent='CODE SECRET : 4 CARACTÈRES MINIMUM';
     return;
   }
 
   try{
     if(btn) btn.disabled=true;
     if(status) status.textContent='ENVOI…';
-
     const res=await fetch(LEADERBOARD_API,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({game:'animal',player_name:playerName,score:totalScore})
+      body:JSON.stringify({game:'animal',player_name:playerName,score:totalScore,secret:secret})
     });
-
     const data=await res.json().catch(()=>({}));
-    if(!res.ok) throw new Error(data.error||('HTTP '+res.status));
+
+    if(!res.ok){
+      if(res.status===409 && data.error==='Player name already taken'){
+        if(status) status.textContent='PSEUDO DÉJÀ PRIS OU CODE INCORRECT';
+        if(btn) btn.disabled=false;
+        return;
+      }
+      if(res.status===409 && data.error==='Reserved legacy player'){
+        if(status) status.textContent='PSEUDO DE TEST RÉSERVÉ — CHOISIS-EN UN AUTRE';
+        if(btn) btn.disabled=false;
+        return;
+      }
+      throw new Error(data.error||('HTTP '+res.status));
+    }
 
     leaderboardScoreSubmitted=true;
     if(input) input.disabled=true;
-    if(status) status.textContent='SCORE ENREGISTRÉ';
+    if(secretInput) secretInput.disabled=true;
+    if(status) status.textContent=data.status==='updated'
+      ? 'RECORD VÉRIFIÉ — MEILLEUR SCORE CONSERVÉ'
+      : 'PSEUDO CRÉÉ — SCORE ENREGISTRÉ';
     await loadLeaderboard();
   }catch(err){
     if(btn) btn.disabled=false;
@@ -1220,9 +1251,11 @@ function endGame(){
   document.getElementById('endSub').textContent='';
   loadLeaderboard();
   const lbName=document.getElementById('leaderboardName');
+  const lbSecret=document.getElementById('leaderboardSecret');
   const lbBtn=document.getElementById('leaderboardSubmitBtn');
   const lbStatus=document.getElementById('leaderboardStatus');
   if(lbName){ lbName.disabled=false; lbName.value=''; }
+  if(lbSecret){ lbSecret.disabled=false; lbSecret.value=''; }
   if(lbBtn) lbBtn.disabled=false;
   if(lbStatus) lbStatus.textContent='';
   document.getElementById('breakdown').innerHTML=roundScores.map(r=>{

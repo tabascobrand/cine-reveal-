@@ -269,6 +269,18 @@
     75%  { opacity: 1; }
     100% { opacity: 0; }
   }
+
+  /* ── Footer REVEAL permanent ── */
+  .site-footer {
+    position: fixed; left: 0; right: 0; bottom: 7px; z-index: 1000;
+    padding: 0 12px; text-align: center; font-family: 'Inter', sans-serif;
+    font-size: 0.54rem; line-height: 1.45; letter-spacing: 0.3px;
+    color: #555566; pointer-events: none;
+  }
+  .site-footer a { color: #777788; text-decoration: none; pointer-events: auto; }
+  .site-footer a:hover { color: var(--white); }
+  .site-footer-thirdparty { font-size: 0.48rem; color: #444455; }
+
 </style>
 </head>
 <body>
@@ -358,6 +370,12 @@
   </div>
   <button class="btn-primary" onclick="restartGame()">REJOUER</button>
 </div>
+
+
+<footer class="site-footer">
+  <div>© 2026 — Tristan Gaston Vallet — Tous droits réservés · <a href="mailto:contact@reveal.page">contact@reveal.page</a></div>
+  <div class="site-footer-thirdparty">Les images, affiches, logos, marques et œuvres représentées demeurent la propriété de leurs ayants droit respectifs.</div>
+</footer>
 
 <script>
 const LEADERBOARD_API = '/api/leaderboard';

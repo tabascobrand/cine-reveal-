@@ -12,32 +12,44 @@
     --bg: #0a0a0f; --white: #f0eeea; --gray: #444455; --dim: #1e1e2e;
     --gold: #f5c842;
   }
+
   body {
     background: var(--bg); color: var(--white);
     font-family: 'Inter', sans-serif;
     min-height: 100vh; display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    padding: 40px 20px;
+    padding: 40px 20px 100px;
   }
+
   .title {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 4rem; letter-spacing: 0.13em; line-height: 1;
     color: var(--white); white-space: nowrap;
   }
+
   .title-wrap {
     position: relative; width: 100%; max-width: 360px;
     margin: 0 auto 24px; text-align: center;
   }
+
   #titleMask { position: absolute; top: 0; left: 0; pointer-events: none; }
-  .title-cover { position: absolute; inset: 0; background: var(--bg); }
+
+  .title-cover {
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+  }
+
   .subtitle {
     font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
     color: var(--gray); margin-bottom: 56px;
   }
+
   .cards {
     display: flex; flex-direction: column; gap: 24px;
     width: 100%; max-width: 360px;
   }
+
   .card {
     border: 1px solid var(--gold); border-radius: 2px;
     padding: 24px 28px; cursor: pointer;
@@ -45,36 +57,112 @@
     display: flex; flex-direction: column; align-items: center; gap: 5px;
     text-align: center;
   }
-  .card:hover { background: rgba(245,200,66,0.06); transform: translateY(-2px); }
+
+  .card:hover {
+    background: rgba(245,200,66,0.06);
+    transform: translateY(-2px);
+  }
+
   .card.soon {
-    border-color: var(--dim); cursor: default; opacity: 0.35;
+    border-color: var(--dim);
+    cursor: default;
+    opacity: 0.35;
     pointer-events: none;
   }
+
   .card-name {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.5rem; letter-spacing: 4px; color: var(--gold);
   }
+
   .card.soon .card-name { color: var(--gray); }
+
   .card-desc {
     font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase;
     color: var(--gray);
   }
+
+  .site-footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    z-index: 1000;
+    padding: 0 16px;
+    text-align: center;
+    font-size: 0.58rem;
+    line-height: 1.5;
+    letter-spacing: 0.35px;
+    color: #555566;
+    pointer-events: none;
+  }
+
+  .site-footer a {
+    color: #777788;
+    text-decoration: none;
+    pointer-events: auto;
+  }
+
+  .site-footer a:hover {
+    color: var(--white);
+  }
+
+  .site-footer-rights {
+    margin-bottom: 2px;
+  }
+
+  .site-footer-thirdparty {
+    font-size: 0.52rem;
+    color: #444455;
+  }
+
+  @media (max-width: 600px) {
+    body {
+      padding-bottom: 110px;
+    }
+
+    .site-footer {
+      bottom: 7px;
+      font-size: 0.54rem;
+      padding: 0 12px;
+    }
+
+    .site-footer-thirdparty {
+      font-size: 0.48rem;
+    }
+  }
 </style>
 </head>
+
 <body>
+
   <div class="title-wrap" id="titleWrap">
     <div class="title">REVEAL</div>
     <div class="title-cover" id="titleCover"></div>
     <canvas id="titleMask"></canvas>
   </div>
+
   <div class="cards">
     <a class="card" href="cine.html">
       <div class="card-name">CINÉ REVEAL</div>
     </a>
+
     <a class="card" href="animal.html" style="border-color:#6abf69;">
       <div class="card-name" style="color:#6abf69;">ANIMAL REVEAL</div>
     </a>
   </div>
+
+  <footer class="site-footer">
+    <div class="site-footer-rights">
+      © 2026 — Tristan Gaston Vallet — Tous droits réservés ·
+      <a href="mailto:contact@reveal.page">contact@reveal.page</a>
+    </div>
+
+    <div class="site-footer-thirdparty">
+      Les images, affiches, logos, marques et œuvres représentées demeurent la propriété de leurs ayants droit respectifs.
+    </div>
+  </footer>
+
   <script>
     (function(){
       const wrap = document.getElementById('titleWrap');
@@ -101,6 +189,7 @@
         ctx.clearRect(0,0,w,h);
         ctx.fillStyle = '#0a0a0f';
         ctx.fillRect(0,0,w,h);
+
         // Rideau qui s'ouvre horizontalement depuis le centre, pleine hauteur à chaque instant
         const revealWidth = w * frac;
         const x0 = (w - revealWidth) / 2;
@@ -111,25 +200,29 @@
         fitTitleWidth();
         sizeCanvas();
         draw(0);
-        document.getElementById('titleCover').style.display = 'none'; // le canvas prend le relais, déjà fermé à l'identique
+
+        document.getElementById('titleCover').style.display = 'none';
 
         setTimeout(function(){
           fitTitleWidth();
           sizeCanvas();
+
           const duration = 2600;
           const start = performance.now();
+
           function step(now){
             const t = Math.min(1, (now-start)/duration);
-            const eased = t*t*(3-2*t); // smoothstep : ouverture régulière sur toute la durée
+            const eased = t*t*(3-2*t);
             draw(eased);
+
             if(t < 1) requestAnimationFrame(step);
           }
+
           requestAnimationFrame(step);
         }, 150);
       }
 
-      // On attend que la police Bebas Neue soit réellement chargée avant de mesurer quoi que ce soit,
-      // sinon le calcul se base sur la police de secours (largeur différente) et fausse tout.
+      // On attend que la police Bebas Neue soit réellement chargée avant de mesurer quoi que ce soit
       if(document.fonts && document.fonts.ready){
         document.fonts.ready.then(init);
       } else {
@@ -137,5 +230,6 @@
       }
     })();
   </script>
+
 </body>
 </html>

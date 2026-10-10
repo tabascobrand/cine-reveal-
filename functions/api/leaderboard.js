@@ -1,3 +1,4 @@
+
 export async function onRequestGet(context) {
   const url = new URL(context.request.url);
   const game = url.searchParams.get("game");
@@ -11,7 +12,7 @@ export async function onRequestGet(context) {
     FROM scores
     WHERE game = ?
     ORDER BY score DESC, created_at ASC
-    LIMIT 100
+    LIMIT 1000
   `).bind(game).all();
 
   return Response.json({ scores: results });

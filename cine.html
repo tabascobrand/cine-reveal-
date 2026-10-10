@@ -18,6 +18,9 @@
     align-items: center; padding: 0; overflow: hidden;
   }
   body.score-visible { height: auto; min-height: 100vh; overflow-y: auto; }
+  body.start-scroll { height: auto; min-height: 100vh; overflow-y: auto; }
+  body.start-scroll #screenStart { flex-shrink: 0; }
+  body.start-scroll .site-footer { position: static; margin-top: auto; padding: 18px 12px 12px; }
   #screenEnd.active {
     display: flex; flex-direction: column; align-items: center;
     gap: 20px; width: 100%; max-width: none; padding: 30px 20px 60px;
@@ -283,7 +286,7 @@
 
 </style>
 </head>
-<body>
+<body class="start-scroll">
 <header>
   <div style="display:flex;align-items:center;gap:14px">
     <a class="logo" href="index.html" style="cursor:pointer;text-decoration:none;">CINÉ<span>REVEAL</span></a>
@@ -397,7 +400,7 @@ function renderLeaderboard(targetId, scores){
     target.innerHTML='<div class="leaderboard-empty">AUCUN SCORE POUR LE MOMENT</div>';
     return;
   }
-  target.innerHTML=scores.slice(0,100).map((row,index)=>`
+  target.innerHTML=scores.map((row,index)=>`
     <div class="leaderboard-row">
       <span class="leaderboard-rank">${index+1}</span>
       <span class="leaderboard-name">${escapeLeaderboardHTML(row.player_name)}</span>
@@ -758,7 +761,7 @@ const FILMS = [
   {title:"Disco", accept:["disco"], clean:"images/disco-clean.jpg", full:"images/disco.jpg"},
   {title:"Le Discours d'un roi", accept:["le discours d un roi", "the king s speech"], clean:"images/discours-clean.jpg", full:"images/discours.jpg"},
   {title:"Donnie Darko", accept:["donnie darko"], clean:"images/donnie-clean.jpg", full:"images/donnie.jpg"},
-  {title:"The Doors", accept:["the doors", "doors"], clean:"images/doors-clean.jpg", full:"images/doors.jpg"},
+  {title:"The Doors", accept:["the doors"], clean:"images/doors-clean.jpg", full:"images/doors.jpg"},
   {title:"Mrs. Doubtfire", accept:["mrs doubtfire", "madame doubtfire"], clean:"images/doubtfire-clean.jpg", full:"images/doubtfire.jpg"},
   {title:"Le Doudou", accept:["le doudou"], clean:"images/doudou-clean.jpg", full:"images/doudou.jpg"},
   {title:"Drama", accept:["drama"], reject:["drame"], clean:"images/drama-clean.jpg", full:"images/drama.jpg"},
@@ -1117,6 +1120,7 @@ function markProgressSegment(index, correct){
 }
 
 function startGame(){
+  document.body.classList.remove('start-scroll');
   document.getElementById('screenStart').classList.remove('active');
   document.getElementById('gameArea').style.display='flex';
   queue = getNextSession();

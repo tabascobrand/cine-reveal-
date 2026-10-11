@@ -354,6 +354,7 @@
   <div class="end-columns">
     <div class="end-col end-col-results">
       <div class="final-breakdown" id="breakdown"></div>
+      <button class="btn-primary" onclick="restartGame()" style="align-self:center">REJOUER</button>
     </div>
     <div class="end-col end-col-leaderboard">
       <div class="leaderboard-preview">
@@ -371,7 +372,6 @@
       </div>
     </div>
   </div>
-  <button class="btn-primary" onclick="restartGame()">REJOUER</button>
 </div>
 
 
@@ -1093,17 +1093,33 @@ function handleStreakSuccess(){
 }
 function handleStreakBreak(){ streak=0; updateStreakIndicator(); }
 
-// File globale : garantit qu'on voit tous les films avant d'en revoir un
+// File persistante : chaque film passe avant d'être proposé une deuxième fois.
+const FILM_QUEUE_KEY = 'cineRevealFilmQueueV1';
 let globalQueue = [];
+try {
+  const saved = JSON.parse(localStorage.getItem(FILM_QUEUE_KEY));
+  if(Array.isArray(saved) && saved.every(i => Number.isInteger(i) && i >= 0 && i < FILMS.length)
+     && new Set(saved).size === saved.length){
+    globalQueue = saved;
+  }
+} catch(e) { /* Navigation privée ou stockage indisponible : file en mémoire. */ }
 
 function getNextSession(){
-  // Si la file globale a moins de SESSION_SIZE films restants, on la recrée
-  if(globalQueue.length < SESSION_SIZE){
-    globalQueue = shuffle(FILMS);
+  const session = [];
+  while(session.length < SESSION_SIZE){
+    if(globalQueue.length === 0){
+      globalQueue = shuffle(FILMS.map((_,i)=>i));
+      // À la frontière de deux cycles, éviter un doublon dans la même partie.
+      if(session.length){
+        const already = new Set(session);
+        globalQueue = globalQueue.filter(i=>!already.has(i)).concat(globalQueue.filter(i=>already.has(i)));
+      }
+    }
+    const needed = SESSION_SIZE - session.length;
+    session.push(...globalQueue.splice(0,needed));
   }
-  const session = globalQueue.slice(0, SESSION_SIZE);
-  globalQueue = globalQueue.slice(SESSION_SIZE);
-  return session;
+  try { localStorage.setItem(FILM_QUEUE_KEY,JSON.stringify(globalQueue)); } catch(e) {}
+  return session.map(i=>FILMS[i]);
 }
 
 function initProgressSegments(){

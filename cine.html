@@ -436,18 +436,18 @@ async function submitLeaderboardScore(){
   const secret=(secretInput?.value||'').trim();
 
   if(playerName.length<1 || playerName.length>19 || !/^[a-zA-Z0-9À-ÿ _.-]+$/.test(playerName)){
-    if(status) status.textContent='PSEUDO : 1 À 19 CARACTÈRES';
+    if(status){ status.textContent='PSEUDO : 1 À 19 CARACTÈRES'; status.style.color='#e2564f'; }
     return;
   }
 
   if(secret.length<4 || secret.length>30){
-    if(status) status.textContent='CODE SECRET : 4 CARACTÈRES MINIMUM';
+    if(status){ status.textContent='CODE SECRET : 4 CARACTÈRES MINIMUM'; status.style.color='#e2564f'; }
     return;
   }
 
   try{
     if(btn) btn.disabled=true;
-    if(status) status.textContent='ENVOI…';
+    if(status){ status.textContent='ENVOI…'; status.style.color='var(--gray)'; }
 
     const res=await fetch(LEADERBOARD_API,{
       method:'POST',
@@ -464,13 +464,13 @@ async function submitLeaderboardScore(){
 
     if(!res.ok){
       if(res.status===409 && data.error==='Player name already taken'){
-        if(status) status.textContent='PSEUDO DÉJÀ PRIS OU CODE INCORRECT';
+        if(status){ status.textContent='PSEUDO DÉJÀ PRIS OU CODE INCORRECT'; status.style.color='#e2564f'; }
         if(btn) btn.disabled=false;
         return;
       }
 
       if(res.status===409 && data.error==='Reserved legacy player'){
-        if(status) status.textContent='PSEUDO DE TEST RÉSERVÉ — CHOISIS-EN UN AUTRE';
+        if(status){ status.textContent='PSEUDO DE TEST RÉSERVÉ — CHOISIS-EN UN AUTRE'; status.style.color='#e2564f'; }
         if(btn) btn.disabled=false;
         return;
       }
@@ -485,13 +485,14 @@ async function submitLeaderboardScore(){
       status.textContent=data.status==='updated'
         ? 'RECORD VÉRIFIÉ — MEILLEUR SCORE CONSERVÉ'
         : 'PSEUDO CRÉÉ — SCORE ENREGISTRÉ';
+      status.style.color='#4caf6e';
     }
 
     await loadLeaderboard();
 
   }catch(err){
     if(btn) btn.disabled=false;
-    if(status) status.textContent='ERREUR — RÉESSAIE';
+    if(status){ status.textContent='ERREUR — RÉESSAIE'; status.style.color='#e2564f'; }
   }
 }
 

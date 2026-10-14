@@ -143,15 +143,15 @@
     text-align: center; padding: 14px 8px;
   }
   .leaderboard-submit {
-    width: 100%; max-width: 440px; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px;
+    width: 100%; max-width: 440px; display: flex; flex-wrap: nowrap; gap: 8px; margin-top: 4px;
   }
   .leaderboard-submit input {
-    flex: 1 1 150px; min-width: 0; background: var(--panel); border: 1px solid var(--gray);
+    flex: 0 1 150px; min-width: 0; background: var(--panel); border: 1px solid var(--gray);
     color: var(--white); font-family: 'Inter', sans-serif; padding: 11px 12px; outline: none;
   }
   .leaderboard-submit input:focus { border-color: var(--gold); }
   .leaderboard-secret-wrap {
-    flex: 1 1 150px; min-width: 0; display: flex; flex-direction: column; gap: 4px;
+    flex: 0 1 150px; min-width: 0; display: flex; flex-direction: column; gap: 4px;
   }
   .leaderboard-secret-wrap input { width: 100%; flex: none; }
   .leaderboard-secret-note {
@@ -160,6 +160,7 @@
   .leaderboard-submit button {
     background: var(--gold); color: #000; border: 0; padding: 0 18px;
     font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 2px; cursor: pointer;
+    flex: 1 1 auto; min-width: 0; min-height: 48px; text-align: center; display: flex; align-items: center; justify-content: center;
   }
   .leaderboard-status {
     min-height: 18px; color: var(--gray); font-size: 0.7rem; letter-spacing: 1px; text-align: center;

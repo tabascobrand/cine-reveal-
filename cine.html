@@ -292,12 +292,22 @@
 <header>
   <div style="display:flex;align-items:center;gap:14px">
     <a class="logo" href="index.html" style="cursor:pointer;text-decoration:none;">CINÉ<span>REVEAL</span></a>
-    <button id="forestBtn" onclick="toggleForest()" title="Son ambiance" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);display:flex;align-items:center;transition:color 0.2s;">
+    <button id="effectsBtn" onclick="toggleEffects()" title="Couper les effets sonores" aria-label="Couper les effets sonores" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:color 0.2s;position:relative;top:-3px;">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
         <path id="wave1" d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
         <path id="wave2" d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
       </svg>
+    </button>
+    <button id="forestBtn" onclick="toggleForest()" title="Couper les oiseaux" aria-label="Couper les oiseaux" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:color 0.2s;position:relative;top:-3px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <!-- Oiseau n°12 : silhouette minimaliste, aile, oeil et deux pattes -->
+        <path d="M2.8 18.2 L7.4 13.5 C9.5 11.5 10.4 7.4 14.3 5.3 C17.5 3.6 20.2 5.3 20.8 7.5 L23 8.6 L20.6 9.7 C20.5 14.8 17.2 18.4 12.2 18.4 L2.8 18.2 Z"/>
+        <path d="M6.1 17.5 C9.3 15.1 11.5 12.2 15.5 12.1"/>
+        <circle cx="18.3" cy="7.7" r="0.65" fill="currentColor" stroke="none"/>
+        <path d="M11.5 18.4 L12.2 21 M15.4 17.9 L16.1 21"/>
+      </svg>
+      <svg id="forestSlash" width="22" height="22" viewBox="0 0 24 24" style="display:none;position:absolute;inset:4px;pointer-events:none;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21 L21 3"/></svg>
     </button>
   </div>
   <div class="score-display">
@@ -514,6 +524,20 @@ loadLeaderboard();
 });
 
 const AC = new (window.AudioContext || window.webkitAudioContext)();
+const effectsMaster = AC.createGain();
+effectsMaster.connect(AC.destination);
+let effectsMuted = false;
+function toggleEffects(){
+  effectsMuted = !effectsMuted;
+  effectsMaster.gain.setValueAtTime(effectsMuted ? 0 : 1, AC.currentTime);
+  const btn = document.getElementById('effectsBtn');
+  document.getElementById('wave1').style.display = effectsMuted ? 'none' : '';
+  document.getElementById('wave2').style.display = effectsMuted ? 'none' : '';
+  btn.style.color = effectsMuted ? 'var(--gray)' : 'var(--gold)';
+  btn.style.opacity = effectsMuted ? '0.5' : '1';
+  btn.title = effectsMuted ? 'Activer les effets sonores' : 'Couper les effets sonores';
+  btn.setAttribute('aria-label', btn.title);
+}
 function playWrong() {
   const buf=AC.createBuffer(1,AC.sampleRate*0.18,AC.sampleRate);
   const data=buf.getChannelData(0);
@@ -521,7 +545,7 @@ function playWrong() {
   const src=AC.createBufferSource(); src.buffer=buf;
   const g=AC.createGain(); g.gain.setValueAtTime(0.55,AC.currentTime); g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.22);
   const bq=AC.createBiquadFilter(); bq.type='bandpass'; bq.frequency.setValueAtTime(280,AC.currentTime); bq.frequency.exponentialRampToValueAtTime(80,AC.currentTime+0.18); bq.Q.value=1.2;
-  src.connect(bq); bq.connect(g); g.connect(AC.destination); src.start();
+  src.connect(bq); bq.connect(g); g.connect(effectsMaster); src.start();
 }
 function playCorrect() {
   const t = AC.currentTime;
@@ -541,12 +565,12 @@ function playCorrect() {
   const reverb = makeReverb(2.0, 2.2);
   const reverbGain = AC.createGain();
   reverbGain.gain.value = 0.32;
-  reverb.connect(reverbGain); reverbGain.connect(AC.destination);
+  reverb.connect(reverbGain); reverbGain.connect(effectsMaster);
 
   // Master très doux
   const master = AC.createGain();
   master.gain.value = 0.055;
-  master.connect(AC.destination);
+  master.connect(effectsMaster);
   master.connect(reverb);
 
   // Delay léger
@@ -1115,7 +1139,7 @@ function updateStreakIndicator(){
 // ── Sons de palier de série ──
 function playGong(){
   const t=AC.currentTime;
-  const master=AC.createGain(); master.gain.value=0.35; master.connect(AC.destination);
+  const master=AC.createGain(); master.gain.value=0.35; master.connect(effectsMaster);
   [112,175,233,311,389].forEach((f,i)=>{
     const osc=AC.createOscillator(); osc.type='sine'; osc.frequency.value=f*(1+Math.random()*0.01);
     const g=AC.createGain();
@@ -1141,12 +1165,12 @@ function playStreakSynth(){
   filter.frequency.linearRampToValueAtTime(2200,t+0.15);
   filter.frequency.exponentialRampToValueAtTime(400,t+0.8);
   const g=AC.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.3,t+0.03); g.gain.exponentialRampToValueAtTime(0.001,t+0.9);
-  osc.connect(filter); filter.connect(g); g.connect(AC.destination);
+  osc.connect(filter); filter.connect(g); g.connect(effectsMaster);
   osc.start(t); osc.stop(t+0.95);
 }
 function playChoir(){
   const t=AC.currentTime;
-  const master=AC.createGain(); master.gain.value=0; master.connect(AC.destination);
+  const master=AC.createGain(); master.gain.value=0; master.connect(effectsMaster);
   master.gain.setValueAtTime(0,t);
   master.gain.linearRampToValueAtTime(0.18,t+0.8);
   master.gain.setValueAtTime(0.18,t+2.6);
@@ -1506,16 +1530,12 @@ function toggleForest(){
   initForest();
   forestMuted = !forestMuted;
   forestAudio.muted = forestMuted;
-  const wave1 = document.getElementById('wave1');
-  const wave2 = document.getElementById('wave2');
   const btn = document.getElementById('forestBtn');
-  if(forestMuted){
-    wave1.style.display='none'; wave2.style.display='none';
-    btn.style.color='var(--gray)'; btn.style.opacity='0.5';
-  } else {
-    wave1.style.display=''; wave2.style.display='';
-    btn.style.color='var(--gold)'; btn.style.opacity='1';
-  }
+  document.getElementById('forestSlash').style.display = forestMuted ? '' : 'none';
+  btn.style.color = forestMuted ? 'var(--gray)' : 'var(--gold)';
+  btn.style.opacity = forestMuted ? '0.5' : '1';
+  btn.title = forestMuted ? 'Activer les oiseaux' : 'Couper les oiseaux';
+  btn.setAttribute('aria-label', btn.title);
 }
 
 function goHome(){ document.body.classList.remove('score-visible'); window.location.href='index.html'; }

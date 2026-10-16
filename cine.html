@@ -65,6 +65,8 @@
   .poster-container.flash-correct { border-color: #3ecf6f; }
   .poster-container.flash-wrong   { border-color: var(--red); }
   .poster-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+  /* Empêche le navigateur de déplacer ou prévisualiser les affiches au glisser-déposer. */
+  .poster-img { pointer-events: none; user-select: none; -webkit-user-select: none; -webkit-user-drag: none; }
   .poster-img.hide  { visibility: hidden; }
   .poster-img.ready { visibility: visible; }
   .reveal-mask { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
@@ -334,8 +336,8 @@
     <span id="revealPct">0% révélé</span>
   </div>
   <div class="poster-container" id="posterContainer">
-    <img class="poster-img hide" id="posterImgFull"  src="" alt="affiche révélée">
-    <img class="poster-img hide" id="posterImgClean" src="" alt="affiche">
+    <img class="poster-img hide" id="posterImgFull"  src="" alt="affiche révélée" draggable="false">
+    <img class="poster-img hide" id="posterImgClean" src="" alt="affiche" draggable="false">
     <canvas class="reveal-mask" id="revealCanvas"></canvas>
     <div id="filmTitle" style="
       position:absolute; bottom:0; left:0; right:0;
@@ -393,6 +395,9 @@
 </footer>
 
 <script>
+// Bloque l'aperçu natif des images lors d'un glisser-déposer (Opera/Chrome/mobile).
+document.getElementById('posterContainer').addEventListener('dragstart', event => event.preventDefault());
+
 const LEADERBOARD_API = '/api/leaderboard';
 let leaderboardScoreSubmitted = false;
 

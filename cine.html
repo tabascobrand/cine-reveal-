@@ -1089,6 +1089,7 @@ FILMS.forEach(f=>{ f.cleanSrc=f.clean; f.fullSrc=f.full; });
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
 let queue,currentIdx,totalScore,roundScores,revealPct=0,revealInterval=null,currentPts=100,answered=false;
+let revealStartedAt=0;
 const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=100;
 const SESSION_SIZE = 10;
 
@@ -1355,29 +1356,41 @@ function drawMask(pct){
   badge.className='pts-badge'+(currentPts<30?' low':'');
 }
 
+// Le temps est mesuré sur une horloge réelle : suspendre JavaScript ne suspend pas le score.
+function syncRevealWithClock(){
+  if(answered || !revealStartedAt) return false;
+  const elapsed=Math.max(0,Date.now()-revealStartedAt);
+  revealPct=Math.min(100,(elapsed/TICK_MS)*REVEAL_STEP);
+  drawMask(revealPct);
+  document.getElementById('headerScore').textContent=totalScore;
+  if(revealPct>=100){
+    finishExpiredFilm();
+    return true;
+  }
+  return false;
+}
+
+function finishExpiredFilm(){
+  if(answered) return;
+  clearInterval(revealInterval);
+  answered=true;
+  handleStreakBreak();
+  markProgressSegment(currentIdx,false);
+  playWrong();
+  showFullPoster();
+  document.getElementById('filmTitle').textContent=queue[currentIdx].title;
+  document.getElementById('filmTitle').style.display='block';
+  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').className='feedback ko';
+  roundScores.push({title:queue[currentIdx].title,pts:0,missed:true});
+  setTimeout(nextFilm,2000);
+}
+
 function startReveal(){
   if(revealInterval) clearInterval(revealInterval);
+  revealStartedAt=Date.now();
   revealInterval=setInterval(()=>{
-    if(answered) return;
-    revealPct=Math.min(100,revealPct+REVEAL_STEP);
-    drawMask(revealPct);
-    document.getElementById('headerScore').textContent=totalScore;
-    if(revealPct>=100){
-      clearInterval(revealInterval);
-      if(!answered){
-        answered=true;
-        handleStreakBreak();
-        markProgressSegment(currentIdx, false);
-        playWrong();
-        showFullPoster();
-        document.getElementById('filmTitle').textContent=queue[currentIdx].title;
-        document.getElementById('filmTitle').style.display='block';
-        document.getElementById('feedback').textContent='';
-        document.getElementById('feedback').className='feedback ko';
-        roundScores.push({title:queue[currentIdx].title,pts:0,missed:true});
-        setTimeout(nextFilm,2000);
-      }
-    }
+    if(!answered) syncRevealWithClock();
   },TICK_MS);
 }
 
@@ -1402,6 +1415,8 @@ function showFullPoster(){
 document.getElementById('answerInput').addEventListener('keydown',function(e){
   if(e.key!=='Enter') return;
   if(answered) return;
+  // Important : recalculer AVANT de vérifier la réponse (même après une pause du débogueur).
+  if(syncRevealWithClock()) return;
   AC.resume();
   const film=queue[currentIdx];
   let matched=false, wasFuzzy=false;
@@ -1417,6 +1432,7 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
 });
 
 function triggerCorrect(film,inp,wasFuzzy){
+  if(syncRevealWithClock()) return;
   clearInterval(revealInterval); answered=true;
   inp.className='correct'; inp.disabled=true;
   playCorrect();
@@ -1450,6 +1466,7 @@ function triggerWrong(inp){
 
 function skipFilm(){
   if(answered) return;
+  if(syncRevealWithClock()) return;
   clearInterval(revealInterval); answered=true;
   handleStreakBreak();
   markProgressSegment(currentIdx, false);

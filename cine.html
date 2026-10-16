@@ -397,6 +397,24 @@
 <script>
 // Bloque l'aperçu natif des images lors d'un glisser-déposer (Opera/Chrome/mobile).
 document.getElementById('posterContainer').addEventListener('dragstart', event => event.preventDefault());
+// Empêche aussi les glissements commencés HORS du cadre (zones vides du jeu).
+// On conserve la sélection, la saisie et les clics dans les champs et boutons.
+document.addEventListener('dragstart', event => {
+  if (document.getElementById('gameArea').style.display !== 'none') {
+    event.preventDefault();
+  }
+}, true);
+document.addEventListener('selectstart', event => {
+  if (document.getElementById('gameArea').style.display === 'none') return;
+  if (event.target.closest('input, textarea, [contenteditable="true"]')) return;
+  event.preventDefault();
+}, true);
+// Un départ de glissement sur le fond ne doit pas produire de sélection fantôme.
+document.addEventListener('mousedown', event => {
+  if (document.getElementById('gameArea').style.display === 'none') return;
+  if (event.button !== 0 || event.target.closest('input, textarea, button, a, [contenteditable="true"]')) return;
+  event.preventDefault();
+}, true);
 
 const LEADERBOARD_API = '/api/leaderboard';
 let leaderboardScoreSubmitted = false;

@@ -1,4 +1,3 @@
-
 export async function onRequestGet(context) {
   const url = new URL(context.request.url);
   const game = url.searchParams.get("game");
@@ -6,6 +5,15 @@ export async function onRequestGet(context) {
   if (!["cine", "animal"].includes(game)) {
     return Response.json({ error: "Invalid game" }, { status: 400 });
   }
+
+  // Cache partagé entre visiteurs : une seule lecture D1 par minute
+  // et par jeu dans chaque emplacement de cache Cloudflare.
+  const cache = caches.default;
+  const cacheKey = new Request(`${url.origin}/api/leaderboard?game=${game}`, {
+    method: "GET"
+  });
+  const cached = await cache.match(cacheKey);
+  if (cached) return cached;
 
   const { results } = await context.env.DB.prepare(`
     SELECT player_name, score, created_at
@@ -15,7 +23,11 @@ export async function onRequestGet(context) {
     LIMIT 1000
   `).bind(game).all();
 
-  return Response.json({ scores: results });
+  const response = Response.json({ scores: results }, {
+    headers: { "Cache-Control": "public, max-age=60" }
+  });
+  context.waitUntil(cache.put(cacheKey, response.clone()));
+  return response;
 }
 
 async function hashSecret(secret) {

@@ -59,10 +59,10 @@ export async function onRequestPost(context) {
       await db.prepare(`INSERT INTO cine_sessions
         (id, created_at, expires_at, round_index, score, streak, used, films_json, round_started_at)
         VALUES (?, ?, ?, 0, 0, 0, 0, ?, ?)`)
-        .bind(id, now, now + TTL, JSON.stringify(ids), now).run();
+        .bind(id, now, now + TTL, JSON.stringify(ids), 0).run();
       return json({ session_id: id, film: publicFilm(FILMS[ids[0]], 0) });
     }
-    if (!['answer', 'skip', 'expire'].includes(body.action)) return json({ error: 'Invalid action' }, 400);
+    if (!['ready', 'answer', 'skip', 'expire'].includes(body.action)) return json({ error: 'Invalid action' }, 400);
     const id = body.session_id;
     if (typeof id !== 'string' || !/^[0-9a-f-]{36}$/i.test(id)) return json({ error: 'Invalid session' }, 400);
     const row = await db.prepare('SELECT * FROM cine_sessions WHERE id = ?').bind(id).first();
@@ -70,6 +70,15 @@ export async function onRequestPost(context) {
     const ids = JSON.parse(row.films_json || '[]');
     if (ids.length !== SIZE || row.round_index >= SIZE) return json({ error: 'Invalid session state' }, 409);
     const film = FILMS[ids[row.round_index]];
+    if (body.action === 'ready') {
+      if (row.round_started_at > 0) return json({ started_at: row.round_started_at });
+      const result = await db.prepare(`UPDATE cine_sessions SET round_started_at = ?
+        WHERE id = ? AND round_index = ? AND round_started_at = 0 AND used = 0`)
+        .bind(now, id, row.round_index).run();
+      if (result.meta?.changes !== 1) return json({ error: 'Already started' }, 409);
+      return json({ started_at: now });
+    }
+    if (!row.round_started_at) return json({ error: 'Round not started' }, 409);
     const elapsed = Math.max(0, now - row.round_started_at);
     const pct = Math.min(100, (elapsed / TICK_MS) * REVEAL_STEP);
     const expired = pct >= 100;
@@ -89,7 +98,7 @@ export async function onRequestPost(context) {
     const result = await db.prepare(`UPDATE cine_sessions SET round_index = ?, score = ?, streak = ?,
       round_started_at = ?, completed_at = ?
       WHERE id = ? AND round_index = ? AND used = 0 AND expires_at >= ?`)
-      .bind(next, score, streak, now, finished ? now : null, id, row.round_index, now).run();
+      .bind(next, score, streak, 0, finished ? now : null, id, row.round_index, now).run();
     if (result.meta?.changes !== 1) return json({ error: 'Concurrent request; retry' }, 409);
     return json({
       correct, points, bonus, score, completed: finished,

@@ -7,12 +7,11 @@ export async function onRequestGet(context) {
     return Response.json({ error: "Invalid game" }, { status: 400 });
   }
 
-  // Cache partagé entre visiteurs : une seule lecture D1 par minute
-  // et par jeu dans chaque emplacement de cache Cloudflare.
   const cache = caches.default;
   const cacheKey = new Request(`${url.origin}/api/leaderboard?game=${game}`, {
     method: "GET"
   });
+
   const cached = await cache.match(cacheKey);
   if (cached) return cached;
 
@@ -27,6 +26,7 @@ export async function onRequestGet(context) {
   const response = Response.json({ scores: results }, {
     headers: { "Cache-Control": "public, max-age=60" }
   });
+
   context.waitUntil(cache.put(cacheKey, response.clone()));
   return response;
 }
@@ -57,22 +57,6 @@ export async function onRequestPost(context) {
       return Response.json({ error: "Invalid game" }, { status: 400 });
     }
 
-    // CINÉ REVEAL : seul l'administrateur peut envoyer un score.
-    // Animal Reveal conserve son fonctionnement habituel.
-    if (game === "cine") {
-      const adminKey = context.request.headers.get("X-Admin-Key");
-
-      if (
-        !context.env.ADMIN_SCORE_KEY ||
-        adminKey !== context.env.ADMIN_SCORE_KEY
-      ) {
-        return Response.json(
-          { error: "Score submission locked" },
-          { status: 403 }
-        );
-      }
-    }
-
     if (
       playerName.length < 1 ||
       playerName.length > 19 ||
@@ -85,10 +69,7 @@ export async function onRequestPost(context) {
       return Response.json({ error: "Invalid score" }, { status: 400 });
     }
 
-    if (
-      secret.length < 4 ||
-      secret.length > 30
-    ) {
+    if (secret.length < 4 || secret.length > 30) {
       return Response.json({ error: "Invalid secret" }, { status: 400 });
     }
 
@@ -101,9 +82,7 @@ export async function onRequestPost(context) {
       LIMIT 1
     `).bind(game, playerName).first();
 
-    // Le pseudo existe déjà.
     if (existingPlayer) {
-      // Ancienne entrée créée avant le système de codes.
       if (!existingPlayer.secret_hash) {
         return Response.json(
           { error: "Reserved legacy player" },
@@ -111,7 +90,6 @@ export async function onRequestPost(context) {
         );
       }
 
-      // Mauvais code : impossible de prendre le pseudo.
       if (existingPlayer.secret_hash !== secretHash) {
         return Response.json(
           { error: "Player name already taken" },
@@ -119,8 +97,6 @@ export async function onRequestPost(context) {
         );
       }
 
-      // Bon code : c'est bien le propriétaire du pseudo.
-      // On ne remplace le score que s'il a battu son record.
       const bestScore = Math.max(existingPlayer.score, score);
 
       await context.env.DB.prepare(`
@@ -137,7 +113,6 @@ export async function onRequestPost(context) {
       });
     }
 
-    // Nouveau pseudo : création du joueur.
     const playerKey = createPlayerKey();
 
     await context.env.DB.prepare(`

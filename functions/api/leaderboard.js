@@ -1,3 +1,4 @@
+
 export async function onRequestGet(context) {
   const url = new URL(context.request.url);
   const game = url.searchParams.get("game");
@@ -54,6 +55,22 @@ export async function onRequestPost(context) {
 
     if (!["cine", "animal"].includes(game)) {
       return Response.json({ error: "Invalid game" }, { status: 400 });
+    }
+
+    // CINÉ REVEAL : seul l'administrateur peut envoyer un score.
+    // Animal Reveal conserve son fonctionnement habituel.
+    if (game === "cine") {
+      const adminKey = context.request.headers.get("X-Admin-Key");
+
+      if (
+        !context.env.ADMIN_SCORE_KEY ||
+        adminKey !== context.env.ADMIN_SCORE_KEY
+      ) {
+        return Response.json(
+          { error: "Score submission locked" },
+          { status: 403 }
+        );
+      }
     }
 
     if (

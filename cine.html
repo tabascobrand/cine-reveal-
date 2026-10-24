@@ -356,7 +356,7 @@
     <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
   </div>
   <div class="input-wrap">
-    <input type="text" id="answerInput" placeholder="Titre du film… (Entrée pour valider)" autocomplete="off" spellcheck="false">
+    <input type="text" id="answerInput" name="movie-guess" placeholder="Titre du film… (Entrée pour valider)" autocomplete="one-time-code" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
     <button class="btn-skip" id="skipBtn" onclick="skipFilm()">PASSER</button>
   </div>
   <div class="feedback" id="feedback"></div>
@@ -643,10 +643,18 @@ let revealStartedAt=0, sessionId=null, serverFilm=null, sessionBusy=false;
 const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=100,SESSION_SIZE=10;
 const SESSION_API='/api/security/session';
 async function sessionCall(action,extra={}){
-  const response=await fetch(SESSION_API,{method:'POST',headers:{'Content-Type':'application/json'},cache:'no-store',body:JSON.stringify({action,session_id:sessionId,...extra})});
-  const result=await response.json().catch(()=>({}));
-  if(!response.ok) throw new Error(result.error||'HTTP '+response.status);
-  return result;
+  // Un léger décalage d'horloge peut faire expirer le tour côté navigateur avant le serveur.
+  for(let attempt=0;attempt<6;attempt++){
+    const response=await fetch(SESSION_API,{method:'POST',headers:{'Content-Type':'application/json'},cache:'no-store',body:JSON.stringify({action,session_id:sessionId,...extra})});
+    const result=await response.json().catch(()=>({}));
+    if(response.ok) return result;
+    if(action==='expire' && response.status===409 && result.error==='Round still active' && attempt<5){
+      await new Promise(resolve=>setTimeout(resolve,180));
+      continue;
+    }
+    console.error('[Ciné Reveal] Session API',action,response.status,result.error||'Réponse invalide');
+    throw new Error(result.error||'HTTP '+response.status);
+  }
 }
 function gameError(){
   clearInterval(revealInterval); answered=true;sessionBusy=false;

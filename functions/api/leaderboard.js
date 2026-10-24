@@ -6,15 +6,7 @@ export async function onRequestGet(context) {
     return Response.json({ error: "Invalid game" }, { status: 400 });
   }
 
-  // Cache partagé entre visiteurs : une seule lecture D1 par minute
-  // et par jeu dans chaque emplacement de cache Cloudflare.
-  const cache = caches.default;
-  const cacheKey = new Request(`${url.origin}/api/leaderboard?game=${game}`, {
-    method: "GET"
-  });
-  const cached = await cache.match(cacheKey);
-  if (cached) return cached;
-
+  // Classement lu directement depuis D1 : aucune version ancienne en cache.
   const { results } = await context.env.DB.prepare(`
     SELECT player_name, score, created_at
     FROM scores
@@ -23,11 +15,9 @@ export async function onRequestGet(context) {
     LIMIT 1000
   `).bind(game).all();
 
-  const response = Response.json({ scores: results }, {
-    headers: { "Cache-Control": "public, max-age=60" }
+  return Response.json({ scores: results }, {
+    headers: { "Cache-Control": "no-store, no-cache, must-revalidate" }
   });
-  context.waitUntil(cache.put(cacheKey, response.clone()));
-  return response;
 }
 
 async function hashSecret(secret) {

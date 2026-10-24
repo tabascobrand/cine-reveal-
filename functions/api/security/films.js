@@ -129,7 +129,7 @@ export const FILMS = [
 {title:"Je suis une légende", accept:["je suis une legende","i am legend"], reject:[], clean:"images/iamlegend-clean.jpg", full:"images/iamlegend.jpg"},
 {title:"Invasion Los Angeles", accept:["invasion los angeles","they live"], reject:[], clean:"images/invasionlosangeles-clean.jpg", full:"images/invasionlosangeles.jpg"},
 {title:"John Wick", accept:["john wick"], reject:[], clean:"images/johnwick-clean.jpg", full:"images/johnwick.jpg"},
-{title:"Jumanji : Bienvenue dans la jungle", accept:["jumanji bienvenue dans la jungle","jumanji welcome to the jungle"], reject:[], clean:"images/jumanji-clean.jpg", full:"images/jumanji.jpg"},
+{title:"Jumanji : Bienvenue dans la jungle", accept:["jumanji bienvenue dans la jungle","jumanji welcome to the jungle","jumanji"], reject:[], clean:"images/jumanji-clean.jpg", full:"images/jumanji.jpg"},
 {title:"Juno", accept:["juno"], reject:[], clean:"images/juno-clean.jpg", full:"images/juno.jpg"},
 {title:"Kingsman : Le Cercle d'or", accept:["kingsman le cercle d or","kingsman the golden circle","kingsman 2"], reject:[], clean:"images/kingsman-clean.jpg", full:"images/kingsman.jpg"},
 {title:"Kong : Skull Island", accept:["kong skull island","skull island","king kong skull island"], reject:[], clean:"images/kong-clean.jpg", full:"images/kong.jpg"},

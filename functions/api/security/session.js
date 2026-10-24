@@ -1,3 +1,4 @@
+
 import { FILMS } from './films.js';
 
 const SIZE = 10;
@@ -7,112 +8,432 @@ const BONUSES = { 3: 220, 6: 440, 10: 2000 };
 const TTL = 30 * 60 * 1000;
 
 function json(data, status = 200) {
-  return Response.json(data, { status, headers: { 'Cache-Control': 'no-store' } });
+  return Response.json(data, {
+    status,
+    headers: { 'Cache-Control': 'no-store' }
+  });
 }
+
 function normalize(s) {
-  return String(s).toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9 ]/g, '');
+  return String(s)
+    .toLowerCase()
+    .trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9 ]/g, '');
 }
-function levenshtein(a, b) {
-  const dp = Array.from({ length: a.length + 1 }, (_, i) => Array(b.length + 1).fill(0));
-  for (let i = 0; i <= a.length; i++) dp[i][0] = i;
-  for (let j = 0; j <= b.length; j++) dp[0][j] = j;
-  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) {
-    dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+
+// Accepte les titres avec ou sans article initial.
+function variants(s) {
+  const raw = String(s)
+    .toLowerCase()
+    .trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+  const basic = normalize(raw);
+  const result = new Set([basic]);
+
+  const withoutArticle = raw
+    .replace(/^(?:the|les|des|le|la|un|une|a|an)\s+/i, '')
+    .replace(/^l[’']\s*/i, '');
+
+  if (withoutArticle !== raw) {
+    result.add(normalize(withoutArticle));
   }
+
+  return [...result].filter(Boolean);
+}
+
+// Distance entre deux textes : tolérance aux fautes.
+function levenshtein(a, b) {
+  const dp = Array.from(
+    { length: a.length + 1 },
+    (_, i) => Array(b.length + 1).fill(0)
+  );
+
+  for (let i = 0; i <= a.length; i++) {
+    dp[i][0] = i;
+  }
+
+  for (let j = 0; j <= b.length; j++) {
+    dp[0][j] = j;
+  }
+
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      dp[i][j] = a[i - 1] === b[j - 1]
+        ? dp[i - 1][j - 1]
+        : 1 + Math.min(
+            dp[i - 1][j],
+            dp[i][j - 1],
+            dp[i - 1][j - 1]
+          );
+    }
+  }
+
   return dp[a.length][b.length];
 }
-const SAGA_FAMILIES = ['taxi', 'bronzes', 'seigneur', 'visiteurs', 'pirate'];
-function saga(s) { return SAGA_FAMILIES.find(f => s.startsWith(f)) || null; }
+
+const SAGA_FAMILIES = [
+  'taxi',
+  'bronzes',
+  'seigneur',
+  'visiteurs',
+  'pirate'
+];
+
+function saga(s) {
+  return SAGA_FAMILIES.find(f => s.startsWith(f)) || null;
+}
+
 function match(input, target) {
-  const a = normalize(input), b = normalize(target);
-  if (a === b) return true;
-  const fam = saga(b);
-  if (fam) {
-    const n = s => (s.match(/(\d+)\s*$/) || [])[1] || null;
-    if (saga(a) !== fam || n(a) !== n(b)) return false;
+  const inputVariants = variants(input);
+  const targetVariants = variants(target);
+
+  for (const a of inputVariants) {
+    for (const b of targetVariants) {
+      if (a === b) return true;
+
+      // Empêche de confondre les numéros des suites.
+      const numbers = s => s.match(/\b\d+\b/g) || [];
+
+      if (numbers(a).join(',') !== numbers(b).join(',')) {
+        continue;
+      }
+
+      // Conserve la protection des familles de sagas.
+      const fam = saga(b);
+
+      if (fam && saga(a) !== fam) {
+        continue;
+      }
+
+      const tolerance = b.length <= 5
+        ? 1
+        : b.length <= 10
+          ? 2
+          : 3;
+
+      if (levenshtein(a, b) <= tolerance) {
+        return true;
+      }
+    }
   }
-  return levenshtein(a, b) <= (b.length <= 5 ? 1 : b.length <= 10 ? 2 : 3);
+
+  return false;
 }
+
 function validAnswer(film, answer) {
-  if ((film.reject || []).some(r => normalize(answer) === normalize(r))) return false;
-  return film.accept.some(a => match(answer, a));
+  // Les réponses explicitement interdites restent prioritaires.
+  if ((film.reject || []).some(r =>
+    variants(answer).some(a => variants(r).includes(a))
+  )) {
+    return false;
+  }
+
+  return (film.accept || []).some(a => match(answer, a));
 }
+
 function publicFilm(film, index) {
-  // Interface actuelle conservée jusqu'à la migration coordonnée de cine.html.
-  return { round: index + 1, clean: film.clean, full: film.full };
+  // Interface actuelle conservée.
+  return {
+    round: index + 1,
+    clean: film.clean,
+    full: film.full
+  };
 }
+
 function shuffleIndices() {
   const ids = FILMS.map((_, i) => i);
+
   for (let i = ids.length - 1; i > 0; i--) {
-    // Tirage uniforme par crypto, sans Math.random modifiable côté navigateur.
-    const bound = Math.floor(0x100000000 / (i + 1)) * (i + 1);
+    const bound =
+      Math.floor(0x100000000 / (i + 1)) * (i + 1);
+
     let value;
-    do { value = crypto.getRandomValues(new Uint32Array(1))[0]; } while (value >= bound);
+
+    do {
+      value = crypto.getRandomValues(
+        new Uint32Array(1)
+      )[0];
+    } while (value >= bound);
+
     const j = value % (i + 1);
+
     [ids[i], ids[j]] = [ids[j], ids[i]];
   }
+
   return ids.slice(0, SIZE);
 }
+
 export async function onRequestPost(context) {
   try {
     const body = await context.request.json();
-    if (!body || typeof body !== 'object' || Array.isArray(body)) return json({ error: 'Invalid request' }, 400);
+
+    if (
+      !body ||
+      typeof body !== 'object' ||
+      Array.isArray(body)
+    ) {
+      return json({ error: 'Invalid request' }, 400);
+    }
+
     const db = context.env.DB;
     const now = Date.now();
+
     if (body.action === 'start') {
-      if (FILMS.length < SIZE) return json({ error: 'Catalogue unavailable' }, 500);
+      if (FILMS.length < SIZE) {
+        return json({
+          error: 'Catalogue unavailable'
+        }, 500);
+      }
+
       const id = crypto.randomUUID();
       const ids = shuffleIndices();
-      await db.prepare(`INSERT INTO cine_sessions
-        (id, created_at, expires_at, round_index, score, streak, used, films_json, round_started_at)
-        VALUES (?, ?, ?, 0, 0, 0, 0, ?, ?)`)
-        .bind(id, now, now + TTL, JSON.stringify(ids), 0).run();
-      return json({ session_id: id, film: publicFilm(FILMS[ids[0]], 0) });
+
+      await db.prepare(`
+        INSERT INTO cine_sessions
+        (
+          id,
+          created_at,
+          expires_at,
+          round_index,
+          score,
+          streak,
+          used,
+          films_json,
+          round_started_at
+        )
+        VALUES (?, ?, ?, 0, 0, 0, 0, ?, ?)
+      `)
+        .bind(
+          id,
+          now,
+          now + TTL,
+          JSON.stringify(ids),
+          0
+        )
+        .run();
+
+      return json({
+        session_id: id,
+        film: publicFilm(FILMS[ids[0]], 0)
+      });
     }
-    if (!['ready', 'answer', 'skip', 'expire'].includes(body.action)) return json({ error: 'Invalid action' }, 400);
+
+    if (
+      !['ready', 'answer', 'skip', 'expire']
+        .includes(body.action)
+    ) {
+      return json({
+        error: 'Invalid action'
+      }, 400);
+    }
+
     const id = body.session_id;
-    if (typeof id !== 'string' || !/^[0-9a-f-]{36}$/i.test(id)) return json({ error: 'Invalid session' }, 400);
-    const row = await db.prepare('SELECT * FROM cine_sessions WHERE id = ?').bind(id).first();
-    if (!row || row.used || row.expires_at < now) return json({ error: 'Session unavailable' }, 403);
-    const ids = JSON.parse(row.films_json || '[]');
-    if (!Array.isArray(ids) || ids.length !== SIZE || !Number.isInteger(row.round_index) || row.round_index < 0 || row.round_index >= SIZE)
-      return json({ error: 'Invalid session state' }, 409);
-    const filmIndex = ids[row.round_index];
-    if (!Number.isInteger(filmIndex) || !FILMS[filmIndex]) return json({ error: 'Invalid film state' }, 409);
-    const film = FILMS[filmIndex];
-    if (body.action === 'ready') {
-      if (row.round_started_at > 0) return json({ started_at: row.round_started_at });
-      const result = await db.prepare(`UPDATE cine_sessions SET round_started_at = ?
-        WHERE id = ? AND round_index = ? AND round_started_at = 0 AND used = 0 AND expires_at >= ?`)
-        .bind(now, id, row.round_index, now).run();
-      if (result.meta?.changes !== 1) return json({ error: 'Already started' }, 409);
-      return json({ started_at: now });
+
+    if (
+      typeof id !== 'string' ||
+      !/^[0-9a-f-]{36}$/i.test(id)
+    ) {
+      return json({
+        error: 'Invalid session'
+      }, 400);
     }
-    if (!row.round_started_at) return json({ error: 'Round not started' }, 409);
-    const elapsed = Math.max(0, now - row.round_started_at);
-    const pct = Math.min(100, (elapsed / TICK_MS) * REVEAL_STEP);
+
+    const row = await db
+      .prepare('SELECT * FROM cine_sessions WHERE id = ?')
+      .bind(id)
+      .first();
+
+    if (
+      !row ||
+      row.used ||
+      row.expires_at < now
+    ) {
+      return json({
+        error: 'Session unavailable'
+      }, 403);
+    }
+
+    const ids = JSON.parse(row.films_json || '[]');
+
+    if (
+      !Array.isArray(ids) ||
+      ids.length !== SIZE ||
+      !Number.isInteger(row.round_index) ||
+      row.round_index < 0 ||
+      row.round_index >= SIZE
+    ) {
+      return json({
+        error: 'Invalid session state'
+      }, 409);
+    }
+
+    const filmIndex = ids[row.round_index];
+
+    if (
+      !Number.isInteger(filmIndex) ||
+      !FILMS[filmIndex]
+    ) {
+      return json({
+        error: 'Invalid film state'
+      }, 409);
+    }
+
+    const film = FILMS[filmIndex];
+
+    if (body.action === 'ready') {
+      if (row.round_started_at > 0) {
+        return json({
+          started_at: row.round_started_at
+        });
+      }
+
+      const result = await db.prepare(`
+        UPDATE cine_sessions
+        SET round_started_at = ?
+        WHERE id = ?
+          AND round_index = ?
+          AND round_started_at = 0
+          AND used = 0
+          AND expires_at >= ?
+      `)
+        .bind(
+          now,
+          id,
+          row.round_index,
+          now
+        )
+        .run();
+
+      if (result.meta?.changes !== 1) {
+        return json({
+          error: 'Already started'
+        }, 409);
+      }
+
+      return json({
+        started_at: now
+      });
+    }
+
+    if (!row.round_started_at) {
+      return json({
+        error: 'Round not started'
+      }, 409);
+    }
+
+    const elapsed = Math.max(
+      0,
+      now - row.round_started_at
+    );
+
+    const pct = Math.min(
+      100,
+      (elapsed / TICK_MS) * REVEAL_STEP
+    );
+
     const expired = pct >= 100;
-    const answer = typeof body.answer === 'string' ? body.answer.slice(0, 150) : '';
-    const correct = body.action === 'answer' && !expired && validAnswer(film, answer);
-    if (body.action === 'answer' && !correct && !expired) return json({ correct: false, completed: false });
-    if (body.action === 'expire' && !expired) return json({ error: 'Round still active' }, 409);
-    const points = correct ? Math.max(0, Math.round(100 * (1 - pct / 100))) : 0;
-    const streak = correct ? row.streak + 1 : 0;
-    const bonus = correct ? (BONUSES[streak] || 0) : 0;
-    const score = row.score + points + bonus;
+
+    const answer =
+      typeof body.answer === 'string'
+        ? body.answer.slice(0, 150)
+        : '';
+
+    const correct =
+      body.action === 'answer' &&
+      !expired &&
+      validAnswer(film, answer);
+
+    if (
+      body.action === 'answer' &&
+      !correct &&
+      !expired
+    ) {
+      return json({
+        correct: false,
+        completed: false
+      });
+    }
+
+    if (
+      body.action === 'expire' &&
+      !expired
+    ) {
+      return json({
+        error: 'Round still active'
+      }, 409);
+    }
+
+    const points = correct
+      ? Math.max(
+          0,
+          Math.round(100 * (1 - pct / 100))
+        )
+      : 0;
+
+    const streak = correct
+      ? row.streak + 1
+      : 0;
+
+    const bonus = correct
+      ? (BONUSES[streak] || 0)
+      : 0;
+
+    const score =
+      row.score + points + bonus;
+
     const next = row.round_index + 1;
     const finished = next === SIZE;
-    const result = await db.prepare(`UPDATE cine_sessions SET round_index = ?, score = ?, streak = ?,
-      round_started_at = ?, completed_at = ?
-      WHERE id = ? AND round_index = ? AND used = 0 AND expires_at >= ?`)
-      .bind(next, score, streak, 0, finished ? now : null, id, row.round_index, now).run();
-    if (result.meta?.changes !== 1) return json({ error: 'Concurrent request; retry' }, 409);
+
+    const result = await db.prepare(`
+      UPDATE cine_sessions
+      SET
+        round_index = ?,
+        score = ?,
+        streak = ?,
+        round_started_at = ?,
+        completed_at = ?
+      WHERE id = ?
+        AND round_index = ?
+        AND used = 0
+        AND expires_at >= ?
+    `)
+      .bind(
+        next,
+        score,
+        streak,
+        0,
+        finished ? now : null,
+        id,
+        row.round_index,
+        now
+      )
+      .run();
+
+    if (result.meta?.changes !== 1) {
+      return json({
+        error: 'Concurrent request; retry'
+      }, 409);
+    }
+
     return json({
-      correct, points, bonus, score, completed: finished,
+      correct,
+      points,
+      bonus,
+      score,
+      completed: finished,
       revealed_title: film.title,
-      next_film: finished ? null : publicFilm(FILMS[ids[next]], next)
+      next_film: finished
+        ? null
+        : publicFilm(FILMS[ids[next]], next)
     });
+
   } catch (error) {
-    return json({ error: 'Invalid request' }, 400);
+    return json({
+      error: 'Invalid request'
+    }, 400);
   }
 }

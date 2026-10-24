@@ -296,7 +296,7 @@ export const FILMS = [
   {title:"Blade Runner", accept:["blade runner"], reject:[], clean:"images/bladerunner-clean.jpg", full:"images/bladerunner.jpg"},
   {title:"Bohemian Rhapsody", accept:["bohemian rhapsody"], reject:[], clean:"images/bohemian-clean.jpg", full:"images/bohemian.jpg"},
   {title:"Qu'est-ce qu'on a fait au Bon Dieu ?", accept:["qu est ce qu on a fait au bon dieu","purge 1"], reject:[], clean:"images/bondieu-clean.jpg", full:"images/bondieu.jpg"},
-  {title:"Qu'est-ce qu'on a encore fait au Bon Dieu ?", accept:["qu est ce qu on a encore fait au bon dieu","purge 2"], reject:[], clean:"images/bondieu2-clean.jpg", full:"images/bondieu2.jpg"},
+  {title:"Qu'est-ce qu'on a tous fait au Bon Dieu ?", accept:["qu est ce qu on a tous fait au bon dieu","purge 3"], reject:[], clean:"images/bondieu2-clean.jpg", full:"images/bondieu2.jpg"},
   {title:"Borat", accept:["borat"], reject:[], clean:"images/borat-clean.jpg", full:"images/borat.jpg"},
   {title:"Boulevard de la mort", accept:["boulevard de la mort", "death proof"], reject:[], clean:"images/boulevard-clean.jpg", full:"images/boulevard.jpg"},
   {title:"Brice de Nice", accept:["brice de nice"], reject:[], clean:"images/brice-clean.jpg", full:"images/brice.jpg"},

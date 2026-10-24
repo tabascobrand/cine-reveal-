@@ -81,7 +81,7 @@ export const FILMS = [
 {title:"La Planète des singes : Suprématie", accept:["La Planète des singes : Suprématie","War for the Planet of the Apes","la planète des singes 3"], reject:["la planète des singes","la planète des singes 2", "la planète des singes 4"], clean:"images/planetesinge-clean.jpg", full:"images/planetesinge.jpg"},
 {title:"Ponyo sur la falaise", accept:["ponyo sur la falaise","ponyo"], reject:[], clean:"images/ponyo-clean.jpg", full:"images/ponyo.jpg"},
 {title:"Rango", accept:["rango"], reject:[], clean:"images/rango-clean.jpg", full:"images/rango.jpg"},
-{title:"Rambo 2 : La Mission", accept:["rambo 2","rambo first blood part ii","rambo la mission"], reject:[], clean:"images/rocky2-clean.jpg", full:"images/rocky2.jpg"},
+{title:"Rambo 2 : La Mission", accept:["rambo 2","rambo first blood part ii","rambo la mission"], reject:["rambo"], clean:"images/rocky2-clean.jpg", full:"images/rocky2.jpg"},
 {title:"Le Roi Lion", accept:["le roi lion","the lion king","roi lion","lion king"], reject:[], clean:"images/roilion-clean.jpg", full:"images/roilion.jpg"},
 {title:"Saw X", accept:["saw x","saw 10"], reject:[], clean:"images/saw10-clean.jpg", full:"images/saw10.jpg"},
 {title:"Scary Movie", accept:["scary movie"], reject:[], clean:"images/scarymovie-clean.jpg", full:"images/scarymovie.jpg"},

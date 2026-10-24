@@ -38,12 +38,17 @@ function validAnswer(film, answer) {
   return film.accept.some(a => match(answer, a));
 }
 function publicFilm(film, index) {
+  // Interface actuelle conservée jusqu'à la migration coordonnée de cine.html.
   return { round: index + 1, clean: film.clean, full: film.full };
 }
 function shuffleIndices() {
   const ids = FILMS.map((_, i) => i);
   for (let i = ids.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    // Tirage uniforme par crypto, sans Math.random modifiable côté navigateur.
+    const bound = Math.floor(0x100000000 / (i + 1)) * (i + 1);
+    let value;
+    do { value = crypto.getRandomValues(new Uint32Array(1))[0]; } while (value >= bound);
+    const j = value % (i + 1);
     [ids[i], ids[j]] = [ids[j], ids[i]];
   }
   return ids.slice(0, SIZE);
@@ -51,9 +56,11 @@ function shuffleIndices() {
 export async function onRequestPost(context) {
   try {
     const body = await context.request.json();
+    if (!body || typeof body !== 'object' || Array.isArray(body)) return json({ error: 'Invalid request' }, 400);
     const db = context.env.DB;
     const now = Date.now();
     if (body.action === 'start') {
+      if (FILMS.length < SIZE) return json({ error: 'Catalogue unavailable' }, 500);
       const id = crypto.randomUUID();
       const ids = shuffleIndices();
       await db.prepare(`INSERT INTO cine_sessions
@@ -68,13 +75,16 @@ export async function onRequestPost(context) {
     const row = await db.prepare('SELECT * FROM cine_sessions WHERE id = ?').bind(id).first();
     if (!row || row.used || row.expires_at < now) return json({ error: 'Session unavailable' }, 403);
     const ids = JSON.parse(row.films_json || '[]');
-    if (ids.length !== SIZE || row.round_index >= SIZE) return json({ error: 'Invalid session state' }, 409);
-    const film = FILMS[ids[row.round_index]];
+    if (!Array.isArray(ids) || ids.length !== SIZE || !Number.isInteger(row.round_index) || row.round_index < 0 || row.round_index >= SIZE)
+      return json({ error: 'Invalid session state' }, 409);
+    const filmIndex = ids[row.round_index];
+    if (!Number.isInteger(filmIndex) || !FILMS[filmIndex]) return json({ error: 'Invalid film state' }, 409);
+    const film = FILMS[filmIndex];
     if (body.action === 'ready') {
       if (row.round_started_at > 0) return json({ started_at: row.round_started_at });
       const result = await db.prepare(`UPDATE cine_sessions SET round_started_at = ?
-        WHERE id = ? AND round_index = ? AND round_started_at = 0 AND used = 0`)
-        .bind(now, id, row.round_index).run();
+        WHERE id = ? AND round_index = ? AND round_started_at = 0 AND used = 0 AND expires_at >= ?`)
+        .bind(now, id, row.round_index, now).run();
       if (result.meta?.changes !== 1) return json({ error: 'Already started' }, 409);
       return json({ started_at: now });
     }
@@ -82,11 +92,9 @@ export async function onRequestPost(context) {
     const elapsed = Math.max(0, now - row.round_started_at);
     const pct = Math.min(100, (elapsed / TICK_MS) * REVEAL_STEP);
     const expired = pct >= 100;
-    const answer = String(body.answer || '').slice(0, 150);
+    const answer = typeof body.answer === 'string' ? body.answer.slice(0, 150) : '';
     const correct = body.action === 'answer' && !expired && validAnswer(film, answer);
-    if (body.action === 'answer' && !correct && !expired) {
-      return json({ correct: false, completed: false });
-    }
+    if (body.action === 'answer' && !correct && !expired) return json({ correct: false, completed: false });
     if (body.action === 'expire' && !expired) return json({ error: 'Round still active' }, 409);
     const points = correct ? Math.max(0, Math.round(100 * (1 - pct / 100))) : 0;
     const streak = correct ? row.streak + 1 : 0;
@@ -94,7 +102,6 @@ export async function onRequestPost(context) {
     const score = row.score + points + bonus;
     const next = row.round_index + 1;
     const finished = next === SIZE;
-    // Atomic update prevents two simultaneous requests from advancing the same round twice.
     const result = await db.prepare(`UPDATE cine_sessions SET round_index = ?, score = ?, streak = ?,
       round_started_at = ?, completed_at = ?
       WHERE id = ? AND round_index = ? AND used = 0 AND expires_at >= ?`)

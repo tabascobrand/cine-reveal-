@@ -54,7 +54,7 @@ export const FILMS = [
 {title:"Jumanji : Bienvenue dans la jungle", accept:["jumanji bienvenue dans la jungle","jumanji welcome to the jungle"], reject:[], clean:"images/jumanji-clean.jpg", full:"images/jumanji.jpg"},
 {title:"Juno", accept:["juno"], reject:[], clean:"images/juno-clean.jpg", full:"images/juno.jpg"},
 {title:"Kingsman : Le Cercle d'or", accept:["kingsman le cercle d or","kingsman the golden circle","kingsman 2"], reject:[], clean:"images/kingsman-clean.jpg", full:"images/kingsman.jpg"},
-{title:"Kong : Skull Island", accept:["kong skull island","skull island"], reject:[], clean:"images/kong-clean.jpg", full:"images/kong.jpg"},
+{title:"Kong : Skull Island", accept:["kong skull island","skull island","king kong skull island"], reject:[], clean:"images/kong-clean.jpg", full:"images/kong.jpg"},
 {title:"La Cité de Dieu", accept:["la cite de dieu","city of god","cidade de deus"], reject:[], clean:"images/lacitededieu-clean.jpg", full:"images/lacitededieu.jpg"},
 {title:"Là-haut", accept:["la haut","up"], reject:[], clean:"images/lahaut-clean.jpg", full:"images/lahaut.jpg"},
 {title:"La Leçon de piano", accept:["la lecon de piano","the piano"], reject:[], clean:"images/leconpiano-clean.jpg", full:"images/leconpiano.jpg"},

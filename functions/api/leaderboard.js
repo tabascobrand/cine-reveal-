@@ -9,7 +9,7 @@ export async function onRequestGet(context) {
   // Cache partagé entre visiteurs : une seule lecture D1 par minute
   // et par jeu dans chaque emplacement de cache Cloudflare.
   const cache = caches.default;
-  const cacheKey = new Request(${url.origin}/api/leaderboard?game=${game}, {
+  const cacheKey = new Request(`${url.origin}/api/leaderboard?game=${game}`, {
     method: "GET"
   });
   const cached = await cache.match(cacheKey);

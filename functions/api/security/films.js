@@ -25,7 +25,7 @@ export const FILMS = [
 {title:"Barbie", accept:["barbie"], reject:[], clean:"images/barbie-clean.jpg", full:"images/barbie.jpg"},
 {title:"The Beekeeper", accept:["the beekeeper","beekeeper"], reject:[], clean:"images/beekeeper-clean.jpg", full:"images/beekeeper.jpg"},
 {title:"Blade Runner 2049", accept:["blade runner 2049"], reject:["blade runner"], clean:"images/bladerunner2049-clean.jpg", full:"images/bladerunner2049.jpg"},
-{title:"Bob l'éponge - Le film : Un héros sort de l'eau", accept:["bob l eponge le film","the spongebob squarepants movie","spongebob squarepants movie"], reject:[], clean:"images/bobleeponge-clean.jpg", full:"images/bobleeponge.jpg"},
+{title:"Bob l'éponge - Le film : Un héros sort de l'eau", accept:["bob l eponge le film","the spongebob squarepants movie","spongebob squarepants movie"], reject:[], clean:"images/bobleponge-clean.jpg", full:"images/bobleponge.jpg"},
 {title:"Captain America : Brave New World", accept:["captain america brave new world","captain america 4"], reject:["captain america"], clean:"images/bravenewworld-clean.jpg", full:"images/bravenewworld.jpg"},
 {title:"Bullet Train", accept:["bullet train"], reject:[], clean:"images/bullettrain-clean.png", full:"images/bullettrain.png"},
 {title:"La Cabane dans les bois", accept:["la cabane dans les bois","cabane dans les bois","the cabin in the woods","cabin in the woods"], reject:[], clean:"images/cabanebois-clean.jpg", full:"images/cabanebois.jpg"},

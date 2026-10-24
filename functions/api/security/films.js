@@ -10,7 +10,7 @@ export const FILMS = [
 {title:"Le Boulet", accept:["le boulet","boulet"], reject:[], clean:"images/boulet-clean.jpg", full:"images/boulet.jpg"},
 {title:"Buffet froid", accept:["buffet froid"], reject:[], clean:"images/buffetfroid-clean.jpg", full:"images/buffetfroid.jpg"},
 {title:"Coco", accept:["coco"], reject:[], clean:"images/coco-clean.jpg", full:"images/coco.jpg"},
-{title:"Ducobu : Le Fantôme de Saint-Potache", accept:["ducobu le fantome de saint potache","ducobu et le fantome de saint potache"], reject:["ducobu"], clean:"images/ducobufantome-clean.jpg", full:"images/ducobufantome.jpg"},
+{title:"Ducobu : Le Fantôme de Saint-Potache", accept:["ducobu le fantome de saint potache","ducobu et le fantome de saint potache"], reject:["ducobu","l'eleve ducobu"], clean:"images/ducobufantome-clean.jpg", full:"images/ducobufantome.jpg"},
 {title:"La Soif de l'or", accept:["la soif de l or","soif de l or"], reject:[], clean:"images/soifor-clean.jpg", full:"images/soifor.jpg"},
 {title:"Terminator", accept:["terminator","the terminator"], reject:["terminator 2"], clean:"images/terminator-clean.jpg", full:"images/terminator.jpg"},
 {title:"Terminator 2 : Le Jugement dernier", accept:["terminator 2","terminator 2 le jugement dernier","terminator 2 judgment day","terminator 2 judgement day"], reject:["terminator"], clean:"images/terminator2-clean.jpg", full:"images/terminator2.jpg"},

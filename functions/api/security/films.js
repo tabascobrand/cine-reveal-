@@ -90,7 +90,6 @@ export const FILMS = [
 {title:"Sinners", accept:["sinners"], reject:[], clean:"images/sinners-clean.jpg", full:"images/sinners.jpg"},
 {title:"Soul", accept:["soul"], reject:[], clean:"images/soul-clean.jpg", full:"images/soul.jpg"},
 {title:"La Folle Histoire de l'espace", accept:["la folle histoire de l espace","spaceballs"], reject:[], clean:"images/spaceballs-clean.jpg", full:"images/spaceballs.jpg"},
-{title:"Space Jam : Nouvelle Ère", accept:["space jam nouvelle ere","space jam 2","space jam a new legacy"], reject:[], clean:"images/spacejam2-clean.jpg", full:"images/spacejam2.jpg"},
 {title:"Spider-Man 3", accept:["spider man 3","spiderman 3"], reject:[], clean:"images/spiderman3-clean.jpg", full:"images/spiderman3.jpg"},
 {title:"Spider-Man : Across the Spider-Verse", accept:["spider man across the spider verse","spiderman across the spiderverse"], reject:[], clean:"images/spidermanacross-clean.jpg", full:"images/spidermanacross.jpg"},
 {title:"Spider-Man : New Generation", accept:["spider man new generation","spider man into the spider verse","spiderman into the spiderverse"], reject:[], clean:"images/spidermaninto-clean.jpg", full:"images/spidermaninto.jpg"},

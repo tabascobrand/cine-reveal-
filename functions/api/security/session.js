@@ -14,16 +14,83 @@ function json(data, status = 200) {
   });
 }
 
+// Nombres écrits en français ou en anglais.
+const NUMBER_WORDS = {
+  zero: 0,
+  un: 1, une: 1, one: 1,
+  premier: 1, premiere: 1, first: 1,
+  deux: 2, two: 2, second: 2, seconde: 2, deuxieme: 2,
+  trois: 3, three: 3, troisieme: 3, third: 3,
+  quatre: 4, four: 4, quatrieme: 4, fourth: 4,
+  cinq: 5, five: 5, cinquieme: 5, fifth: 5,
+  six: 6, sixieme: 6, sixth: 6,
+  sept: 7, seven: 7, septieme: 7, seventh: 7,
+  huit: 8, eight: 8, huitieme: 8, eighth: 8,
+  neuf: 9, nine: 9, neuvieme: 9, ninth: 9,
+  dix: 10, ten: 10, dixieme: 10, tenth: 10,
+  onze: 11, eleven: 11,
+  douze: 12, twelve: 12,
+  treize: 13, thirteen: 13,
+  quatorze: 14, fourteen: 14,
+  quinze: 15, fifteen: 15,
+  seize: 16, sixteen: 16,
+  dixsept: 17, seventeen: 17,
+  dixhuit: 18, eighteen: 18,
+  dixneuf: 19, nineteen: 19,
+  vingt: 20, twenty: 20
+};
+
+const ROMAN_NUMERALS = {
+  i: 1, ii: 2, iii: 3, iv: 4, v: 5,
+  vi: 6, vii: 7, viii: 8, ix: 9, x: 10
+};
+
 function normalize(s) {
   return String(s)
     .toLowerCase()
     .trim()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9 ]/g, '');
+    .replace(/[’']/g, ' ')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ');
 }
 
-// Accepte les titres avec ou sans article initial.
+// Convertit les nombres en une forme commune.
+function canonicalNumbers(s) {
+  const words = s.split(' ');
+
+  return words.map((word, index) => {
+    if (/^\d+(?:er|ere|e|eme|st|nd|rd|th)$/.test(word)) {
+      return String(Number(word.match(/^\d+/)[0]));
+    }
+
+    if (Object.prototype.hasOwnProperty.call(NUMBER_WORDS, word)) {
+      // Évite de convertir les articles initiaux un/une/one.
+      if (
+        index === 0 &&
+        ['un', 'une', 'one'].includes(word)
+      ) {
+        return word;
+      }
+
+      return String(NUMBER_WORDS[word]);
+    }
+
+    // Chiffres romains, sauf en première position.
+    if (
+      index > 0 &&
+      Object.prototype.hasOwnProperty.call(ROMAN_NUMERALS, word)
+    ) {
+      return String(ROMAN_NUMERALS[word]);
+    }
+
+    return word;
+  }).join(' ');
+}
+
+// Génère les versions avec ou sans article initial.
 function variants(s) {
   const raw = String(s)
     .toLowerCase()
@@ -31,21 +98,21 @@ function variants(s) {
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
 
-  const basic = normalize(raw);
-  const result = new Set([basic]);
+  const base = canonicalNumbers(normalize(raw));
+  const result = new Set([base]);
 
   const withoutArticle = raw
     .replace(/^(?:the|les|des|le|la|un|une|a|an)\s+/i, '')
     .replace(/^l[’']\s*/i, '');
 
   if (withoutArticle !== raw) {
-    result.add(normalize(withoutArticle));
+    result.add(canonicalNumbers(normalize(withoutArticle)));
   }
 
   return [...result].filter(Boolean);
 }
 
-// Distance entre deux textes : tolérance aux fautes.
+// Tolérance aux fautes de frappe.
 function levenshtein(a, b) {
   const dp = Array.from(
     { length: a.length + 1 },
@@ -95,14 +162,13 @@ function match(input, target) {
     for (const b of targetVariants) {
       if (a === b) return true;
 
-      // Empêche de confondre les numéros des suites.
+      // Les numéros doivent être identiques après conversion.
       const numbers = s => s.match(/\b\d+\b/g) || [];
 
       if (numbers(a).join(',') !== numbers(b).join(',')) {
         continue;
       }
 
-      // Conserve la protection des familles de sagas.
       const fam = saga(b);
 
       if (fam && saga(a) !== fam) {
@@ -125,7 +191,7 @@ function match(input, target) {
 }
 
 function validAnswer(film, answer) {
-  // Les réponses explicitement interdites restent prioritaires.
+  // Les réponses interdites restent prioritaires.
   if ((film.reject || []).some(r =>
     variants(answer).some(a => variants(r).includes(a))
   )) {

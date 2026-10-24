@@ -33,7 +33,7 @@ export const FILMS = [
 {title:"Les Cinq Légendes", accept:["les cinq legendes","cinq legendes","rise of the guardians"], reject:[], clean:"images/cinqlegendes-clean.jpg", full:"images/cinqlegendes.jpg"},
 {title:"Le Choc des Titans", accept:["le choc des titans","choc des titans","clash of the titans"], reject:[], clean:"images/clashtitans-clean.jpg", full:"images/clashtitans.jpg"},
 {title:"Coyote vs. Acme", accept:["coyote","Coyote vs. Acme"], reject:[], clean:"images/coyote-clean.jpg", full:"images/coyote.jpg"},
-{title:"The Dark Knight", accept:["the dark knight","dark knight","the dark knight le chevalier noir","le chevalier noir","chevalier noir","batman the dark knight","batman dark knight"], reject:["batman"], clean:"images/darkknight-clean.jpg", full:"images/darkknight.jpg"},
+{title:"The Dark Knight, Le Chevalier Noir", accept:["the dark knight","dark knight","the dark knight le chevalier noir","le chevalier noir","chevalier noir","batman the dark knight","batman dark knight"], reject:["batman"], clean:"images/darkknight-clean.jpg", full:"images/darkknight.jpg"},
 {title:"The Taking of Deborah Logan", accept:["the taking of deborah logan","taking of deborah logan","deborah logan"], reject:[], clean:"images/deborahlogan-clean.jpg", full:"images/deborahlogan.jpg"},
 {title:"Digger", accept:["digger"], reject:[], clean:"images/digger-clean.jpg", full:"images/digger.jpg"},
 {title:"Dirty Dancing", accept:["dirty dancing"], reject:[], clean:"images/dirtydancing-clean.jpg", full:"images/dirtydancing.jpg"},

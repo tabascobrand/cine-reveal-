@@ -1,7 +1,7 @@
 // Catalogue de référence côté serveur pour Ciné Reveal.
 export const FILMS = [
   
-{title:"Rogue One", accept:["rogue one","rogue one a star wars story","rogue one une histoire de star wars","star wars rogue one"], reject:[], clean:"images/rogueone-clean.jpg", full:"images/rogueone.jpg"},
+{title:"Rogue One: A Star Wars Story", accept:["rogue one","rogue one a star wars story","rogue one une histoire de star wars","star wars rogue one"], reject:[], clean:"images/rogueone-clean.jpg", full:"images/rogueone.jpg"},
 {title:"Sans filtre", accept:["sans filtre","triangle of sadness"], reject:[], clean:"images/sansfiltre-clean.jpg", full:"images/sansfiltre.jpg"},
 {title:"Scary Movie 2", accept:["scary movie 2","scary movie ii"], reject:["scary movie"], clean:"images/scarymovie2-clean.jpg", full:"images/scarymovie2.jpg"},
 {title:"Sleepy Hollow", accept:["sleepy hollow","sleepy hollow la legende du cavalier sans tete"], reject:[], clean:"images/sleepy-clean.jpg", full:"images/sleepy.jpg"},

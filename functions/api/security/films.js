@@ -78,7 +78,7 @@ export const FILMS = [
 {title:"La Princesse et la Grenouille", accept:["la princesse et la grenouille","princesse et la grenouille","the princess and the frog","princess and the frog"], reject:[], clean:"images/princessegrenouille-clean.jpg", full:"images/princessegrenouille.jpg"},
 {title:"Le Robot sauvage", accept:["le robot sauvage","robot sauvage","the wild robot","wild robot"], reject:[], clean:"images/robotsauvage-clean.png", full:"images/robotsauvage.png"},
 {title:"Rocketman", accept:["rocketman"], reject:[], clean:"images/rocketman-clean.png", full:"images/rocketman.png"},
-{title:"La Vérité si je mens ! 3", accept:["la verite si je mens 3","verite si je mens 3","la verite si je mens trois"], reject:["la verite si je mens"], clean:"images/verite-clean.jpg", full:"images/verite3.jpg"},
+{title:"La Vérité si je mens ! 3", accept:["la verite si je mens 3","verite si je mens 3","la verite si je mens trois"], reject:["la verite si je mens"], clean:"images/verite3-clean.jpg", full:"images/verite3.jpg"},
   {title:"Drive", accept:["drive","conduire"], reject:[], clean:"images/drive-clean.jpg", full:"images/drive.jpg"},
   {title:"8 Mile", accept:["8 mile","eight mile"], reject:[], clean:"images/8mile-clean.jpg", full:"images/8mile.jpg"},
   {title:"1001 Pattes", accept:["1001 pattes","mille et une pattes","a bug's life","a bugs life"], reject:[], clean:"images/1001pattes-clean.jpg", full:"images/1001pattes.jpg"},

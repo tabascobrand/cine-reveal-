@@ -40,7 +40,7 @@ export const FILMS = [
 {title:"Dragons", accept:["dragons","how to train your dragon"], reject:[], clean:"images/dragon-clean.jpg", full:"images/dragon.jpg"},
 {title:"Dunkerque", accept:["dunkerque","dunkirk"], reject:[], clean:"images/dunkerke-clean.jpg", full:"images/dunkerke.jpg"},
 {title:"Englouti !", accept:["englouti","sinkhole"], reject:[], clean:"images/englouti-clean.jpg", full:"images/englouti.jpg"},
-{title:"Les 4 Fantastiques : Premiers pas", accept:["les 4 fantastiques premiers pas","les quatre fantastiques premiers pas","the fantastic four first steps","fantastic four first steps"], reject:["les 4 fantastiques","fantastic four"], clean:"images/fantasticfourfirststeps-clean.jpg", full:"images/fantasticfourfirststeps.jpg"},
+{title:"Les 4 Fantastiques : Premiers pas", accept:["les 4 fantastiques premiers pas","les quatre fantastiques premiers pas","the fantastic four first steps","fantastic four first steps","fantastic 4 first steps","4 fantastics first steps"], reject:["les 4 fantastiques","fantastic four"], clean:"images/fantasticfourfirststeps-clean.jpg", full:"images/fantasticfourfirststeps.jpg"},
 {title:"Le Fantôme de l'Opéra", accept:["le fantome de l opera","fantome de l opera","the phantom of the opera","phantom of the opera"], reject:[], clean:"images/fantomeopera-clean.jpg", full:"images/fantomeopera.jpg"},
 {title:"Fight Club", accept:["fight club"], reject:[], clean:"images/fightclub-clean.jpg", full:"images/fightclub.jpg"},
 {title:"The French Dispatch", accept:["the french dispatch","french dispatch"], reject:[], clean:"images/frenchdispatch-clean.jpg", full:"images/frenchdispatch.jpg"},

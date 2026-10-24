@@ -51,6 +51,7 @@ export async function onRequestPost(context) {
     const playerName = String(body.player_name || "").trim();
     const score = Number(body.score);
     const secret = String(body.secret || "").trim();
+    const sessionId = body.session_id;
 
     if (!["cine", "animal"].includes(game)) {
       return Response.json({ error: "Invalid game" }, { status: 400 });
@@ -75,6 +76,27 @@ export async function onRequestPost(context) {
       return Response.json({ error: "Invalid secret" }, { status: 400 });
     }
 
+    // Animal Reveal conserve exactement son ancien fonctionnement.
+    // Ciné Reveal n'accepte que le score calculé par une session D1 terminée.
+    let cineSession = null;
+    if (game === "cine") {
+      if (typeof sessionId !== "string" || !/^[0-9a-f-]{36}$/i.test(sessionId)) {
+        return Response.json({ error: "Invalid session" }, { status: 403 });
+      }
+      cineSession = await context.env.DB.prepare(`
+        SELECT score, round_index, completed_at, expires_at, used
+        FROM cine_sessions WHERE id = ?
+      `).bind(sessionId).first();
+      if (!cineSession || cineSession.used !== 0 || cineSession.round_index !== 10 ||
+          cineSession.completed_at == null || cineSession.expires_at < Date.now() ||
+          !Number.isInteger(cineSession.score) || cineSession.score < 0 || cineSession.score > 3660) {
+        return Response.json({ error: "Session incomplete or unavailable" }, { status: 403 });
+      }
+      if (score !== cineSession.score) {
+        return Response.json({ error: "Score does not match session" }, { status: 403 });
+      }
+    }
+
     const secretHash = await hashSecret(secret);
 
     const existingPlayer = await context.env.DB.prepare(`
@@ -83,6 +105,25 @@ export async function onRequestPost(context) {
       WHERE game = ? AND player_name = ? COLLATE NOCASE
       LIMIT 1
     `).bind(game, playerName).first();
+
+    // On ne consomme une session qu'après vérification du pseudo et du code.
+    if (game === "cine" && existingPlayer &&
+        (!existingPlayer.secret_hash || existingPlayer.secret_hash !== secretHash)) {
+      return Response.json({ error: existingPlayer.secret_hash
+        ? "Player name already taken" : "Reserved legacy player" }, { status: 409 });
+    }
+
+    // Réservation atomique : une même session ne peut servir qu'une seule fois.
+    if (game === "cine") {
+      const claim = await context.env.DB.prepare(`
+        UPDATE cine_sessions SET used = 1
+        WHERE id = ? AND used = 0 AND round_index = 10
+          AND completed_at IS NOT NULL AND expires_at >= ? AND score = ?
+      `).bind(sessionId, Date.now(), score).run();
+      if (claim.meta?.changes !== 1) {
+        return Response.json({ error: "Session already submitted or expired" }, { status: 403 });
+      }
+    }
 
     // Le pseudo existe déjà.
     if (existingPlayer) {

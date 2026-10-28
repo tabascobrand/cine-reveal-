@@ -121,19 +121,19 @@
   }
   .screen.active { display: flex; }
   .screen-title { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 6px; color: var(--gold); }
-  /* Ouverture horizontale du titre CINÉ REVEAL */
+/* Ouverture horizontale lente du titre CINÉ REVEAL */
 #screenStart .screen-title {
-  clip-path: inset(0 50% 0 50%);
-  animation: revealTitleOpen 1.8s cubic-bezier(0.65, 0, 0.2, 1) forwards;
+    clip-path: inset(0 50% 0 50%);
+    animation: revealTitleOpen 3.5s cubic-bezier(0.45, 0, 0.15, 1) forwards;
 }
 
 @keyframes revealTitleOpen {
-  0% {
-    clip-path: inset(0 50% 0 50%);
-  }
-  100% {
-    clip-path: inset(0 0 0 0);
-  }
+    0% {
+        clip-path: inset(0 50% 0 50%);
+    }
+    100% {
+        clip-path: inset(0 0 0 0);
+    }
 }
   .screen-sub { color: var(--gray); font-size: 0.85rem; letter-spacing: 1px; line-height: 1.6; }
   .btn-primary {

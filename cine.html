@@ -73,7 +73,7 @@
   .pts-badge {
     position: absolute; top: 12px; right: 12px;
     background: rgba(0,0,0,0.75); border: 1px solid var(--gold);
-    color: var(--gold); font-family: 'Bebas Neue', sans-serif;
+    color: var(--gold); font-family: ' Neue', sans-serif;
     font-size: 1.4rem; padding: 4px 12px; letter-spacing: 2px; transition: color 0.3s;
   }
   .pts-badge.low { color: var(--red); border-color: var(--red); }
@@ -121,6 +121,20 @@
   }
   .screen.active { display: flex; }
   .screen-title { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 6px; color: var(--gold); }
+  /* Ouverture horizontale du titre CINÉ REVEAL */
+#screenStart .screen-title {
+  clip-path: inset(0 50% 0 50%);
+  animation: revealTitleOpen 1.8s cubic-bezier(0.65, 0, 0.2, 1) forwards;
+}
+
+@keyframes revealTitleOpen {
+  0% {
+    clip-path: inset(0 50% 0 50%);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
   .screen-sub { color: var(--gray); font-size: 0.85rem; letter-spacing: 1px; line-height: 1.6; }
   .btn-primary {
     background: var(--gold); color: #000; font-family: 'Bebas Neue', sans-serif;

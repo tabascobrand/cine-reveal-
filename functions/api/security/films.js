@@ -181,7 +181,7 @@ export const FILMS = [
 {title:"The Thing", accept:["the thing","thing"], reject:[], clean:"images/thething-clean.jpg", full:"images/thething.jpg"},
 {title:"The Whale", accept:["the whale","whale"], reject:[], clean:"images/thewhale-clean.jpg", full:"images/thewhale.jpg"},
 {title:"Thirteen", accept:["thirteen","treize"], reject:[], clean:"images/thirteen-clean.jpg", full:"images/thirteen.jpg"},
-{title:"Les Aventures de Tintin : Le Secret de la Licorne", accept:["les aventures de tintin le secret de la licorne","tintin le secret de la licorne","the adventures of tintin"], reject:[], clean:"images/tintin-clean.jpg", full:"images/tintin.jpg"},
+{title:"Les Aventures de Tintin : Le Secret de la Licorne", accept:["les aventures de tintin le secret de la licorne","tintin le secret de la licorne","the adventures of tintin","tintin secret licorne"], reject:[], clean:"images/tintin-clean.jpg", full:"images/tintin.jpg"},
 {title:"Trainspotting", accept:["trainspotting"], reject:[], clean:"images/trainspotting-clean.jpg", full:"images/trainspotting.jpg"},
 {title:"I Saw the TV Glow", accept:["i saw the tv glow"], reject:[], clean:"images/tvglow-clean.jpg", full:"images/tvglow.jpg"},
 {title:"Twilight : Fascination", accept:["twilight","twilight fascination"], reject:[], clean:"images/twilight-clean.jpg", full:"images/twilight.jpg"},

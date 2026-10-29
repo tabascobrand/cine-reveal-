@@ -315,6 +315,16 @@
   .site-footer a:hover { color: var(--white); }
   .site-footer-thirdparty { font-size: 0.48rem; color: #444455; }
 
+
+/* Barre de volume musique : rail jaune, curseur noir constant. */
+#musicVolume { -webkit-appearance:none; appearance:none; width:90px; height:10px; background:var(--gold); border:0; border-radius:0; outline:none; cursor:pointer; accent-color:var(--gold); }
+#musicVolume::-webkit-slider-runnable-track { height:10px; background:var(--gold); border:0; border-radius:0; }
+#musicVolume::-moz-range-track { height:10px; background:var(--gold); border:0; border-radius:0; }
+#musicVolume::-moz-range-progress { height:10px; background:var(--gold); border:0; }
+#musicVolume::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:14px; height:18px; margin-top:-4px; background:#08090f; border:1px solid var(--gold); border-radius:0; box-shadow:none; }
+#musicVolume::-moz-range-thumb { width:14px; height:18px; background:#08090f; border:1px solid var(--gold); border-radius:0; box-shadow:none; }
+#musicVolume:hover::-webkit-slider-thumb, #musicVolume:focus::-webkit-slider-thumb, #musicVolume:active::-webkit-slider-thumb { background:#08090f; border-color:var(--gold); box-shadow:none; }
+#musicVolume:hover::-moz-range-thumb, #musicVolume:focus::-moz-range-thumb, #musicVolume:active::-moz-range-thumb { background:#08090f; border-color:var(--gold); box-shadow:none; }
 </style>
 </head>
 <body class="start-scroll">
@@ -342,7 +352,7 @@
     <button id="musicBtn" onclick="toggleMusic()" title="Activer la musique" aria-label="Activer la musique" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gray);opacity:0.5;display:flex;align-items:center;justify-content:center;position:relative;top:-3px;">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
     </button>
-    <input id="musicVolume" type="range" min="0" max="100" value="35" step="1" aria-label="Volume de la musique" title="Volume de la musique" oninput="setMusicVolume(this.value)" style="display:none;width:90px;accent-color:var(--gold);cursor:pointer;vertical-align:middle;margin:0 0 5px -7px;" />
+    <input id="musicVolume" type="range" min="0" max="100" value="35" step="1" aria-label="Volume de la musique" title="Volume de la musique" oninput="setMusicVolume(this.value)" style="display:none;width:90px;cursor:pointer;vertical-align:middle;margin:0 0 5px -7px;" />
     </span>
   </div>
   <div class="score-display">

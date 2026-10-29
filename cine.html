@@ -6330,7 +6330,7 @@ function toggleForest(){
 }
 
 // Musique personnelle : premier clic démarre, puis sourdine sans pause.
-const MUSIC_SRC = 'musique1.mp3';
+const MUSIC_SRC = '/musique1.mp3';
 const musicAudio = new Audio(MUSIC_SRC);
 musicAudio.loop = true;
 musicAudio.preload = 'auto';
@@ -6345,13 +6345,17 @@ function updateMusicButton(){
   btn.setAttribute('aria-label',btn.title);
 }
 function toggleMusic(){
+  // Même principe que les oiseaux : lecture déclenchée directement par le clic.
   if(!musicStarted){
-    musicAudio.currentTime=0;
-    musicStarted=true;
+    musicAudio.currentTime = 0;
+    musicStarted = true;
   }
-  musicAudio.muted=!musicAudio.muted;
-  // La lecture continue pendant la sourdine, sans reprendre au début.
-  if(musicAudio.paused) musicAudio.play().catch(err=>console.warn('Musique non disponible :',MUSIC_SRC,err));
+  musicAudio.muted = !musicAudio.muted;
+  // Ne jamais mettre en pause quand on coupe le son : la piste continue en silence.
+  const playback = musicAudio.play();
+  if(playback && typeof playback.catch === 'function') {
+    playback.catch(err => console.error('Lecture musique impossible :', MUSIC_SRC, err));
+  }
   updateMusicButton();
 }
 function resetGameAudio(){

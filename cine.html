@@ -326,6 +326,17 @@
 #musicVolume::-moz-range-thumb { width:10px; height:12px; background:#08090f; border:1px solid var(--gold); border-radius:0; box-shadow:none; }
 #musicVolume:hover::-webkit-slider-thumb, #musicVolume:focus::-webkit-slider-thumb, #musicVolume:active::-webkit-slider-thumb { background:#08090f; border-color:var(--gold); box-shadow:none; }
 #musicVolume:hover::-moz-range-thumb, #musicVolume:focus::-moz-range-thumb, #musicVolume:active::-moz-range-thumb { background:#08090f; border-color:var(--gold); box-shadow:none; }
+  /* Croix de nettoyage du champ de recherche : jaune, sans bleu natif. */
+  #answerInput::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    background: var(--gold);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 5L19 19M19 5L5 19' stroke='black' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 5L19 19M19 5L5 19' stroke='black' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
 </style>
 </head>
 <body class="start-scroll">
@@ -402,7 +413,7 @@
     <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
   </div>
   <div class="input-wrap">
-  <input type="search" id="answerInput" name="film-search-query" placeholder="Titre du film… (Entrée pour valider)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true">
+  <input type="search" id="answerInput" name="film-search-query" placeholder="Titre du film… (Entrée pour valider)" autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true">
     <button class="btn-validate" id="validateAnswerBtn" type="button" onclick="validateCurrentAnswer()">VALIDER</button>
     <button class="btn-skip" id="skipBtn" onclick="skipFilm()">PASSER</button>
   </div>
@@ -5370,7 +5381,7 @@ const FILMS = [
       "les deux tours",
       "le seigneur des anneaux 2",
       "lord of the rings 2",
-      "lotr 2"
+      "lotr 2",
       "lord of the rings the two towers"
     ],
     "reject": [
@@ -5389,7 +5400,7 @@ const FILMS = [
       "le retour du roi",
       "le seigneur des anneaux 3",
       "lord of the rings 3",
-      "lord of the rings return of the king"
+      "lord of the rings return of the king",
       "lotr 3"
     ],
     "reject": [
@@ -6055,6 +6066,10 @@ function markProgressSegment(index, correct){
 }
 
 function startGame(){
+  // Le champ de code secret n'est pas un mot de passe de connexion pendant le jeu.
+  const gameSecretField = document.getElementById('leaderboardSecret');
+  gameSecretField.type = 'text';
+  gameSecretField.disabled = true;
   document.body.classList.remove('start-scroll');
   document.getElementById('screenStart').classList.remove('active');
   document.getElementById('gameArea').style.display='flex';
@@ -6276,6 +6291,8 @@ function endGame(){
   loadLeaderboard();
   const lbName=document.getElementById('leaderboardName');
   const lbSecret=document.getElementById('leaderboardSecret');
+  // Restaurer le masquage du code secret avant d'afficher le classement.
+  lbSecret.type = 'password';
   const lbBtn=document.getElementById('leaderboardSubmitBtn');
   const lbStatus=document.getElementById('leaderboardStatus');
   if(lbName){ lbName.disabled=false; lbName.value=''; }
@@ -6290,6 +6307,9 @@ function endGame(){
 }
 
 function restartGame(){
+  const gameSecretField = document.getElementById('leaderboardSecret');
+  gameSecretField.type = 'text';
+  gameSecretField.disabled = true;
   document.body.classList.remove('score-visible');
   document.getElementById('screenEnd').classList.remove('active');
   document.getElementById('headerScore').textContent='0';

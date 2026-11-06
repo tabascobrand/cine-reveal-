@@ -12,7 +12,7 @@ export async function onRequestGet(context) {
     FROM scores
     WHERE game = ?
     ORDER BY score DESC, created_at ASC
-    LIMIT 1000
+    LIMIT 2000
   `).bind(game).all();
 
   return Response.json({ scores: results });

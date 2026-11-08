@@ -419,14 +419,14 @@
     "image": "images-jeux-video/outerwilds.png"
   },
   {
-    "title": "Rayman",
+    "title": "Rayman 2: The Great Escape",
     "accept": [
-      "Rayman",
-      "rayman 1",
+      "Rayman 2",
+      "Rayman 2: The Great Escape",
       "rayman ps1"
     ],
     "reject": [
-      "rayman 2",
+      "rayman",
       "rayman 3",
       "rayman origins",
       "rayman legends"
@@ -584,13 +584,11 @@
     "image": "images-jeux-video/tunic.png"
   },
   {
-    "title": "X-Men Origins: Wolverine",
+    "title": "Marvel's Wolverine",
     "accept": [
-      "X-Men Origins: Wolverine",
-      "X Men Origins Wolverine",
-      "Wolverine Origins",
-      "X Men Wolverine",
-      "Wolverine"
+      "Marvel's Wolverine",
+      "marvel wolverine",
+      "wolverine marvel"
     ],
     "reject": [],
     "image": "images-jeux-video/wolverine.png"

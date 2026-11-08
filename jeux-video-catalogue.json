@@ -1,0 +1,608 @@
+[
+  {
+    "title": "The Legend of Zelda: A Link to the Past",
+    "accept": [
+      "The Legend of Zelda: A Link to the Past",
+      "zelda a link to the past",
+      "a link to the past",
+      "zelda 3",
+      "zelda un lien vers le passe"
+    ],
+    "reject": [
+      "zelda",
+      "the legend of zelda"
+    ],
+    "image": "images-jeux-video/zeldaalinktothepast.png"
+  },
+  {
+    "title": "A Big Walk",
+    "accept": [
+      "A Big Walk",
+      "big walk"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/abigwalk.png"
+  },
+  {
+    "title": "Disney’s Aladdin (SNES)",
+    "accept": [
+      "Disney’s Aladdin (SNES)",
+      "aladdin snes",
+      "aladin snes",
+      "disney aladdin snes",
+      "aladdin super nintendo"
+    ],
+    "reject": [
+      "aladdin megadrive",
+      "aladdin genesis"
+    ],
+    "image": "images-jeux-video/aladinsnes.png"
+  },
+  {
+    "title": "Anthem",
+    "accept": [
+      "Anthem"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/anthem.png"
+  },
+  {
+    "title": "Astérix (SNES)",
+    "accept": [
+      "Astérix (SNES)",
+      "asterix snes",
+      "asterix super nintendo"
+    ],
+    "reject": [
+      "asterix et obelix",
+      "asterix and obelix"
+    ],
+    "image": "images-jeux-video/asterixsnes.png"
+  },
+  {
+    "title": "Balatro",
+    "accept": [
+      "Balatro"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/balatro.png"
+  },
+  {
+    "title": "Baldur’s Gate 3",
+    "accept": [
+      "Baldur’s Gate 3",
+      "baldurs gate iii",
+      "bg3"
+    ],
+    "reject": [
+      "baldurs gate",
+      "baldurs gate 2"
+    ],
+    "image": "images-jeux-video/baldursgate3.png"
+  },
+  {
+    "title": "Bayonetta",
+    "accept": [
+      "Bayonetta",
+      "bayonetta 1"
+    ],
+    "reject": [
+      "bayonetta 2",
+      "bayonetta 3"
+    ],
+    "image": "images-jeux-video/bayonetta.png"
+  },
+  {
+    "title": "Beat Saber",
+    "accept": [
+      "Beat Saber",
+      "beatsaber"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/beatsaber.png"
+  },
+  {
+    "title": "BioShock",
+    "accept": [
+      "BioShock",
+      "bioshock 1"
+    ],
+    "reject": [
+      "bioshock 2",
+      "bioshock infinite"
+    ],
+    "image": "images-jeux-video/bioshock.png"
+  },
+  {
+    "title": "Black & White 2",
+    "accept": [
+      "Black & White 2",
+      "black and white 2",
+      "black white 2"
+    ],
+    "reject": [
+      "black and white",
+      "black white"
+    ],
+    "image": "images-jeux-video/blackandwhite2.png"
+  },
+  {
+    "title": "Broforce",
+    "accept": [
+      "Broforce"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/broforce.png"
+  },
+  {
+    "title": "Chants of Sennaar",
+    "accept": [
+      "Chants of Sennaar",
+      "chants of sennar",
+      "chant of sennaar"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/chantsofsennar.png"
+  },
+  {
+    "title": "Chasm",
+    "accept": [
+      "Chasm"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/chasm.png"
+  },
+  {
+    "title": "Crash Bandicoot",
+    "accept": [
+      "Crash Bandicoot",
+      "crash bandicoot 1",
+      "crash 1"
+    ],
+    "reject": [
+      "crash bandicoot 2",
+      "crash bandicoot 3",
+      "crash 2",
+      "crash 3"
+    ],
+    "image": "images-jeux-video/crashbandicoot1.png"
+  },
+  {
+    "title": "Crypt of the NecroDancer",
+    "accept": [
+      "Crypt of the NecroDancer",
+      "crypt of the necro dancer",
+      "necrodancer"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/cryptofthenecrodancer.png"
+  },
+  {
+    "title": "Cuphead",
+    "accept": [
+      "Cuphead"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/cuphead.png"
+  },
+  {
+    "title": "Cyberpunk 2077",
+    "accept": [
+      "Cyberpunk 2077",
+      "cyberpunk"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/cyberpunk.png"
+  },
+  {
+    "title": "Ghost of Tsushima",
+    "accept": [
+      "Ghost of Tsushima",
+      "ghost tsushima"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/ghostoftsushima.png"
+  },
+  {
+    "title": "God of War III",
+    "accept": [
+      "God of War III",
+      "god of war 3",
+      "gow 3"
+    ],
+    "reject": [
+      "god of war",
+      "god of war 2",
+      "god of war ragnarok"
+    ],
+    "image": "images-jeux-video/godofwar3.png"
+  },
+  {
+    "title": "God of War Ragnarök",
+    "accept": [
+      "God of War Ragnarök",
+      "god of war ragnarok",
+      "gow ragnarok"
+    ],
+    "reject": [
+      "god of war",
+      "god of war 3",
+      "god of war 2018"
+    ],
+    "image": "images-jeux-video/godofwarragnarok.png"
+  },
+  {
+    "title": "Goof Troop",
+    "accept": [
+      "Goof Troop",
+      "la bande a dingo",
+      "goof troop snes"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/gooftroop.png"
+  },
+  {
+    "title": "Hogwarts Legacy",
+    "accept": [
+      "Hogwarts Legacy",
+      "hogwarts legacy l heritage de poudlard",
+      "l heritage de poudlard",
+      "hogwarts",
+      "poudlard legacy"
+    ],
+    "reject": [
+      "harry potter"
+    ],
+    "image": "images-jeux-video/harrypotterhogwartz.png"
+  },
+  {
+    "title": "Disney’s Hercules",
+    "accept": [
+      "Disney’s Hercules",
+      "Hercules",
+      "Hercule",
+      "Hercule Disney",
+      "Disney Hercules",
+      "Hercules PS1",
+      "Hercule PS1"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/herculesnes.png"
+  },
+  {
+    "title": "Hitman: Blood Money",
+    "accept": [
+      "Hitman: Blood Money",
+      "hitman blood money"
+    ],
+    "reject": [
+      "hitman",
+      "hitman absolution",
+      "hitman 2",
+      "hitman 3"
+    ],
+    "image": "images-jeux-video/hitmanbloodmoney.png"
+  },
+  {
+    "title": "Kingdom Hearts",
+    "accept": [
+      "Kingdom Hearts",
+      "kingdom hearts 1",
+      "kh1"
+    ],
+    "reject": [
+      "kingdom hearts 2",
+      "kingdom hearts 3"
+    ],
+    "image": "images-jeux-video/kingdomhearts.png"
+  },
+  {
+    "title": "The Last of Us",
+    "accept": [
+      "The Last of Us",
+      "last of us",
+      "the last of us part 1",
+      "the last of us part i",
+      "last of us 1"
+    ],
+    "reject": [
+      "the last of us part 2",
+      "the last of us part ii",
+      "last of us 2"
+    ],
+    "image": "images-jeux-video/lastofus.png"
+  },
+  {
+    "title": "Mafia: The Old Country",
+    "accept": [
+      "Mafia: The Old Country",
+      "mafia the old country",
+      "mafia old country"
+    ],
+    "reject": [
+      "mafia",
+      "mafia 2",
+      "mafia 3"
+    ],
+    "image": "images-jeux-video/mafiaoldcountry.png"
+  },
+  {
+    "title": "Mario Kart 8",
+    "accept": [
+      "Mario Kart 8",
+      "mario kart 8 deluxe",
+      "mario kart viii",
+      "mk8"
+    ],
+    "reject": [
+      "mario kart",
+      "mario kart 7",
+      "mario kart wii",
+      "mario kart double dash",
+      "super mario kart"
+    ],
+    "image": "images-jeux-video/mariokart8.png"
+  },
+  {
+    "title": "Mario Kart: Double Dash!!",
+    "accept": [
+      "Mario Kart: Double Dash!!",
+      "mario kart double dash",
+      "mario kart double dash gamecube"
+    ],
+    "reject": [
+      "mario kart",
+      "mario kart 8",
+      "mario kart 64"
+    ],
+    "image": "images-jeux-video/mariokartdoubledash.png"
+  },
+  {
+    "title": "Mario Kart 64",
+    "accept": [
+      "Mario Kart 64",
+      "mario kart n64",
+      "mk64"
+    ],
+    "reject": [
+      "mario kart",
+      "mario kart 8",
+      "super mario kart"
+    ],
+    "image": "images-jeux-video/mariokartn64.png"
+  },
+  {
+    "title": "Super Mario Kart",
+    "accept": [
+      "Super Mario Kart",
+      "mario kart snes",
+      "mario kart super nintendo",
+      "super mario kart snes"
+    ],
+    "reject": [
+      "mario kart",
+      "mario kart 64",
+      "mario kart 8"
+    ],
+    "image": "images-jeux-video/mariokartsnes.png"
+  },
+  {
+    "title": "Super Mario 64",
+    "accept": [
+      "Super Mario 64",
+      "mario 64",
+      "super mario sixty four"
+    ],
+    "reject": [
+      "super mario bros",
+      "super mario odyssey"
+    ],
+    "image": "images-jeux-video/marion64.png"
+  },
+  {
+    "title": "Minecraft",
+    "accept": [
+      "Minecraft"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/minecraft.png"
+  },
+  {
+    "title": "Outer Wilds",
+    "accept": [
+      "Outer Wilds"
+    ],
+    "reject": [
+      "outer worlds",
+      "the outer worlds"
+    ],
+    "image": "images-jeux-video/outerwilds.png"
+  },
+  {
+    "title": "Rayman",
+    "accept": [
+      "Rayman",
+      "rayman 1",
+      "rayman ps1"
+    ],
+    "reject": [
+      "rayman 2",
+      "rayman 3",
+      "rayman origins",
+      "rayman legends"
+    ],
+    "image": "images-jeux-video/raymanps1.png"
+  },
+  {
+    "title": "Rematch",
+    "accept": [
+      "Rematch"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/rematch.png"
+  },
+  {
+    "title": "Rocket League",
+    "accept": [
+      "Rocket League"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/rocketleague.png"
+  },
+  {
+    "title": "Sonic the Hedgehog",
+    "accept": [
+      "Sonic the Hedgehog",
+      "sonic 1",
+      "sonic the hedgehog 1",
+      "sonic megadrive",
+      "sonic genesis"
+    ],
+    "reject": [
+      "sonic 2",
+      "sonic 3",
+      "sonic mania"
+    ],
+    "image": "images-jeux-video/sonicmegadrive.png"
+  },
+  {
+    "title": "Spyro: Year of the Dragon",
+    "accept": [
+      "Spyro: Year of the Dragon",
+      "spyro 3",
+      "spyro year of the dragon",
+      "spyro le dragon 3"
+    ],
+    "reject": [
+      "spyro",
+      "spyro 1",
+      "spyro 2"
+    ],
+    "image": "images-jeux-video/spyro3.png"
+  },
+  {
+    "title": "The Stanley Parable",
+    "accept": [
+      "The Stanley Parable",
+      "stanley parable",
+      "the stanley parable ultra deluxe"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/stanleyparable.png"
+  },
+  {
+    "title": "Star Fox Adventures",
+    "accept": [
+      "Star Fox Adventures",
+      "starfox adventures",
+      "star fox adventure"
+    ],
+    "reject": [
+      "star fox",
+      "star fox 64",
+      "starfox 64"
+    ],
+    "image": "images-jeux-video/starfoxadventure.png"
+  },
+  {
+    "title": "Street Fighter II",
+    "accept": [
+      "Street Fighter II",
+      "street fighter 2",
+      "street fighter ii turbo",
+      "street fighter 2 turbo"
+    ],
+    "reject": [
+      "street fighter",
+      "street fighter 3",
+      "street fighter 4",
+      "street fighter 5",
+      "street fighter 6"
+    ],
+    "image": "images-jeux-video/streetfighter2.png"
+  },
+  {
+    "title": "Super Ghouls ’n Ghosts",
+    "accept": [
+      "Super Ghouls ’n Ghosts",
+      "super ghouls n ghosts",
+      "super ghouls and ghosts",
+      "super ghouls ghosts"
+    ],
+    "reject": [
+      "ghosts n goblins",
+      "ghouls n ghosts"
+    ],
+    "image": "images-jeux-video/superghoulsnghost.png"
+  },
+  {
+    "title": "Super Mario Bros.",
+    "accept": [
+      "Super Mario Bros.",
+      "super mario bros 1",
+      "super mario brothers",
+      "super mario bros nes"
+    ],
+    "reject": [
+      "super mario bros 2",
+      "super mario bros 3",
+      "new super mario bros"
+    ],
+    "image": "images-jeux-video/supermariobros.png"
+  },
+  {
+    "title": "The Witcher 3: Wild Hunt",
+    "accept": [
+      "The Witcher 3: Wild Hunt",
+      "witcher 3",
+      "the witcher 3",
+      "the witcher iii",
+      "witcher 3 wild hunt"
+    ],
+    "reject": [
+      "the witcher",
+      "the witcher 2"
+    ],
+    "image": "images-jeux-video/thewitcher3.png"
+  },
+  {
+    "title": "Tintin au Tibet",
+    "accept": [
+      "Tintin au Tibet",
+      "tintin in tibet",
+      "tintin au tibet snes"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/tintinautibet.png"
+  },
+  {
+    "title": "Tunic",
+    "accept": [
+      "Tunic"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/tunic.png"
+  },
+  {
+    "title": "X-Men Origins: Wolverine",
+    "accept": [
+      "X-Men Origins: Wolverine",
+      "X Men Origins Wolverine",
+      "Wolverine Origins",
+      "X Men Wolverine",
+      "Wolverine"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/wolverine.png"
+  },
+  {
+    "title": "Black Myth: Wukong",
+    "accept": [
+      "Black Myth: Wukong",
+      "black myth wukong",
+      "wukong"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/wukong.png"
+  }
+]

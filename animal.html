@@ -40,8 +40,8 @@
   .progress-seg.pg-missed { background: #e2564f; }
   .progress-seg.pg-partial { background: var(--orange); }
   .game-area {
-    width: 100%; max-width: 700px; padding: 16px 20px;
-    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    width: 100%; max-width: 1360px; padding: 10px 16px 10px;
+    display: flex; flex-direction: column; align-items: center; gap: 9px;
     flex: 1; overflow: hidden;
   }
   @media (max-height: 500px) {
@@ -54,9 +54,9 @@
     font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent);
   }
   .photo-container {
-    position: relative; width: 100%; max-width: 340px; aspect-ratio: 2/3;
+    position: relative; width: min(100%, 900px, calc((100dvh - 205px) * 0.6666667)); aspect-ratio: 2/3;
     flex-shrink: 1; min-height: 0;
-    max-height: calc(100vh - 280px); max-height: calc(100dvh - 280px);
+    max-height: calc(100vh - 205px); max-height: calc(100dvh - 205px);
     margin: 0 auto;
     background: #000; overflow: hidden; border: 2px solid #1e1e2e; transition: border-color 0.2s;
   }
@@ -111,6 +111,18 @@
   }
   .screen.active { display: flex; }
   .screen-title { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 6px; color: var(--accent); }
+  /* Même ouverture du titre que sur CINÉ REVEAL. */
+  #screenStart .screen-title {
+    clip-path: inset(0 50% 0 50%);
+    animation: revealTitleOpen 3.5s cubic-bezier(0.45, 0, 0.15, 1) forwards;
+  }
+  @keyframes revealTitleOpen {
+    0% { clip-path: inset(0 50% 0 50%); }
+    100% { clip-path: inset(0 0 0 0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #screenStart .screen-title { animation: none; clip-path: none; }
+  }
   .screen-sub { color: var(--gray); font-size: 0.85rem; letter-spacing: 1px; line-height: 1.6; }
   .btn-primary {
     background: var(--accent); color: #000; font-family: 'Bebas Neue', sans-serif;
@@ -123,6 +135,8 @@
   .leaderboard-preview {
     width: 100%; max-width: 440px; margin-top: 44px;
   }
+  /* Alignement du classement sur la page d’accueil, comme CINÉ REVEAL. */
+  #screenStart .leaderboard-preview { margin-top: 19px; }
   .leaderboard-title {
     font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 4px;
     text-align: center; color: var(--accent); margin-bottom: 14px;

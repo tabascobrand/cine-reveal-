@@ -39,8 +39,8 @@
   .progress-seg.pg-correct { background: #4caf6e; }
   .progress-seg.pg-missed { background: #e2564f; }
   .game-area {
-    width: 100%; max-width: 700px; padding: 16px 20px 16px;
-    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    width: 100%; max-width: 1360px; padding: 10px 16px 10px;
+    display: flex; flex-direction: column; align-items: center; gap: 9px;
     flex: 1; overflow: hidden;
   }
   /* Se déclenche quand la hauteur visible se réduit (clavier mobile ouvert),
@@ -56,9 +56,9 @@
     font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold);
   }
   .poster-container {
-    position: relative; width: 100%; max-width: 340px; aspect-ratio: 2/3;
+    position: relative; width: min(100%, 900px, calc((100dvh - 205px) * 0.6666667)); aspect-ratio: 2/3;
     flex-shrink: 1; min-height: 0;
-    max-height: calc(100vh - 280px); max-height: calc(100dvh - 280px);
+    max-height: calc(100vh - 205px); max-height: calc(100dvh - 205px);
     margin: 0 auto;
     background: #000; overflow: hidden; border: 2px solid #1e1e2e; transition: border-color 0.15s;
   }

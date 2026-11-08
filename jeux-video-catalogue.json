@@ -24,11 +24,11 @@
     "image": "images-jeux-video/abigwalk.png"
   },
   {
-    "title": "Disney’s Aladdin (SNES)",
+    "title": "Aladdin",
     "accept": [
-      "Disney’s Aladdin (SNES)",
-      "aladdin snes",
-      "aladin snes",
+      "aladdin",
+      "alladdin",
+      "aladin snes","alladdin snes",
       "disney aladdin snes",
       "aladdin super nintendo"
     ],
@@ -47,9 +47,9 @@
     "image": "images-jeux-video/anthem.png"
   },
   {
-    "title": "Astérix (SNES)",
+    "title": "Astérix",
     "accept": [
-      "Astérix (SNES)",
+      "Astérix",
       "asterix snes",
       "asterix super nintendo"
     ],
@@ -256,7 +256,7 @@
     "image": "images-jeux-video/harrypotterhogwartz.png"
   },
   {
-    "title": "Disney’s Hercules",
+    "title": "Hercules",
     "accept": [
       "Disney’s Hercules",
       "Hercules",

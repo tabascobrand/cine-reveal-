@@ -584,13 +584,10 @@
     "image": "images-jeux-video/tunic.png"
   },
   {
-    "title": "X-Men Origins: Wolverine",
+    "title": "Marvel's Wolverine",
     "accept": [
-      "X-Men Origins: Wolverine",
-      "X Men Origins Wolverine",
-      "Wolverine Origins",
-      "X Men Wolverine",
-      "Wolverine"
+      "Marvel's Wolverine",
+      "Marvel wolverine", "wolverine marvel"
     ],
     "reject": [],
     "image": "images-jeux-video/wolverine.png"

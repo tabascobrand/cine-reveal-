@@ -2,9 +2,9 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" href="favicon.ico.pokemon.png">
+<link rel="icon" href="favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>POKÉMON REVEAL — Devine le Pokémon/title>
+<title>POKÉMON REVEAL — Devine le jeu</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -29,7 +29,7 @@
     width: 100%; padding: 18px 32px; display: flex;
     align-items: center; justify-content: space-between; border-bottom: 1px solid #1e1e2e;
   }
-  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 4px; color: var(--gold); }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 4px; color: #ef4444; }
   .logo span { color: var(--white); }
   .score-display { display: flex; flex-direction: column; align-items: flex-end; }
   .score-label { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gray); }
@@ -122,7 +122,7 @@
   .screen.active { display: flex; }
   .screen-title { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 6px; color: var(--gold); }
 /* Ouverture horizontale lente du titre POKÉMON REVEAL */
-#screenStart .screen-title {
+#screenStart .screen-title, #generationMenu .screen-title {
     clip-path: inset(0 50% 0 50%);
     animation: revealTitleOpen 3.5s cubic-bezier(0.45, 0, 0.15, 1) forwards;
 }
@@ -147,7 +147,9 @@
   .leaderboard-preview {
     width: 100%; max-width: 440px; margin-top: 44px;
   }
-  #screenStart .leaderboard-preview { margin-top: 19px; }
+  #screenStart .leaderboard-preview { margin-top: 0; }
+  #screenStart #catalogNotice:empty { display: none; }
+  #screenStart #selectedGenLabel { color: #ef4444; }
   .leaderboard-title {
     font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 4px;
     text-align: center; color: var(--gold); margin-bottom: 14px;
@@ -346,13 +348,13 @@
   .video-banner-arrow {margin-left:auto;color:var(--gold);font-size:1.2rem;}
   @media (max-width:650px) {.poster-container{width:100%;max-width:100%;}.game-area{gap:12px;}}
 
-  .generation-grid{display:grid;grid-template-columns:1fr 1fr;width:100%;gap:10px}
-  .generation-btn{background:#17171e;color:#f3f3f4;border:1px solid #4b2930;padding:18px 9px;font-family:'Bebas Neue',sans-serif;font-size:1.32rem;letter-spacing:1.4px;cursor:pointer;transition:background .2s,border-color .2s}
-  .generation-btn:hover{background:#35191f;border-color:#ef4444}
-  .generation-btn.all{grid-column:1/-1;background:#7d1b23;border-color:#ef4444;font-size:1.6rem}
+  .generation-grid{display:grid;grid-template-columns:1fr 1fr;width:100%;column-gap:20px;row-gap:20px;margin-top:22px}
+  .generation-btn{background:transparent;color:#ef4444;border:2px solid #ef4444;padding:19px 10px;font-family:'Bebas Neue',sans-serif;font-size:1.32rem;letter-spacing:1.4px;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s,transform .2s}
+  .generation-btn:hover,.generation-btn:focus-visible{background:rgba(239,68,68,.075);color:#ef4444;box-shadow:none;transform:none}
+  .generation-btn.all{grid-column:1/-1;font-size:1.6rem}
   .return-btn{border:0;background:transparent;color:#ef4444;font:600 12px Inter,sans-serif;letter-spacing:1px;cursor:pointer;padding:10px}
   .poster-img{object-fit:contain}
-  @media(max-width:650px){.poster-container{max-width:min(100%,70dvh);max-height:min(100vw,70dvh)}.generation-grid{gap:8px}.generation-btn{font-size:1.1rem;padding:14px 5px}}
+  @media(max-width:650px){.poster-container{max-width:min(100%,70dvh);max-height:min(100vw,70dvh)}.generation-grid{column-gap:12px;row-gap:15px}.generation-btn{font-size:1.1rem;padding:16px 5px}}
 </style>
 </head>
 <body class="start-scroll">
@@ -394,9 +396,8 @@
 <div class="score-popup" id="scorePopup"></div>
 <div class="streak-fx" id="streakFX"></div>
 
-<div class="screen active" id="generationMenu" style="max-width:560px;padding-top:28px;gap:11px;">
+<div class="screen active" id="generationMenu" style="max-width:620px;padding-top:34px;gap:18px;">
   <div class="screen-title">POKÉMON REVEAL</div>
-  <div class="screen-sub" style="margin-bottom:12px">CHOISIS TA GÉNÉRATION</div>
   <div class="generation-grid">
     <button class="generation-btn all" onclick="chooseGeneration(0)">TOUTES LES GÉNÉRATIONS</button>
     <button class="generation-btn" onclick="chooseGeneration(1)">1ÈRE GÉNÉRATION</button>
@@ -871,6 +872,8 @@ function backToGenerations(){
   document.getElementById('screenEnd').classList.remove('active');
   document.getElementById('screenStart').classList.remove('active');
   document.getElementById('generationMenu').style.display='flex';
+  const menuTitle=document.querySelector('#generationMenu .screen-title');
+  menuTitle.style.animation='none'; void menuTitle.offsetWidth; menuTitle.style.animation='';
   document.body.classList.add('start-scroll');
   document.body.classList.remove('score-visible');
   document.getElementById('gameAudioControls').style.display='none';

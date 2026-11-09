@@ -1,305 +1,647 @@
 [
-{
-  "title": "Astro Bot",
-  "accept": ["astro bot", "astrobot"],
-  "reject": ["astro's playroom", "astro bot rescue mission"],
-  "image": "images-jeux-video/astrobot.png"
-},
-{
-  "title": "Beyond Good & Evil",
-  "accept": ["beyond good and evil", "beyond good evil", "beyond good & evil"],
-  "reject": ["beyond good and evil 2"],
-  "image": "images-jeux-video/beyondgoodandevil.png"
-},
-{
-  "title": "The Binding of Isaac",
-  "accept": ["the binding of isaac", "binding of isaac", "isaac", "the binding of isaac rebirth", "binding of isaac rebirth"],
-  "reject": [],
-  "image": "images-jeux-video/bindingofisaac.png"
-},
-{
-  "title": "Cairn",
-  "accept": ["cairn"],
-  "reject": [],
-  "image": "images-jeux-video/cairn.png"
-},
-{
-  "title": "Donkey Kong Country",
-  "accept": ["donkey kong country", "dk country", "dkc", "donkey kong country 1"],
-  "reject": ["donkey kong country 2", "donkey kong country 3", "donkey kong country returns", "donkey kong country tropical freeze"],
-  "image": "images-jeux-video/donkeykongcountry.png"
-},
-{
-  "title": "DOOM",
-  "accept": ["doom", "doom 1", "doom 1993", "the ultimate doom"],
-  "reject": ["doom 2", "doom 3", "doom 2016", "doom eternal", "doom the dark ages"],
-  "image": "images-jeux-video/doom.png"
-},
-{
-  "title": "Earthworm Jim",
-  "accept": ["earthworm jim", "earthworm jim 1"],
-  "reject": ["earthworm jim 2", "earthworm jim 3d"],
-  "image": "images-jeux-video/earthwormjim.png"
-},
-{
-  "title": "Ultimate Epic Battle Simulator",
-  "accept": ["ultimate epic battle simulator", "ultimate epic battle simulator 1", "uebs"],
-  "reject": ["ultimate epic battle simulator 2", "uebs 2"],
-  "image": "images-jeux-video/epicbattlesimulator.png"
-},
-{
-  "title": "The Exit 8",
-  "accept": ["the exit 8", "exit 8", "the exit eight"],
-  "reject": [],
-  "image": "images-jeux-video/exit8.png"
-},
-{
-  "title": "Clair Obscur: Expedition 33",
-  "accept": ["clair obscur expedition 33", "clair obscur", "expedition 33", "expedition trente trois"],
-  "reject": [],
-  "image": "images-jeux-video/expedition33.png"
-},
-{
-  "title": "Far Cry 3",
-  "accept": ["far cry 3", "farcry 3", "farcry3", "far cry iii"],
-  "reject": ["far cry", "far cry 2", "far cry 4", "far cry 5", "far cry 6", "far cry primal"],
-  "image": "images-jeux-video/farcry3.png"
-},
-{
-  "title": "Far Cry 4",
-  "accept": ["far cry 4", "farcry 4", "farcry4", "far cry iv"],
-  "reject": ["far cry", "far cry 3", "far cry 5", "far cry 6", "far cry primal"],
-  "image": "images-jeux-video/farcry4.png"
-},
-{
-  "title": "FEZ",
-  "accept": ["fez"],
-  "reject": [],
-  "image": "images-jeux-video/fez.png"
-},
-{
-  "title": "Firewatch",
-  "accept": ["firewatch", "fire watch"],
-  "reject": [],
-  "image": "images-jeux-video/firewatch.png"
-},
-{
-  "title": "Garry's Mod",
-  "accept": ["garrys mod", "garry's mod", "gmod", "g mod"],
-  "reject": [],
-  "image": "images-jeux-video/garrysmod.png"
-},
-{
-  "title": "GRIS",
-  "accept": ["gris"],
-  "reject": [],
-  "image": "images-jeux-video/gris.png"
-},
-{
-  "title": "Grounded",
-  "accept": ["grounded", "grounded 1"],
-  "reject": ["grounded 2"],
-  "image": "images-jeux-video/grounded.png"
-},
-{
-  "title": "Grand Theft Auto: San Andreas",
-  "accept": ["grand theft auto san andreas", "gta san andreas", "gta sa", "san andreas"],
-  "reject": ["gta", "gta vice city", "gta 3", "gta 4", "gta 5", "gta 6"],
-  "image": "images-jeux-video/gtasanandreas.png"
-},
-{
-  "title": "Grand Theft Auto: Vice City",
-  "accept": ["grand theft auto vice city", "gta vice city", "vice city", "gta vc"],
-  "reject": ["gta", "gta san andreas", "gta 3", "gta 4", "gta 5", "gta 6", "gta vice city stories"],
-  "image": "images-jeux-video/gtavicecity.png"
-},
-{
-  "title": "High on Life",
-  "accept": ["high on life", "highonlife", "high on life 1"],
-  "reject": ["high on life 2"],
-  "image": "images-jeux-video/highonlife.png"
-},
-{
-  "title": "Hitman: Absolution",
-  "accept": ["hitman absolution", "absolution"],
-  "reject": ["hitman", "hitman blood money", "hitman contracts", "hitman 2", "hitman 3"],
-  "image": "images-jeux-video/hitmanabsolution.png"
-},
-{
-  "title": "Hollow Knight",
-  "accept": ["hollow knight", "hollowknight"],
-  "reject": ["hollow knight silksong", "silksong"],
-  "image": "images-jeux-video/hollowknight.png"
-},
-{
-  "title": "Hotline Miami",
-  "accept": ["hotline miami", "hotline miami 1"],
-  "reject": ["hotline miami 2", "hotline miami wrong number"],
-  "image": "images-jeux-video/hotlinemiami.png"
-},
-{
-  "title": "Human: Fall Flat",
-  "accept": ["human fall flat", "human fallflat", "human: fall flat"],
-  "reject": ["human fall flat 2"],
-  "image": "images-jeux-video/humanfallflat.png"
-},
-{
-  "title": "INSIDE",
-  "accept": ["inside", "playdead inside"],
-  "reject": [],
-  "image": "images-jeux-video/inside.png"
-},
-{
-  "title": "Life Is Strange",
-  "accept": ["life is strange", "life is strange 1", "lis"],
-  "reject": ["life is strange 2", "life is strange true colors", "life is strange before the storm", "life is strange double exposure"],
-  "image": "images-jeux-video/lifeisstrange.png"
-},
-{
-  "title": "Little Nightmares",
-  "accept": ["little nightmares", "little nightmares 1"],
-  "reject": ["little nightmares 2", "little nightmares 3", "very little nightmares"],
-  "image": "images-jeux-video/littlenightmares.png"
-},
-{
-  "title": "Metal Gear Solid",
-  "accept": ["metal gear solid", "metal gear solid 1", "mgs", "mgs 1", "metal gear solid 1998"],
-  "reject": ["metal gear", "metal gear solid 2", "metal gear solid 3", "metal gear solid 4", "metal gear solid 5", "metal gear solid delta"],
-  "image": "images-jeux-video/metalgearsolid1.png"
-},
-{
-  "title": "Mirror's Edge",
-  "accept": ["mirrors edge", "mirror's edge", "mirror edge", "mirrors edge 1"],
-  "reject": ["mirrors edge catalyst"],
-  "image": "images-jeux-video/mirorsedge.png"
-},
-{
-  "title": "Return of the Obra Dinn",
-  "accept": ["return of the obra dinn", "obra dinn", "obradinn", "return of obra dinn"],
-  "reject": [],
-  "image": "images-jeux-video/obradin.png"
-},
-{
-  "title": "Portal 2",
-  "accept": ["portal 2", "portal two", "portal ii"],
-  "reject": ["portal", "portal 1", "portal revolution", "portal stories mel"],
-  "image": "images-jeux-video/portal2.png"
-},
-{
-  "title": "Postal 2",
-  "accept": ["postal 2", "postal two", "postal ii"],
-  "reject": ["postal", "postal 1", "postal 3", "postal 4"],
-  "image": "images-jeux-video/postal2.png"
-},
-{
-  "title": "PowerWash Simulator 2",
-  "accept": ["powerwash simulator 2", "power wash simulator 2", "powerwash 2", "powerwash simulator ii"],
-  "reject": ["powerwash simulator", "powerwash simulator 1"],
-  "image": "images-jeux-video/powerwash2.png"
-},
-{
-  "title": "Proteus",
-  "accept": ["proteus"],
-  "reject": [],
-  "image": "images-jeux-video/proteus.png"
-},
-{
-  "title": "Ratchet & Clank",
-  "accept": ["ratchet and clank", "ratchet & clank", "ratchet clank", "ratchet and clank 1"],
-  "reject": ["ratchet and clank 2", "ratchet and clank 3", "ratchet and clank rift apart", "ratchet and clank a crack in time"],
-  "image": "images-jeux-video/ratchekandclank.png"
-},
-{
-  "title": "Rollerdrome",
-  "accept": ["rollerdrome", "roller drome"],
-  "reject": [],
-  "image": "images-jeux-video/rollerdrome.png"
-},
-{
-  "title": "Slay the Spire",
-  "accept": ["slay the spire", "slaythespire", "sts"],
-  "reject": ["slay the spire 2"],
-  "image": "images-jeux-video/slaythespire.png"
-},
-{
-  "title": "Sol Cesto",
-  "accept": ["sol cesto", "solcesto"],
-  "reject": [],
-  "image": "images-jeux-video/solcesto.png"
-},
-{
-  "title": "Split Fiction",
-  "accept": ["split fiction", "splitfiction"],
-  "reject": [],
-  "image": "images-jeux-video/splitfiction.png"
-},
-{
-  "title": "Stardew Valley",
-  "accept": ["stardew valley", "stardew", "star dew valley"],
-  "reject": [],
-  "image": "images-jeux-video/stardewvalley.png"
-},
-{
-  "title": "Subnautica",
-  "accept": ["subnautica", "subnautica 1"],
-  "reject": ["subnautica 2", "subnautica below zero", "below zero"],
-  "image": "images-jeux-video/subnautica.png"
-},
-{
-  "title": "SUPERHOT",
-  "accept": ["superhot", "super hot"],
-  "reject": ["superhot mind control delete", "superhot vr"],
-  "image": "images-jeux-video/superhot.png"
-},
-{
-  "title": "Team Fortress 2",
-  "accept": ["team fortress 2", "tf2", "team fortress two"],
-  "reject": ["team fortress", "team fortress classic"],
-  "image": "images-jeux-video/teamfortress.png"
-},
-{
-  "title": "The Witness",
-  "accept": ["the witness", "witness"],
-  "reject": [],
-  "image": "images-jeux-video/thewitness.png"
-},
-{
-  "title": "TimeSplitters 2",
-  "accept": ["timesplitters 2", "time splitters 2", "timesplitters ii"],
-  "reject": ["timesplitters", "timesplitters 1", "timesplitters future perfect"],
-  "image": "images-jeux-video/timesplitters2.png"
-},
-{
-  "title": "Tomb Raider",
-  "accept": ["tomb raider", "tomb raider 1", "tomb raider 1996", "tomb raider i"],
-  "reject": ["tomb raider 2", "tomb raider 3", "tomb raider 2013", "rise of the tomb raider", "shadow of the tomb raider"],
-  "image": "images-jeux-video/tombraider1.png"
-},
-{
-  "title": "Viewtiful Joe",
-  "accept": ["viewtiful joe", "viewtiful joe 1", "beautiful joe"],
-  "reject": ["viewtiful joe 2"],
-  "image": "images-jeux-video/viewtifuljoe.png"
-},
-{
-  "title": "The Legend of Zelda: Breath of the Wild",
-  "accept": ["the legend of zelda breath of the wild", "zelda breath of the wild", "breath of the wild", "botw", "zelda botw"],
-  "reject": ["zelda", "zelda tears of the kingdom", "tears of the kingdom", "totk"],
-  "image": "images-jeux-video/zeldabotw.png"
-},
-{
-  "title": "The Legend of Zelda: Ocarina of Time",
-  "accept": ["the legend of zelda ocarina of time", "zelda ocarina of time", "ocarina of time", "zelda oot", "oot", "zelda ocarina du temps"],
-  "reject": ["zelda", "zelda majora mask", "majora mask", "zelda breath of the wild"],
-  "image": "images-jeux-video/zeldaocarinaoftime.png"
-},
-{
-  "title": "The Legend of Zelda: Ocarina of Time",
-  "accept": ["the legend of zelda ocarina of time 3d", "zelda ocarina of time 3d", "ocarina of time 3d", "zelda oot 3d", "oot 3d"],
-  "reject": ["zelda", "zelda majora mask", "majora mask"],
-  "image": "images-jeux-video/zeldaocarinaremake.png"
-},
-
+  {
+    "title": "Astro Bot",
+    "accept": [
+      "astro bot",
+      "astrobot"
+    ],
+    "reject": [
+      "astro's playroom",
+      "astro bot rescue mission"
+    ],
+    "image": "images-jeux-video/astrobot.png"
+  },
+  {
+    "title": "Beyond Good & Evil",
+    "accept": [
+      "beyond good and evil",
+      "beyond good evil",
+      "beyond good & evil"
+    ],
+    "reject": [
+      "beyond good and evil 2"
+    ],
+    "image": "images-jeux-video/beyondgoodandevil.png"
+  },
+  {
+    "title": "The Binding of Isaac",
+    "accept": [
+      "the binding of isaac",
+      "binding of isaac",
+      "isaac",
+      "the binding of isaac rebirth",
+      "binding of isaac rebirth"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/bindingofisaac.png"
+  },
+  {
+    "title": "Cairn",
+    "accept": [
+      "cairn"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/cairn.png"
+  },
+  {
+    "title": "Donkey Kong Country",
+    "accept": [
+      "donkey kong country",
+      "dk country",
+      "dkc",
+      "donkey kong country 1"
+    ],
+    "reject": [
+      "donkey kong country 2",
+      "donkey kong country 3",
+      "donkey kong country returns",
+      "donkey kong country tropical freeze"
+    ],
+    "image": "images-jeux-video/donkeykongcountry.png"
+  },
+  {
+    "title": "DOOM",
+    "accept": [
+      "doom",
+      "doom 1",
+      "doom 1993",
+      "the ultimate doom"
+    ],
+    "reject": [
+      "doom 2",
+      "doom 3",
+      "doom 2016",
+      "doom eternal",
+      "doom the dark ages"
+    ],
+    "image": "images-jeux-video/doom.png"
+  },
+  {
+    "title": "Earthworm Jim",
+    "accept": [
+      "earthworm jim",
+      "earthworm jim 1"
+    ],
+    "reject": [
+      "earthworm jim 2",
+      "earthworm jim 3d"
+    ],
+    "image": "images-jeux-video/earthwormjim.png"
+  },
+  {
+    "title": "Ultimate Epic Battle Simulator",
+    "accept": [
+      "ultimate epic battle simulator",
+      "ultimate epic battle simulator 1",
+      "uebs"
+    ],
+    "reject": [
+      "ultimate epic battle simulator 2",
+      "uebs 2"
+    ],
+    "image": "images-jeux-video/epicbattlesimulator.png"
+  },
+  {
+    "title": "The Exit 8",
+    "accept": [
+      "the exit 8",
+      "exit 8",
+      "the exit eight"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/exit8.png"
+  },
+  {
+    "title": "Clair Obscur: Expedition 33",
+    "accept": [
+      "clair obscur expedition 33",
+      "clair obscur",
+      "expedition 33",
+      "expedition trente trois"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/expedition33.png"
+  },
+  {
+    "title": "Far Cry 3",
+    "accept": [
+      "far cry 3",
+      "farcry 3",
+      "farcry3",
+      "far cry iii"
+    ],
+    "reject": [
+      "far cry",
+      "far cry 2",
+      "far cry 4",
+      "far cry 5",
+      "far cry 6",
+      "far cry primal"
+    ],
+    "image": "images-jeux-video/farcry3.png"
+  },
+  {
+    "title": "Far Cry 4",
+    "accept": [
+      "far cry 4",
+      "farcry 4",
+      "farcry4",
+      "far cry iv"
+    ],
+    "reject": [
+      "far cry",
+      "far cry 3",
+      "far cry 5",
+      "far cry 6",
+      "far cry primal"
+    ],
+    "image": "images-jeux-video/farcry4.png"
+  },
+  {
+    "title": "FEZ",
+    "accept": [
+      "fez"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/fez.png"
+  },
+  {
+    "title": "Firewatch",
+    "accept": [
+      "firewatch",
+      "fire watch"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/firewatch.png"
+  },
+  {
+    "title": "Garry's Mod",
+    "accept": [
+      "garrys mod",
+      "garry's mod",
+      "gmod",
+      "g mod"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/garrysmod.png"
+  },
+  {
+    "title": "GRIS",
+    "accept": [
+      "gris"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/gris.png"
+  },
+  {
+    "title": "Grounded",
+    "accept": [
+      "grounded",
+      "grounded 1"
+    ],
+    "reject": [
+      "grounded 2"
+    ],
+    "image": "images-jeux-video/grounded.png"
+  },
+  {
+    "title": "Grand Theft Auto: San Andreas",
+    "accept": [
+      "grand theft auto san andreas",
+      "gta san andreas",
+      "gta sa",
+      "san andreas"
+    ],
+    "reject": [
+      "gta",
+      "gta vice city",
+      "gta 3",
+      "gta 4",
+      "gta 5",
+      "gta 6"
+    ],
+    "image": "images-jeux-video/gtasanandreas.png"
+  },
+  {
+    "title": "Grand Theft Auto: Vice City",
+    "accept": [
+      "grand theft auto vice city",
+      "gta vice city",
+      "vice city",
+      "gta vc"
+    ],
+    "reject": [
+      "gta",
+      "gta san andreas",
+      "gta 3",
+      "gta 4",
+      "gta 5",
+      "gta 6",
+      "gta vice city stories"
+    ],
+    "image": "images-jeux-video/gtavicecity.png"
+  },
+  {
+    "title": "High on Life",
+    "accept": [
+      "high on life",
+      "highonlife",
+      "high on life 1"
+    ],
+    "reject": [
+      "high on life 2"
+    ],
+    "image": "images-jeux-video/highonlife.png"
+  },
+  {
+    "title": "Hitman: Absolution",
+    "accept": [
+      "hitman absolution",
+      "absolution"
+    ],
+    "reject": [
+      "hitman",
+      "hitman blood money",
+      "hitman contracts",
+      "hitman 2",
+      "hitman 3"
+    ],
+    "image": "images-jeux-video/hitmanabsolution.png"
+  },
+  {
+    "title": "Hollow Knight",
+    "accept": [
+      "hollow knight",
+      "hollowknight"
+    ],
+    "reject": [
+      "hollow knight silksong",
+      "silksong"
+    ],
+    "image": "images-jeux-video/hollowknight.png"
+  },
+  {
+    "title": "Hotline Miami",
+    "accept": [
+      "hotline miami",
+      "hotline miami 1"
+    ],
+    "reject": [
+      "hotline miami 2",
+      "hotline miami wrong number"
+    ],
+    "image": "images-jeux-video/hotlinemiami.png"
+  },
+  {
+    "title": "Human: Fall Flat",
+    "accept": [
+      "human fall flat",
+      "human fallflat",
+      "human: fall flat"
+    ],
+    "reject": [
+      "human fall flat 2"
+    ],
+    "image": "images-jeux-video/humanfallflat.png"
+  },
+  {
+    "title": "INSIDE",
+    "accept": [
+      "inside",
+      "playdead inside"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/inside.png"
+  },
+  {
+    "title": "Life Is Strange",
+    "accept": [
+      "life is strange",
+      "life is strange 1",
+      "lis"
+    ],
+    "reject": [
+      "life is strange 2",
+      "life is strange true colors",
+      "life is strange before the storm",
+      "life is strange double exposure"
+    ],
+    "image": "images-jeux-video/lifeisstrange.png"
+  },
+  {
+    "title": "Little Nightmares",
+    "accept": [
+      "little nightmares",
+      "little nightmares 1"
+    ],
+    "reject": [
+      "little nightmares 2",
+      "little nightmares 3",
+      "very little nightmares"
+    ],
+    "image": "images-jeux-video/littlenightmares.png"
+  },
+  {
+    "title": "Metal Gear Solid",
+    "accept": [
+      "metal gear solid",
+      "metal gear solid 1",
+      "mgs",
+      "mgs 1",
+      "metal gear solid 1998"
+    ],
+    "reject": [
+      "metal gear",
+      "metal gear solid 2",
+      "metal gear solid 3",
+      "metal gear solid 4",
+      "metal gear solid 5",
+      "metal gear solid delta"
+    ],
+    "image": "images-jeux-video/metalgearsolid1.png"
+  },
+  {
+    "title": "Mirror's Edge",
+    "accept": [
+      "mirrors edge",
+      "mirror's edge",
+      "mirror edge",
+      "mirrors edge 1"
+    ],
+    "reject": [
+      "mirrors edge catalyst"
+    ],
+    "image": "images-jeux-video/mirorsedge.png"
+  },
+  {
+    "title": "Return of the Obra Dinn",
+    "accept": [
+      "return of the obra dinn",
+      "obra dinn",
+      "obradinn",
+      "return of obra dinn"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/obradin.png"
+  },
+  {
+    "title": "Portal 2",
+    "accept": [
+      "portal 2",
+      "portal two",
+      "portal ii"
+    ],
+    "reject": [
+      "portal",
+      "portal 1",
+      "portal revolution",
+      "portal stories mel"
+    ],
+    "image": "images-jeux-video/portal2.png"
+  },
+  {
+    "title": "Postal 2",
+    "accept": [
+      "postal 2",
+      "postal two",
+      "postal ii"
+    ],
+    "reject": [
+      "postal",
+      "postal 1",
+      "postal 3",
+      "postal 4"
+    ],
+    "image": "images-jeux-video/postal2.png"
+  },
+  {
+    "title": "PowerWash Simulator 2",
+    "accept": [
+      "powerwash simulator 2",
+      "power wash simulator 2",
+      "powerwash 2",
+      "powerwash simulator ii"
+    ],
+    "reject": [
+      "powerwash simulator",
+      "powerwash simulator 1"
+    ],
+    "image": "images-jeux-video/powerwash2.png"
+  },
+  {
+    "title": "Proteus",
+    "accept": [
+      "proteus"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/proteus.png"
+  },
+  {
+    "title": "Ratchet & Clank",
+    "accept": [
+      "ratchet and clank",
+      "ratchet & clank",
+      "ratchet clank",
+      "ratchet and clank 1"
+    ],
+    "reject": [
+      "ratchet and clank 2",
+      "ratchet and clank 3",
+      "ratchet and clank rift apart",
+      "ratchet and clank a crack in time"
+    ],
+    "image": "images-jeux-video/ratchekandclank.png"
+  },
+  {
+    "title": "Rollerdrome",
+    "accept": [
+      "rollerdrome",
+      "roller drome"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/rollerdrome.png"
+  },
+  {
+    "title": "Slay the Spire",
+    "accept": [
+      "slay the spire",
+      "slaythespire",
+      "sts"
+    ],
+    "reject": [
+      "slay the spire 2"
+    ],
+    "image": "images-jeux-video/slaythespire.png"
+  },
+  {
+    "title": "Sol Cesto",
+    "accept": [
+      "sol cesto",
+      "solcesto"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/solcesto.png"
+  },
+  {
+    "title": "Split Fiction",
+    "accept": [
+      "split fiction",
+      "splitfiction"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/splitfiction.png"
+  },
+  {
+    "title": "Stardew Valley",
+    "accept": [
+      "stardew valley",
+      "stardew",
+      "star dew valley"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/stardewvalley.png"
+  },
+  {
+    "title": "Subnautica",
+    "accept": [
+      "subnautica",
+      "subnautica 1"
+    ],
+    "reject": [
+      "subnautica 2",
+      "subnautica below zero",
+      "below zero"
+    ],
+    "image": "images-jeux-video/subnautica.png"
+  },
+  {
+    "title": "SUPERHOT",
+    "accept": [
+      "superhot",
+      "super hot"
+    ],
+    "reject": [
+      "superhot mind control delete",
+      "superhot vr"
+    ],
+    "image": "images-jeux-video/superhot.png"
+  },
+  {
+    "title": "Team Fortress 2",
+    "accept": [
+      "team fortress 2",
+      "tf2",
+      "team fortress two"
+    ],
+    "reject": [
+      "team fortress",
+      "team fortress classic"
+    ],
+    "image": "images-jeux-video/teamfortress.png"
+  },
+  {
+    "title": "The Witness",
+    "accept": [
+      "the witness",
+      "witness"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/thewitness.png"
+  },
+  {
+    "title": "TimeSplitters 2",
+    "accept": [
+      "timesplitters 2",
+      "time splitters 2",
+      "timesplitters ii"
+    ],
+    "reject": [
+      "timesplitters",
+      "timesplitters 1",
+      "timesplitters future perfect"
+    ],
+    "image": "images-jeux-video/timesplitters2.png"
+  },
+  {
+    "title": "Tomb Raider",
+    "accept": [
+      "tomb raider",
+      "tomb raider 1",
+      "tomb raider 1996",
+      "tomb raider i"
+    ],
+    "reject": [
+      "tomb raider 2",
+      "tomb raider 3",
+      "tomb raider 2013",
+      "rise of the tomb raider",
+      "shadow of the tomb raider"
+    ],
+    "image": "images-jeux-video/tombraider1.png"
+  },
+  {
+    "title": "Viewtiful Joe",
+    "accept": [
+      "viewtiful joe",
+      "viewtiful joe 1",
+      "beautiful joe"
+    ],
+    "reject": [
+      "viewtiful joe 2"
+    ],
+    "image": "images-jeux-video/viewtifuljoe.png"
+  },
+  {
+    "title": "The Legend of Zelda: Breath of the Wild",
+    "accept": [
+      "the legend of zelda breath of the wild",
+      "zelda breath of the wild",
+      "breath of the wild",
+      "botw",
+      "zelda botw"
+    ],
+    "reject": [
+      "zelda",
+      "zelda tears of the kingdom",
+      "tears of the kingdom",
+      "totk"
+    ],
+    "image": "images-jeux-video/zeldabotw.png"
+  },
+  {
+    "title": "The Legend of Zelda: Ocarina of Time",
+    "accept": [
+      "the legend of zelda ocarina of time",
+      "zelda ocarina of time",
+      "ocarina of time",
+      "zelda oot",
+      "oot",
+      "zelda ocarina du temps"
+    ],
+    "reject": [
+      "zelda",
+      "zelda majora mask",
+      "majora mask",
+      "zelda breath of the wild"
+    ],
+    "image": "images-jeux-video/zeldaocarinaoftime.png"
+  },
+  {
+    "title": "The Legend of Zelda: Ocarina of Time",
+    "accept": [
+      "the legend of zelda ocarina of time 3d",
+      "zelda ocarina of time 3d",
+      "ocarina of time 3d",
+      "zelda oot 3d",
+      "oot 3d"
+    ],
+    "reject": [
+      "zelda",
+      "zelda majora mask",
+      "majora mask"
+    ],
+    "image": "images-jeux-video/zeldaocarinaremake.png"
+  },
   {
     "title": "The Legend of Zelda: A Link to the Past",
     "accept": [
@@ -329,7 +671,8 @@
     "accept": [
       "aladdin",
       "alladdin",
-      "aladin snes","alladdin snes",
+      "aladin snes",
+      "alladdin snes",
       "disney aladdin snes",
       "aladdin super nintendo"
     ],
@@ -903,5 +1246,1720 @@
     ],
     "reject": [],
     "image": "images-jeux-video/wukong.png"
+  },
+  {
+    "title": "Adibou",
+    "accept": [
+      "Adibou",
+      "adibou 2"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/adibou.png"
+  },
+  {
+    "title": "Alan Wake 2",
+    "accept": [
+      "Alan Wake 2",
+      "alan wake ii",
+      "alan wake 2"
+    ],
+    "reject": [
+      "alan wake",
+      "alan wake 1"
+    ],
+    "image": "images-jeux-video/alanwake2.png"
+  },
+  {
+    "title": "Alien: Isolation",
+    "accept": [
+      "Alien: Isolation",
+      "alien isolation"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/alienisolation.png"
+  },
+  {
+    "title": "Among Us",
+    "accept": [
+      "Among Us",
+      "among us"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/amongus.png"
+  },
+  {
+    "title": "Animal Well",
+    "accept": [
+      "Animal Well",
+      "animal well"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/animalwell.png"
+  },
+  {
+    "title": "A Plague Tale: Requiem",
+    "accept": [
+      "A Plague Tale: Requiem",
+      "a plague tale requiem",
+      "plague tale requiem"
+    ],
+    "reject": [
+      "A Plague Tale: Innocence"
+    ],
+    "image": "images-jeux-video/aplaguetalerequiem.png"
+  },
+  {
+    "title": "Assassin's Creed Odyssey",
+    "accept": [
+      "Assassin's Creed Odyssey",
+      "assassins creed odyssey",
+      "ac odyssey"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/assassinscreedodyssey.png"
+  },
+  {
+    "title": "Assassin's Creed Valhalla",
+    "accept": [
+      "Assassin's Creed Valhalla",
+      "assassins creed valhalla",
+      "ac valhalla"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/assassinscreedvalhalla.png"
+  },
+  {
+    "title": "Banjo-Kazooie",
+    "accept": [
+      "Banjo-Kazooie",
+      "banjo kazooie",
+      "banjo et kazooie"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/banjoetkazoi.png"
+  },
+  {
+    "title": "Black & White",
+    "accept": [
+      "Black & White",
+      "black and white",
+      "black white",
+      "black and white 1"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/blackandwhite.png"
+  },
+  {
+    "title": "Burnout Paradise",
+    "accept": [
+      "Burnout Paradise",
+      "burnout paradise",
+      "burnout paradise remastered"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/burnout paradise.png"
+  },
+  {
+    "title": "Candy Crush Saga",
+    "accept": [
+      "Candy Crush Saga",
+      "candy crush",
+      "candy crush saga"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/candycrush.png"
+  },
+  {
+    "title": "Super Castlevania IV",
+    "accept": [
+      "Super Castlevania IV",
+      "super castlevania 4",
+      "super castlevania iv",
+      "castlevania 4"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/castelvaniasnes.png"
+  },
+  {
+    "title": "Celeste",
+    "accept": [
+      "Celeste",
+      "céleste"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/celeste.png"
+  },
+  {
+    "title": "Concord",
+    "accept": [
+      "Concord",
+      "concord"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/concord.png"
+  },
+  {
+    "title": "Contra",
+    "accept": [
+      "Contra",
+      "contra 1",
+      "probotector"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/contra.png"
+  },
+  {
+    "title": "Counter-Strike 2",
+    "accept": [
+      "Counter-Strike 2",
+      "counter strike 2",
+      "cs2",
+      "counterstrike 2"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/counterstrike2.png"
+  },
+  {
+    "title": "Crash Nitro Kart",
+    "accept": [
+      "Crash Nitro Kart",
+      "crash nitro kart",
+      "cnk"
+    ],
+    "reject": [
+      "Crash Bandicoot"
+    ],
+    "image": "images-jeux-video/crashnitrokart.png"
+  },
+  {
+    "title": "Crazy Taxi",
+    "accept": [
+      "Crazy Taxi",
+      "crazy taxi 1"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/crazytaxi.png"
+  },
+  {
+    "title": "Crimson Desert",
+    "accept": [
+      "Crimson Desert",
+      "crimson desert"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/crimsondesert.png"
+  },
+  {
+    "title": "Cruelty Squad",
+    "accept": [
+      "Cruelty Squad",
+      "cruelty squad"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/crueltysquad.png"
+  },
+  {
+    "title": "Dark Souls II",
+    "accept": [
+      "Dark Souls II",
+      "dark souls 2",
+      "darksouls 2",
+      "ds2"
+    ],
+    "reject": [
+      "Dark Souls III",
+      "dark souls",
+      "dark souls 1",
+      "dark souls 3"
+    ],
+    "image": "images-jeux-video/darksouls2.png"
+  },
+  {
+    "title": "Dark Souls III",
+    "accept": [
+      "Dark Souls III",
+      "dark souls 3",
+      "darksouls 3",
+      "ds3"
+    ],
+    "reject": [
+      "Dark Souls II",
+      "dark souls",
+      "dark souls 1",
+      "dark souls 2"
+    ],
+    "image": "images-jeux-video/darksouls3.png"
+  },
+  {
+    "title": "Dead Island",
+    "accept": [
+      "Dead Island",
+      "dead island 1"
+    ],
+    "reject": [
+      "dead island 2"
+    ],
+    "image": "images-jeux-video/deadisland.png"
+  },
+  {
+    "title": "Dead Space",
+    "accept": [
+      "Dead Space",
+      "dead space 1",
+      "dead space remake"
+    ],
+    "reject": [
+      "dead space 2",
+      "dead space 3"
+    ],
+    "image": "images-jeux-video/deadspace.png"
+  },
+  {
+    "title": "Death Stranding",
+    "accept": [
+      "Death Stranding",
+      "death stranding 1"
+    ],
+    "reject": [
+      "Death Stranding 2: On the Beach"
+    ],
+    "image": "images-jeux-video/deathstranding.png"
+  },
+  {
+    "title": "Death Stranding 2: On the Beach",
+    "accept": [
+      "Death Stranding 2: On the Beach",
+      "death stranding 2",
+      "death stranding ii",
+      "death stranding on the beach"
+    ],
+    "reject": [
+      "Death Stranding"
+    ],
+    "image": "images-jeux-video/deathstranding2.png"
+  },
+  {
+    "title": "Detroit: Become Human",
+    "accept": [
+      "Detroit: Become Human",
+      "detroit become human"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/detroitbecomehuman.png"
+  },
+  {
+    "title": "Diddy Kong Racing",
+    "accept": [
+      "Diddy Kong Racing",
+      "diddy kong racing"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/diddykongracing.png"
+  },
+  {
+    "title": "Dishonored 2",
+    "accept": [
+      "Dishonored 2",
+      "dishonored ii"
+    ],
+    "reject": [
+      "dishonored",
+      "dishonored 1"
+    ],
+    "image": "images-jeux-video/dishonored2.png"
+  },
+  {
+    "title": "Dofus",
+    "accept": [
+      "Dofus",
+      "dofus"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/dofus.png"
+  },
+  {
+    "title": "Donkey Kong",
+    "accept": [
+      "Donkey Kong",
+      "donkey kong arcade",
+      "donkey kong 1981"
+    ],
+    "reject": [
+      "Donkey Kong Country",
+      "Donkey Kong Bananza"
+    ],
+    "image": "images-jeux-video/donkeykong.png"
+  },
+  {
+    "title": "Donkey Kong Bananza",
+    "accept": [
+      "Donkey Kong Bananza",
+      "donkey kong bananza"
+    ],
+    "reject": [
+      "Donkey Kong Country",
+      "Donkey Kong"
+    ],
+    "image": "images-jeux-video/donkeykongbananza.png"
+  },
+  {
+    "title": "Dredge",
+    "accept": [
+      "Dredge",
+      "dredge"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/dredge.png"
+  },
+  {
+    "title": "Duck Hunt",
+    "accept": [
+      "Duck Hunt",
+      "duck hunt"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/duckhunt.png"
+  },
+  {
+    "title": "Duke Nukem 3D",
+    "accept": [
+      "Duke Nukem 3D",
+      "duke nukem 3d",
+      "duke nukem three d"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/dukenukem3d.png"
+  },
+  {
+    "title": "Duke Nukem 3D",
+    "accept": [
+      "Duke Nukem 3D",
+      "duke nukem 3d",
+      "duke nukem three d"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/dukenukem3db.png"
+  },
+  {
+    "title": "Dying Light 2: Stay Human",
+    "accept": [
+      "Dying Light 2: Stay Human",
+      "dying light 2",
+      "dying light ii",
+      "dying light 2 stay human"
+    ],
+    "reject": [
+      "dying light",
+      "dying light 1"
+    ],
+    "image": "images-jeux-video/dyinglight2.png"
+  },
+  {
+    "title": "EarthBound",
+    "accept": [
+      "EarthBound",
+      "earth bound",
+      "mother 2",
+      "mother ii"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/earthbound.png"
+  },
+  {
+    "title": "Ecco the Dolphin",
+    "accept": [
+      "Ecco the Dolphin",
+      "ecco the dolphin",
+      "ecco le dauphin"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/eccothedolphin.png"
+  },
+  {
+    "title": "Elden Ring",
+    "accept": [
+      "Elden Ring",
+      "elden ring"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/eldenring.png"
+  },
+  {
+    "title": "Enshrouded",
+    "accept": [
+      "Enshrouded",
+      "enshrouded"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/enshrouded.png"
+  },
+  {
+    "title": "Fable",
+    "accept": [
+      "Fable",
+      "fable 1",
+      "fable the lost chapters",
+      "fable anniversary"
+    ],
+    "reject": [
+      "fable 2",
+      "fable 3"
+    ],
+    "image": "images-jeux-video/fable.png"
+  },
+  {
+    "title": "Far Cry 5",
+    "accept": [
+      "Far Cry 5",
+      "farcry 5",
+      "far cry v",
+      "farcry5"
+    ],
+    "reject": [
+      "Far Cry 3",
+      "Far Cry 4"
+    ],
+    "image": "images-jeux-video/farcry5.png"
+  },
+  {
+    "title": "EA Sports FC 26",
+    "accept": [
+      "EA Sports FC 26",
+      "fc 26",
+      "ea fc 26",
+      "ea sports fc 26",
+      "fifa 26"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/fc26.png"
+  },
+  {
+    "title": "Fortnite",
+    "accept": [
+      "Fortnite",
+      "fortnite battle royale"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/fortnite.png"
+  },
+  {
+    "title": "Forza Motorsport 6",
+    "accept": [
+      "Forza Motorsport 6",
+      "forza 6",
+      "forza motorsport 6"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/forza6.png"
+  },
+  {
+    "title": "F-Zero GX",
+    "accept": [
+      "F-Zero GX",
+      "f zero gx",
+      "fzero gx"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/fzerogx.png"
+  },
+  {
+    "title": "Gears of War",
+    "accept": [
+      "Gears of War",
+      "gears of war 1"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/gearsofwar.png"
+  },
+  {
+    "title": "GoldenEye 007",
+    "accept": [
+      "GoldenEye 007",
+      "goldeneye 007",
+      "golden eye 007",
+      "goldeneye n64"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/goldeneye007.png"
+  },
+  {
+    "title": "Gran Turismo 7",
+    "accept": [
+      "Gran Turismo 7",
+      "gran turismo 7",
+      "gt7"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/granturismo7.png"
+  },
+  {
+    "title": "Grand Theft Auto V",
+    "accept": [
+      "Grand Theft Auto V",
+      "gta 5",
+      "gta v",
+      "grand theft auto 5"
+    ],
+    "reject": [
+      "Grand Theft Auto: San Andreas",
+      "Grand Theft Auto: Vice City"
+    ],
+    "image": "images-jeux-video/gta5.png"
+  },
+  {
+    "title": "Guitar Hero III: Legends of Rock",
+    "accept": [
+      "Guitar Hero III: Legends of Rock",
+      "guitar hero 3",
+      "guitar hero iii",
+      "guitar hero legends of rock"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/guitarhero3.png"
+  },
+  {
+    "title": "Hades",
+    "accept": [
+      "Hades",
+      "hades 1"
+    ],
+    "reject": [
+      "Hades II"
+    ],
+    "image": "images-jeux-video/hades.png"
+  },
+  {
+    "title": "Hades II",
+    "accept": [
+      "Hades II",
+      "hades 2",
+      "hades ii"
+    ],
+    "reject": [
+      "Hades"
+    ],
+    "image": "images-jeux-video/hades2.png"
+  },
+  {
+    "title": "Half-Life 2",
+    "accept": [
+      "Half-Life 2",
+      "half life 2",
+      "half life ii",
+      "hl2"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/halflife2.png"
+  },
+  {
+    "title": "Halo: Combat Evolved",
+    "accept": [
+      "Halo: Combat Evolved",
+      "halo 1",
+      "halo combat evolved",
+      "halo ce"
+    ],
+    "reject": [
+      "halo 2",
+      "halo 3",
+      "halo reach"
+    ],
+    "image": "images-jeux-video/halo.png"
+  },
+  {
+    "title": "Harry Potter et la Chambre des secrets",
+    "accept": [
+      "Harry Potter et la Chambre des secrets",
+      "harry potter 2",
+      "harry potter and the chamber of secrets",
+      "harry potter chamber of secrets",
+      "harry potter et la chambre des secrets"
+    ],
+    "reject": [
+      "harry potter",
+      "harry potter 1",
+      "harry potter 3"
+    ],
+    "image": "images-jeux-video/harrypotter2.png"
+  },
+  {
+    "title": "Heavy Rain",
+    "accept": [
+      "Heavy Rain",
+      "heavy rain"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/heavyrain.png"
+  },
+  {
+    "title": "Hello Neighbor 2",
+    "accept": [
+      "Hello Neighbor 2",
+      "hello neighbour 2",
+      "hello neighbor ii"
+    ],
+    "reject": [
+      "hello neighbor",
+      "hello neighbor 1"
+    ],
+    "image": "images-jeux-video/helloneighbor2.png"
+  },
+  {
+    "title": "Horizon Zero Dawn",
+    "accept": [
+      "Horizon Zero Dawn",
+      "horizon zero dawn",
+      "horizon 1"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/horizondawn.png"
+  },
+  {
+    "title": "Hylics 2",
+    "accept": [
+      "Hylics 2",
+      "hylics ii"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/hylics2.png"
+  },
+  {
+    "title": "Hypnospace Outlaw",
+    "accept": [
+      "Hypnospace Outlaw",
+      "hypnospace outlaw"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/hypnospace.png"
+  },
+  {
+    "title": "Ico",
+    "accept": [
+      "Ico",
+      "ico"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/ico.png"
+  },
+  {
+    "title": "Indiana Jones et le Cercle ancien",
+    "accept": [
+      "Indiana Jones et le Cercle ancien",
+      "indiana jones and the great circle",
+      "indiana jones le cercle ancien",
+      "indiana jones et le cercle ancien"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/indianajonesetlecercleancien.png"
+  },
+  {
+    "title": "Inscryption",
+    "accept": [
+      "Inscryption",
+      "inscryption"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/inscryption.png"
+  },
+  {
+    "title": "It Takes Two",
+    "accept": [
+      "It Takes Two",
+      "it takes two"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/ittakestwo.png"
+  },
+  {
+    "title": "Jazzpunk",
+    "accept": [
+      "Jazzpunk",
+      "jazz punk"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/jazzpunk.png"
+  },
+  {
+    "title": "Jet Set Radio Future",
+    "accept": [
+      "Jet Set Radio Future",
+      "jet set radio future",
+      "jsrf"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/jetsetradiofutur.png"
+  },
+  {
+    "title": "Journey",
+    "accept": [
+      "Journey",
+      "journey"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/journey.png"
+  },
+  {
+    "title": "Katamari Damacy",
+    "accept": [
+      "Katamari Damacy",
+      "katamari damacy"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/katamaridamacy.png"
+  },
+  {
+    "title": "killer7",
+    "accept": [
+      "killer7",
+      "killer 7"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/killer7.png"
+  },
+  {
+    "title": "Kingdom Come: Deliverance",
+    "accept": [
+      "Kingdom Come: Deliverance",
+      "kingdom come deliverance",
+      "kingdom come 1"
+    ],
+    "reject": [
+      "kingdom come deliverance 2"
+    ],
+    "image": "images-jeux-video/kingdomcome.png"
+  },
+  {
+    "title": "L.A. Noire",
+    "accept": [
+      "L.A. Noire",
+      "la noire",
+      "l a noire"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/lanoire.png"
+  },
+  {
+    "title": "LEGO Marvel Super Heroes",
+    "accept": [
+      "LEGO Marvel Super Heroes",
+      "lego marvel super heroes",
+      "lego marvel superheroes",
+      "lego marvel"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/legomarvel.png"
+  },
+  {
+    "title": "Les Razmoket",
+    "accept": [
+      "Les Razmoket",
+      "les razmoket",
+      "rugrats"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/lesrazmokets.png"
+  },
+  {
+    "title": "Les Sims 4",
+    "accept": [
+      "Les Sims 4",
+      "the sims 4",
+      "sims 4",
+      "les sims 4"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/lessims4.png"
+  },
+  {
+    "title": "Lethal Company",
+    "accept": [
+      "Lethal Company",
+      "lethal company"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/lethalcompany.png"
+  },
+  {
+    "title": "LISA: The Painful",
+    "accept": [
+      "LISA: The Painful",
+      "lisa the painful",
+      "lisa painful"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/lisathepainful.png"
+  },
+  {
+    "title": "LittleBigPlanet",
+    "accept": [
+      "LittleBigPlanet",
+      "little big planet",
+      "littlebigplanet 1",
+      "lbp"
+    ],
+    "reject": [
+      "littlebigplanet 2",
+      "littlebigplanet 3"
+    ],
+    "image": "images-jeux-video/littlebigplanet.png"
+  },
+  {
+    "title": "Little Inferno",
+    "accept": [
+      "Little Inferno",
+      "little inferno"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/littleinferno.png"
+  },
+  {
+    "title": "League of Legends",
+    "accept": [
+      "League of Legends",
+      "league of legends",
+      "lol"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/lol.png"
+  },
+  {
+    "title": "Lorelei and the Laser Eyes",
+    "accept": [
+      "Lorelei and the Laser Eyes",
+      "lorelei and the laser eyes",
+      "lorelei laser eyes"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/lorelei.png"
+  },
+  {
+    "title": "Luigi's Mansion 3",
+    "accept": [
+      "Luigi's Mansion 3",
+      "luigis mansion 3",
+      "luigi mansion 3"
+    ],
+    "reject": [
+      "luigis mansion",
+      "luigis mansion 1",
+      "luigis mansion 2"
+    ],
+    "image": "images-jeux-video/luigismansion3.png"
+  },
+  {
+    "title": "New Super Mario Bros. U Deluxe",
+    "accept": [
+      "New Super Mario Bros. U Deluxe",
+      "new super mario bros u deluxe",
+      "super mario bros u deluxe",
+      "mario bros u deluxe"
+    ],
+    "reject": [
+      "Super Mario Kart",
+      "Super Mario 64",
+      "Super Mario Bros.",
+      "Super Mario Odyssey",
+      "Super Mario Sunshine",
+      "Super Mario Bros. Wonder",
+      "Super Mario World"
+    ],
+    "image": "images-jeux-video/mariodeluxe.png"
+  },
+  {
+    "title": "Mario Kart World",
+    "accept": [
+      "Mario Kart World",
+      "mario kart world"
+    ],
+    "reject": [
+      "Mario Kart 8",
+      "Mario Kart: Double Dash!!",
+      "Mario Kart 64",
+      "Super Mario Kart"
+    ],
+    "image": "images-jeux-video/mariokartworld.png"
+  },
+  {
+    "title": "Super Mario Odyssey",
+    "accept": [
+      "Super Mario Odyssey",
+      "super mario odyssey",
+      "mario odyssey"
+    ],
+    "reject": [
+      "Super Mario Kart",
+      "Super Mario 64",
+      "Super Mario Bros.",
+      "New Super Mario Bros. U Deluxe",
+      "Super Mario Sunshine",
+      "Super Mario Bros. Wonder",
+      "Super Mario World"
+    ],
+    "image": "images-jeux-video/marioodyssey.png"
+  },
+  {
+    "title": "Mario Party 10",
+    "accept": [
+      "Mario Party 10",
+      "mario party x"
+    ],
+    "reject": [
+      "Mario Party 6",
+      "Mario Party 8"
+    ],
+    "image": "images-jeux-video/marioparty10.png"
+  },
+  {
+    "title": "Mario Party 6",
+    "accept": [
+      "Mario Party 6",
+      "mario party vi"
+    ],
+    "reject": [
+      "Mario Party 10",
+      "Mario Party 8"
+    ],
+    "image": "images-jeux-video/marioparty6.png"
+  },
+  {
+    "title": "Mario Party 8",
+    "accept": [
+      "Mario Party 8",
+      "mario party viii"
+    ],
+    "reject": [
+      "Mario Party 10",
+      "Mario Party 6"
+    ],
+    "image": "images-jeux-video/marioparty8.png"
+  },
+  {
+    "title": "Marvel's Spider-Man",
+    "accept": [
+      "Marvel's Spider-Man",
+      "marvel spiderman",
+      "marvels spider man",
+      "spider man ps4",
+      "spiderman ps4"
+    ],
+    "reject": [
+      "Marvel's Spider-Man 2",
+      "Spider-Man",
+      "Spider-Man 2",
+      "marvels spider man 2",
+      "spider man 2"
+    ],
+    "image": "images-jeux-video/marvelsspiderman.png"
+  },
+  {
+    "title": "Marvel's Spider-Man 2",
+    "accept": [
+      "Marvel's Spider-Man 2",
+      "marvel spiderman 2",
+      "marvels spider man 2",
+      "spider man 2 ps5",
+      "spiderman 2 ps5"
+    ],
+    "reject": [
+      "Marvel's Spider-Man",
+      "Spider-Man",
+      "Spider-Man 2",
+      "marvels spider man",
+      "spider man ps4"
+    ],
+    "image": "images-jeux-video/marvelsspiderman2.png"
+  },
+  {
+    "title": "Mass Effect 2",
+    "accept": [
+      "Mass Effect 2",
+      "mass effect ii"
+    ],
+    "reject": [
+      "mass effect",
+      "mass effect 1",
+      "mass effect 3"
+    ],
+    "image": "images-jeux-video/masseffect2.png"
+  },
+  {
+    "title": "Max Payne",
+    "accept": [
+      "Max Payne",
+      "max payne 1"
+    ],
+    "reject": [
+      "max payne 2",
+      "max payne 3"
+    ],
+    "image": "images-jeux-video/maxpayne.png"
+  },
+  {
+    "title": "Mega Man X",
+    "accept": [
+      "Mega Man X",
+      "megaman x",
+      "rockman x"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/megamanx.png"
+  },
+  {
+    "title": "Microsoft Flight Simulator",
+    "accept": [
+      "Microsoft Flight Simulator",
+      "flight simulator",
+      "microsoft flight simulator",
+      "ms flight simulator"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/microsoftflysimulator.png"
+  },
+  {
+    "title": "Call of Duty: Modern Warfare 2",
+    "accept": [
+      "Call of Duty: Modern Warfare 2",
+      "modern warfare 2",
+      "call of duty modern warfare 2",
+      "cod mw2",
+      "mw2"
+    ],
+    "reject": [
+      "modern warfare",
+      "modern warfare 3"
+    ],
+    "image": "images-jeux-video/modernwarfare2.png"
+  },
+  {
+    "title": "MOUSE: P.I. For Hire",
+    "accept": [
+      "MOUSE: P.I. For Hire",
+      "mouse pi for hire",
+      "mouse p i for hire",
+      "mouse for hire"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/mousepiforhire.png"
+  },
+  {
+    "title": "Mundaun",
+    "accept": [
+      "Mundaun",
+      "mundaun"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/mundaun.png"
+  },
+  {
+    "title": "NBA 2K25",
+    "accept": [
+      "NBA 2K25",
+      "nba 2k25",
+      "nba2k25"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/nba2k25.png"
+  },
+  {
+    "title": "Need for Speed (2015)",
+    "accept": [
+      "Need for Speed (2015)",
+      "need for speed 2015",
+      "need for speed 20",
+      "need for speed reboot"
+    ],
+    "reject": [
+      "Need for Speed: Most Wanted",
+      "need for speed most wanted"
+    ],
+    "image": "images-jeux-video/needforspeed20.png"
+  },
+  {
+    "title": "Need for Speed: Most Wanted",
+    "accept": [
+      "Need for Speed: Most Wanted",
+      "need for speed most wanted",
+      "nfs most wanted"
+    ],
+    "reject": [
+      "Need for Speed (2015)",
+      "need for speed",
+      "need for speed 2015"
+    ],
+    "image": "images-jeux-video/needforspeedmostwanted.png"
+  },
+  {
+    "title": "Nidhogg",
+    "accept": [
+      "Nidhogg",
+      "nidhogg 1"
+    ],
+    "reject": [
+      "nidhogg 2"
+    ],
+    "image": "images-jeux-video/nidhogg.png"
+  },
+  {
+    "title": "Noita",
+    "accept": [
+      "Noita",
+      "noita"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/noita.png"
+  },
+  {
+    "title": "Ōkami",
+    "accept": [
+      "Ōkami",
+      "okami",
+      "ookami"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/okami.png"
+  },
+  {
+    "title": "Pac-Man",
+    "accept": [
+      "Pac-Man",
+      "pacman",
+      "pac man"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/pacman.png"
+  },
+  {
+    "title": "Papers, Please",
+    "accept": [
+      "Papers, Please",
+      "papers please"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/papersplease.png"
+  },
+  {
+    "title": "Paradise Killer",
+    "accept": [
+      "Paradise Killer",
+      "paradise killer"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/paradisekiller.png"
+  },
+  {
+    "title": "Pentiment",
+    "accept": [
+      "Pentiment",
+      "pentiment"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/pentiment.png"
+  },
+  {
+    "title": "Pikmin 4",
+    "accept": [
+      "Pikmin 4",
+      "pikmin iv"
+    ],
+    "reject": [
+      "pikmin",
+      "pikmin 1",
+      "pikmin 2",
+      "pikmin 3"
+    ],
+    "image": "images-jeux-video/pikmin4.png"
+  },
+  {
+    "title": "A Plague Tale: Innocence",
+    "accept": [
+      "A Plague Tale: Innocence",
+      "a plague tale innocence",
+      "plague tale innocence"
+    ],
+    "reject": [
+      "A Plague Tale: Requiem"
+    ],
+    "image": "images-jeux-video/plaguetaleinnocence.png"
+  },
+  {
+    "title": "Pokémon Pokopia",
+    "accept": [
+      "Pokémon Pokopia",
+      "pokemon pokopia",
+      "pokopia"
+    ],
+    "reject": [
+      "Pokémon Colosseum",
+      "Pokémon GO",
+      "Pokémon Rouge"
+    ],
+    "image": "images-jeux-video/pokapia.png"
+  },
+  {
+    "title": "Pokémon Colosseum",
+    "accept": [
+      "Pokémon Colosseum",
+      "pokemon colosseum",
+      "pokemon coloseum"
+    ],
+    "reject": [
+      "Pokémon Pokopia",
+      "Pokémon GO",
+      "Pokémon Rouge",
+      "pokemon",
+      "pokemon go"
+    ],
+    "image": "images-jeux-video/pokemoncoloseum.png"
+  },
+  {
+    "title": "Pokémon GO",
+    "accept": [
+      "Pokémon GO",
+      "pokemon go",
+      "pokemon go mobile"
+    ],
+    "reject": [
+      "Pokémon Pokopia",
+      "Pokémon Colosseum",
+      "Pokémon Rouge",
+      "pokemon",
+      "pokemon rouge"
+    ],
+    "image": "images-jeux-video/pokemongo.png"
+  },
+  {
+    "title": "Pokémon Rouge",
+    "accept": [
+      "Pokémon Rouge",
+      "pokemon red",
+      "pokemon red version",
+      "pokemon version rouge",
+      "pokemon rouge"
+    ],
+    "reject": [
+      "Pokémon Pokopia",
+      "Pokémon Colosseum",
+      "Pokémon GO",
+      "pokemon",
+      "pokemon go"
+    ],
+    "image": "images-jeux-video/pokemonrouge.png"
+  },
+  {
+    "title": "Prey",
+    "accept": [
+      "Prey",
+      "prey 2017"
+    ],
+    "reject": [
+      "prey 2006"
+    ],
+    "image": "images-jeux-video/prey.png"
+  },
+  {
+    "title": "Quake",
+    "accept": [
+      "Quake",
+      "quake 1"
+    ],
+    "reject": [
+      "quake 2",
+      "quake 3",
+      "quake 4"
+    ],
+    "image": "images-jeux-video/quake.png"
+  },
+  {
+    "title": "Red Dead Redemption 2",
+    "accept": [
+      "Red Dead Redemption 2",
+      "red dead redemption 2",
+      "red dead 2",
+      "rdr2"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/reddead2.png"
+  },
+  {
+    "title": "Resident Evil 4",
+    "accept": [
+      "Resident Evil 4",
+      "resident evil 4",
+      "resident evil iv",
+      "biohazard 4"
+    ],
+    "reject": [
+      "resident evil",
+      "resident evil 2",
+      "resident evil 3",
+      "resident evil 5"
+    ],
+    "image": "images-jeux-video/residentevil4.png"
+  },
+  {
+    "title": "Roblox",
+    "accept": [
+      "Roblox",
+      "roblox"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/roblox.png"
+  },
+  {
+    "title": "Sea of Thieves",
+    "accept": [
+      "Sea of Thieves",
+      "sea of thieves"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/seaofthieves.png"
+  },
+  {
+    "title": "Sekiro: Shadows Die Twice",
+    "accept": [
+      "Sekiro: Shadows Die Twice",
+      "sekiro",
+      "sekiro shadows die twice"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/sekiro.png"
+  },
+  {
+    "title": "Shadow of the Colossus",
+    "accept": [
+      "Shadow of the Colossus",
+      "shadow of colossus",
+      "shadow of the colossus"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/shadowofcolosus.png"
+  },
+  {
+    "title": "Shenmue",
+    "accept": [
+      "Shenmue",
+      "shenmue 1"
+    ],
+    "reject": [
+      "shenmue 2",
+      "shenmue 3"
+    ],
+    "image": "images-jeux-video/shenmue.png"
+  },
+  {
+    "title": "Sifu",
+    "accept": [
+      "Sifu",
+      "sifu"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/sifu.png"
+  },
+  {
+    "title": "The Simpsons: Hit & Run",
+    "accept": [
+      "The Simpsons: Hit & Run",
+      "simpsons hit and run",
+      "the simpsons hit and run",
+      "simpson hit run"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/simpsonhitandrun.png"
+  },
+  {
+    "title": "Spider-Man",
+    "accept": [
+      "Spider-Man",
+      "spiderman 1",
+      "spider man 1",
+      "spiderman ps1",
+      "spider man ps1"
+    ],
+    "reject": [
+      "Marvel's Spider-Man",
+      "Marvel's Spider-Man 2",
+      "Spider-Man 2"
+    ],
+    "image": "images-jeux-video/spiderman1.png"
+  },
+  {
+    "title": "Spider-Man 2",
+    "accept": [
+      "Spider-Man 2",
+      "spiderman 2",
+      "spider man 2",
+      "spiderman 2 ps2",
+      "spider man 2 ps2"
+    ],
+    "reject": [
+      "Marvel's Spider-Man",
+      "Marvel's Spider-Man 2",
+      "Spider-Man"
+    ],
+    "image": "images-jeux-video/spiderman2.png"
+  },
+  {
+    "title": "Tom Clancy's Splinter Cell: Chaos Theory",
+    "accept": [
+      "Tom Clancy's Splinter Cell: Chaos Theory",
+      "splinter cell chaos theory",
+      "chaos theory"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/splinterchaostheory.png"
+  },
+  {
+    "title": "Spore",
+    "accept": [
+      "Spore",
+      "spore"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/spore.png"
+  },
+  {
+    "title": "Spyro the Dragon",
+    "accept": [
+      "Spyro the Dragon",
+      "spyro 1",
+      "spyro the dragon"
+    ],
+    "reject": [
+      "Spyro: Year of the Dragon",
+      "Spyro 2: Ripto's Rage!",
+      "spyro 2",
+      "spyro 3"
+    ],
+    "image": "images-jeux-video/spyro1.png"
+  },
+  {
+    "title": "Spyro 2: Ripto's Rage!",
+    "accept": [
+      "Spyro 2: Ripto's Rage!",
+      "spyro 2",
+      "spyro 2 riptos rage",
+      "spyro 2 gateway to glimmer"
+    ],
+    "reject": [
+      "Spyro: Year of the Dragon",
+      "Spyro the Dragon",
+      "spyro 1",
+      "spyro 3"
+    ],
+    "image": "images-jeux-video/spyro2.png"
+  },
+  {
+    "title": "SSX Tricky",
+    "accept": [
+      "SSX Tricky",
+      "ssx tricky"
+    ],
+    "reject": [
+      "ssx",
+      "ssx 3"
+    ],
+    "image": "images-jeux-video/ssxtricky.png"
+  },
+  {
+    "title": "Starfield",
+    "accept": [
+      "Starfield",
+      "starfield"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/starfield.png"
+  },
+  {
+    "title": "Star Fox",
+    "accept": [
+      "Star Fox",
+      "starwing",
+      "star fox snes",
+      "star fox 1993"
+    ],
+    "reject": [
+      "Star Fox Adventures"
+    ],
+    "image": "images-jeux-video/starwing.png"
+  },
+  {
+    "title": "Streets of Rage 2",
+    "accept": [
+      "Streets of Rage 2",
+      "streets of rage 2",
+      "street of rage 2",
+      "bare knuckle 2"
+    ],
+    "reject": [
+      "streets of rage",
+      "streets of rage 1",
+      "streets of rage 3",
+      "streets of rage 4"
+    ],
+    "image": "images-jeux-video/streetofrage2.png"
+  },
+  {
+    "title": "Subway Surfers",
+    "accept": [
+      "Subway Surfers",
+      "subway surfer",
+      "subway surfers"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/subwaysurfer.png"
+  },
+  {
+    "title": "Super Mario Sunshine",
+    "accept": [
+      "Super Mario Sunshine",
+      "mario sunshine",
+      "super mario sunshine"
+    ],
+    "reject": [
+      "Super Mario Kart",
+      "Super Mario 64",
+      "Super Mario Bros.",
+      "New Super Mario Bros. U Deluxe",
+      "Super Mario Odyssey",
+      "Super Mario Bros. Wonder",
+      "Super Mario World",
+      "super mario 64",
+      "super mario odyssey"
+    ],
+    "image": "images-jeux-video/supermariosunshine.png"
+  },
+  {
+    "title": "Super Mario Bros. Wonder",
+    "accept": [
+      "Super Mario Bros. Wonder",
+      "super mario wonder",
+      "super mario bros wonder",
+      "mario wonder"
+    ],
+    "reject": [
+      "Super Mario Kart",
+      "Super Mario 64",
+      "Super Mario Bros.",
+      "New Super Mario Bros. U Deluxe",
+      "Super Mario Odyssey",
+      "Super Mario Sunshine",
+      "Super Mario World",
+      "super mario bros",
+      "super mario bros u deluxe"
+    ],
+    "image": "images-jeux-video/supermariowonder.png"
+  },
+  {
+    "title": "Super Mario World",
+    "accept": [
+      "Super Mario World",
+      "super mario world",
+      "mario world"
+    ],
+    "reject": [
+      "Super Mario Kart",
+      "Super Mario 64",
+      "Super Mario Bros.",
+      "New Super Mario Bros. U Deluxe",
+      "Super Mario Odyssey",
+      "Super Mario Sunshine",
+      "Super Mario Bros. Wonder",
+      "super mario world 2",
+      "super mario bros"
+    ],
+    "image": "images-jeux-video/supermarioworld.png"
+  },
+  {
+    "title": "Super Meat Boy",
+    "accept": [
+      "Super Meat Boy",
+      "super meat boy"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/supermeatboy.png"
+  },
+  {
+    "title": "Super Metroid",
+    "accept": [
+      "Super Metroid",
+      "super metroid"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/supermetroid.png"
+  },
+  {
+    "title": "Super Smash Bros. Melee",
+    "accept": [
+      "Super Smash Bros. Melee",
+      "smash bros melee",
+      "super smash bros melee",
+      "ssbm"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/supersmashbrosmelee.png"
+  },
+  {
+    "title": "Supraland",
+    "accept": [
+      "Supraland",
+      "supraland"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/supraland.png"
+  },
+  {
+    "title": "Superliminal",
+    "accept": [
+      "Superliminal",
+      "superliminal"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/supraliminal.png"
+  },
+  {
+    "title": "Syphon Filter",
+    "accept": [
+      "Syphon Filter",
+      "syphon filter"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/syphonfilter.png"
+  },
+  {
+    "title": "Tekken 3",
+    "accept": [
+      "Tekken 3",
+      "tekken iii"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/tekken3.png"
+  },
+  {
+    "title": "Terraria",
+    "accept": [
+      "Terraria",
+      "terraria"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/terraria.png"
+  },
+  {
+    "title": "Tetris",
+    "accept": [
+      "Tetris",
+      "tetris"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/tetris.png"
+  },
+  {
+    "title": "The Beginner's Guide",
+    "accept": [
+      "The Beginner's Guide",
+      "the beginners guide",
+      "beginners guide"
+    ],
+    "reject": [],
+    "image": "images-jeux-video/thebeginnersguide.png"
   }
 ]

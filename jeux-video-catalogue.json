@@ -1,5 +1,26 @@
 [
 {
+  "title": "Sonic Racing: CrossWorlds",
+  "accept": [
+    "sonic racing crossworlds",
+    "sonic racing cross worlds",
+    "sonic racing crossworld",
+    "sonic crossworlds",
+    "sonic cross worlds",
+    "crossworlds"
+  ],
+  "reject": [
+    "sonic racing",
+    "team sonic racing",
+    "sonic all stars racing",
+    "sonic all stars racing transformed",
+    "sonic riders",
+    "sonic r"
+  ],
+  "image": "images-jeux-video/sonicracingcrossworlds.png"
+},
+
+{
   "title": "Assassin's Creed Shadows",
   "accept": ["assassins creed shadows", "assassin's creed shadows", "ac shadows"],
   "reject": ["assassins creed", "assassins creed valhalla", "assassins creed origins", "assassins creed odyssey"],
@@ -17,12 +38,28 @@
   "reject": [],
   "image": "images-jeux-video/bully.png"
 },
+
 {
-  "title": "Castlevania",
-  "accept": ["castlevania", "castlevania 1", "castlevania nes"],
-  "reject": ["castlevania 2", "castlevania 3", "super castlevania 4", "castlevania symphony of the night"],
+  "title": "Devil May Cry 3: Dante's Awakening",
+  "accept": [
+    "devil may cry 3",
+    "devil may cry iii",
+    "devil may cry 3 dantes awakening",
+    "dmc 3",
+    "dmc3",
+    "devil may cry 3 special edition"
+  ],
+  "reject": [
+    "devil may cry",
+    "devil may cry 1",
+    "devil may cry 2",
+    "devil may cry 4",
+    "devil may cry 5",
+    "dmc devil may cry"
+  ],
   "image": "images-jeux-video/castelvania.png"
 },
+
 {
   "title": "Demon's Souls",
   "accept": ["demons souls", "demon's souls", "demon souls"],

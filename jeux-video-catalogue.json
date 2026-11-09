@@ -1985,16 +1985,6 @@
     "image": "images-jeux-video/dukenukem3d.png"
   },
   {
-    "title": "Duke Nukem 3D",
-    "accept": [
-      "Duke Nukem 3D",
-      "duke nukem 3d",
-      "duke nukem three d"
-    ],
-    "reject": [],
-    "image": "images-jeux-video/dukenukem3db.png"
-  },
-  {
     "title": "Dying Light 2: Stay Human",
     "accept": [
       "Dying Light 2: Stay Human",

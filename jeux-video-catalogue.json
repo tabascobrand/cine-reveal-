@@ -10,12 +10,11 @@
     "crossworlds"
   ],
   "reject": [
-    "sonic racing",
     "team sonic racing",
     "sonic all stars racing",
     "sonic all stars racing transformed",
     "sonic riders",
-    "sonic r"
+    "sonic"
   ],
   "image": "images-jeux-video/sonicracingcrossworlds.png"
 },
@@ -977,11 +976,10 @@
   {
     "title": "The Legend of Zelda: Ocarina of Time",
     "accept": [
-      "the legend of zelda ocarina of time 3d",
-      "zelda ocarina of time 3d",
-      "ocarina of time 3d",
-      "zelda oot 3d",
-      "oot 3d"
+      "the legend of zelda ocarina of time switch",
+      "zelda ocarina of time switch",
+      "ocarina of time switch",
+      "zelda oot switch"
     ],
     "reject": [
       "zelda",
@@ -3005,38 +3003,6 @@
     "image": "images-jeux-video/simpsonhitandrun.png"
   },
   {
-    "title": "Spider-Man",
-    "accept": [
-      "Spider-Man",
-      "spiderman 1",
-      "spider man 1",
-      "spiderman ps1",
-      "spider man ps1"
-    ],
-    "reject": [
-      "Marvel's Spider-Man",
-      "Marvel's Spider-Man 2",
-      "Spider-Man 2"
-    ],
-    "image": "images-jeux-video/spiderman1.png"
-  },
-  {
-    "title": "Spider-Man 2",
-    "accept": [
-      "Spider-Man 2",
-      "spiderman 2",
-      "spider man 2",
-      "spiderman 2 ps2",
-      "spider man 2 ps2"
-    ],
-    "reject": [
-      "Marvel's Spider-Man",
-      "Marvel's Spider-Man 2",
-      "Spider-Man"
-    ],
-    "image": "images-jeux-video/spiderman2.png"
-  },
-  {
     "title": "Tom Clancy's Splinter Cell: Chaos Theory",
     "accept": [
       "Tom Clancy's Splinter Cell: Chaos Theory",
@@ -3071,9 +3037,9 @@
     "image": "images-jeux-video/spyro1.png"
   },
   {
-    "title": "Spyro 2: Ripto's Rage!",
+    "title": "Spyro 2: Gateway to Glimmer",
     "accept": [
-      "Spyro 2: Ripto's Rage!",
+      "Spyro 2: Gateway to Glimmer",
       "spyro 2",
       "spyro 2 riptos rage",
       "spyro 2 gateway to glimmer"

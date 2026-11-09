@@ -235,12 +235,6 @@
   "image": "images-jeux-video/undertale.png"
 },
 {
-  "title": "Assassin's Creed Valhalla",
-  "accept": ["assassins creed valhalla", "assassin's creed valhalla", "ac valhalla", "valhalla assassins creed"],
-  "reject": ["assassins creed", "assassins creed shadows", "assassins creed odyssey", "assassins creed origins"],
-  "image": "images-jeux-video/valhalla.png"
-},
-{
   "title": "Viewfinder",
   "accept": ["viewfinder", "view finder"],
   "reject": [],

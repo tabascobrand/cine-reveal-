@@ -1,4 +1,26 @@
 [
+{
+  "title": "Silent Hill: Townfall",
+  "accept": [
+    "silent hill townfall",
+    "silent hill: townfall",
+    "silent hill town fall",
+    "townfall"
+  ],
+  "reject": [
+    "silent hill",
+    "silent hill 1",
+    "silent hill 2",
+    "silent hill 3",
+    "silent hill 4",
+    "silent hill f",
+    "silent hill origins",
+    "silent hill homecoming",
+    "silent hill downpour"
+  ],
+  "image": "images-jeux-video/silenthilltownfall.png"
+},
+
   {
     "title": "Astro Bot",
     "accept": [

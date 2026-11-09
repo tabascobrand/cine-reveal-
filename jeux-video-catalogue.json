@@ -1,5 +1,300 @@
 [
 {
+  "title": "Assassin's Creed Shadows",
+  "accept": ["assassins creed shadows", "assassin's creed shadows", "ac shadows"],
+  "reject": ["assassins creed", "assassins creed valhalla", "assassins creed origins", "assassins creed odyssey"],
+  "image": "images-jeux-video/assassinscreedshadow.png"
+},
+{
+  "title": "Blue Prince",
+  "accept": ["blue prince", "blueprince"],
+  "reject": [],
+  "image": "images-jeux-video/blueprince.png"
+},
+{
+  "title": "Bully",
+  "accept": ["bully", "canis canem edit", "bully scholarship edition"],
+  "reject": [],
+  "image": "images-jeux-video/bully.png"
+},
+{
+  "title": "Castlevania",
+  "accept": ["castlevania", "castlevania 1", "castlevania nes"],
+  "reject": ["castlevania 2", "castlevania 3", "super castlevania 4", "castlevania symphony of the night"],
+  "image": "images-jeux-video/castelvania.png"
+},
+{
+  "title": "Demon's Souls",
+  "accept": ["demons souls", "demon's souls", "demon souls"],
+  "reject": ["dark souls", "dark souls 2", "dark souls 3"],
+  "image": "images-jeux-video/demonssouls.png"
+},
+{
+  "title": "Denshattack!",
+  "accept": ["denshattack", "denshattack!", "densha attack"],
+  "reject": [],
+  "image": "images-jeux-video/denshattak.png"
+},
+{
+  "title": "Dragon Ball FighterZ",
+  "accept": ["dragon ball fighterz", "dragonball fighterz", "dbfz", "dragon ball fighters"],
+  "reject": ["dragon ball xenoverse", "dragon ball xenoverse 2", "dragon ball sparking zero", "dragon ball z budokai"],
+  "image": "images-jeux-video/dragonballfighterz.png"
+},
+{
+  "title": "Far Cry 2",
+  "accept": ["far cry 2", "farcry 2", "farcry2", "far cry ii"],
+  "reject": ["far cry", "far cry 3", "far cry 4", "far cry 5", "far cry 6", "far cry primal"],
+  "image": "images-jeux-video/facrcry2.png"
+},
+{
+  "title": "Final Fantasy VII",
+  "accept": ["final fantasy 7", "final fantasy vii", "ff7", "ffvii", "final fantasy 7 original"],
+  "reject": ["final fantasy 7 remake", "final fantasy 7 rebirth", "final fantasy 8", "final fantasy 9"],
+  "image": "images-jeux-video/ff7.png"
+},
+{
+  "title": "Final Fantasy VII Rebirth",
+  "accept": ["final fantasy 7 rebirth", "final fantasy vii rebirth", "ff7 rebirth", "ffvii rebirth", "rebirth"],
+  "reject": ["final fantasy 7", "final fantasy 7 remake", "final fantasy 7 crisis core"],
+  "image": "images-jeux-video/ff7rebirth.png"
+},
+{
+  "title": "Halo 3",
+  "accept": ["halo 3", "halo iii", "halo three"],
+  "reject": ["halo", "halo 2", "halo 4", "halo 5", "halo infinite", "halo reach"],
+  "image": "images-jeux-video/halo3.png"
+},
+{
+  "title": "Heart of Darkness",
+  "accept": ["heart of darkness", "heartofdarkness", "coeur des tenebres"],
+  "reject": [],
+  "image": "images-jeux-video/heartofdarkness.png"
+},
+{
+  "title": "Left 4 Dead",
+  "accept": ["left 4 dead", "left four dead", "left4dead", "l4d", "left 4 dead 1"],
+  "reject": ["left 4 dead 2", "left four dead 2", "l4d2"],
+  "image": "images-jeux-video/left4dead.png"
+},
+{
+  "title": "My Friend Pedro",
+  "accept": ["my friend pedro", "myfriendpedro", "mon ami pedro"],
+  "reject": [],
+  "image": "images-jeux-video/myfriendpedro.png"
+},
+{
+  "title": "Fallout: New Vegas",
+  "accept": ["fallout new vegas", "fallout: new vegas", "new vegas", "fallout nv", "fnv"],
+  "reject": ["fallout", "fallout 3", "fallout 4", "fallout 76"],
+  "image": "images-jeux-video/newvegas.png"
+},
+{
+  "title": "Oddworld: Abe's Oddysee",
+  "accept": ["oddworld abes oddysee", "abe's oddysee", "abes oddysee", "oddworld l odyssee d abe", "l odyssee d abe"],
+  "reject": ["oddworld", "abes exoddus", "oddworld soulstorm", "oddworld strangers wrath"],
+  "image": "images-jeux-video/oddworld.png"
+},
+{
+  "title": "Persona 4 Revival",
+  "accept": ["persona 4 revival", "persona four revival", "p4 revival"],
+  "reject": ["persona 4", "persona 4 golden", "persona 3 reload", "persona 5"],
+  "image": "images-jeux-video/persona4revival.png"
+},
+{
+  "title": "Rayman Legends",
+  "accept": ["rayman legends", "rayman legend"],
+  "reject": ["rayman", "rayman 2", "rayman 3", "rayman origins"],
+  "image": "images-jeux-video/raymanlegends.png"
+},
+{
+  "title": "Resident Evil Village",
+  "accept": ["resident evil village", "resident evil 8", "resident evil viii", "re8", "re village", "biohazard village"],
+  "reject": ["resident evil", "resident evil 7", "resident evil 4", "resident evil 9", "resident evil requiem"],
+  "image": "images-jeux-video/residentevil8village.png"
+},
+{
+  "title": "Silent Hill 2",
+  "accept": ["silent hill 2", "silent hill ii", "silent hill two", "silent hill 2 remake"],
+  "reject": ["silent hill", "silent hill 1", "silent hill 3", "silent hill 4", "silent hill f", "silent hill townfall"],
+  "image": "images-jeux-video/silenthill2.png"
+},
+{
+  "title": "Stray",
+  "accept": ["stray", "stray game", "stray le jeu"],
+  "reject": [],
+  "image": "images-jeux-video/stray.png"
+},
+{
+  "title": "The Case of the Golden Idol",
+  "accept": ["the case of the golden idol", "case of the golden idol", "golden idol"],
+  "reject": ["the rise of the golden idol", "rise of the golden idol"],
+  "image": "images-jeux-video/thecaseoftheidol.png"
+},
+{
+  "title": "The Forest",
+  "accept": ["the forest", "forest"],
+  "reject": ["sons of the forest"],
+  "image": "images-jeux-video/theforest.png"
+},
+{
+  "title": "The Forgotten City",
+  "accept": ["the forgotten city", "forgotten city", "la cite oubliee"],
+  "reject": [],
+  "image": "images-jeux-video/theforgottencity.png"
+},
+{
+  "title": "The Outer Worlds 2",
+  "accept": ["the outer worlds 2", "outer worlds 2", "the outer worlds ii", "outer worlds ii"],
+  "reject": ["the outer worlds", "outer worlds", "outer wilds"],
+  "image": "images-jeux-video/theouterworlds2.png"
+},
+{
+  "title": "The Talos Principle",
+  "accept": ["the talos principle", "talos principle", "the talos principle 1"],
+  "reject": ["the talos principle 2", "talos principle 2"],
+  "image": "images-jeux-video/thethalosprinciple.png"
+},
+{
+  "title": "The Warriors",
+  "accept": ["the warriors", "warriors rockstar", "the warriors ps2"],
+  "reject": [],
+  "image": "images-jeux-video/thewarriors.png"
+},
+{
+  "title": "TimeSplitters",
+  "accept": ["timesplitters", "time splitters", "timesplitters 1", "time splitters 1"],
+  "reject": ["timesplitters 2", "timesplitters future perfect"],
+  "image": "images-jeux-video/timesplitters1.png"
+},
+{
+  "title": "Tomb Raider",
+  "accept": ["tomb raider 2013", "tomb raider reboot", "tomb raider definitive edition", "tomb raider 9"],
+  "reject": ["tomb raider 1", "tomb raider 2", "tomb raider 3", "rise of the tomb raider", "shadow of the tomb raider"],
+  "image": "images-jeux-video/tombraiderps3ou4.png"
+},
+{
+  "title": "Tony Hawk's Pro Skater 2",
+  "accept": ["tony hawks pro skater 2", "tony hawk pro skater 2", "thps2", "tony hawk 2"],
+  "reject": ["tony hawks pro skater", "tony hawks pro skater 1", "tony hawks pro skater 3", "tony hawks pro skater 4"],
+  "image": "images-jeux-video/tonyhawk2.png"
+},
+{
+  "title": "Uncharted 2: Among Thieves",
+  "accept": ["uncharted 2", "uncharted 2 among thieves", "uncharted ii", "among thieves"],
+  "reject": ["uncharted", "uncharted 1", "uncharted 3", "uncharted 4", "uncharted lost legacy"],
+  "image": "images-jeux-video/uncharted2.png"
+},
+{
+  "title": "Uncharted 4: A Thief's End",
+  "accept": ["uncharted 4", "uncharted 4 a thiefs end", "uncharted iv", "a thiefs end"],
+  "reject": ["uncharted", "uncharted 1", "uncharted 2", "uncharted 3", "uncharted lost legacy"],
+  "image": "images-jeux-video/uncharted4.png"
+},
+{
+  "title": "Undertale",
+  "accept": ["undertale", "under tale"],
+  "reject": ["deltarune"],
+  "image": "images-jeux-video/undertale.png"
+},
+{
+  "title": "Assassin's Creed Valhalla",
+  "accept": ["assassins creed valhalla", "assassin's creed valhalla", "ac valhalla", "valhalla assassins creed"],
+  "reject": ["assassins creed", "assassins creed shadows", "assassins creed odyssey", "assassins creed origins"],
+  "image": "images-jeux-video/valhalla.png"
+},
+{
+  "title": "Viewfinder",
+  "accept": ["viewfinder", "view finder"],
+  "reject": [],
+  "image": "images-jeux-video/viewfinder.png"
+},
+{
+  "title": "WarioWare, Inc.: Mega Microgames!",
+  "accept": ["warioware", "wario ware", "warioware inc", "warioware mega microgames", "wario ware inc mega microgames"],
+  "reject": ["warioware touched", "warioware smooth moves", "warioware get it together", "warioware move it"],
+  "image": "images-jeux-video/warioware.png"
+},
+{
+  "title": "Watch Dogs",
+  "accept": ["watch dogs", "watchdogs", "watch dogs 1", "watch_dogs"],
+  "reject": ["watch dogs 2", "watch dogs legion"],
+  "image": "images-jeux-video/watchdogs.png"
+},
+{
+  "title": "Wii Sports",
+  "accept": ["wii sports", "wiisports"],
+  "reject": ["wii sports resort", "nintendo switch sports", "wii sports club"],
+  "image": "images-jeux-video/wiisport.png"
+},
+{
+  "title": "World of Goo",
+  "accept": ["world of goo", "worldofgoo", "world of goo 1"],
+  "reject": ["world of goo 2"],
+  "image": "images-jeux-video/worldofgoo.png"
+},
+{
+  "title": "Worms Armageddon",
+  "accept": ["worms armageddon", "worms armaggedon", "worms armegeddon"],
+  "reject": ["worms", "worms 2", "worms world party", "worms wmd", "worms revolution"],
+  "image": "images-jeux-video/wormsarmageddon.png"
+},
+{
+  "title": "XIII",
+  "accept": ["xiii", "xiii game", "xiii le jeu", "xiii 2003", "xiii remake", "13"],
+  "reject": [],
+  "image": "images-jeux-video/XIII.png"
+},
+{
+  "title": "Yakuza: Like a Dragon",
+  "accept": ["yakuza like a dragon", "yakuza 7", "like a dragon 7", "yakuza like a dragon 7"],
+  "reject": ["yakuza", "yakuza 0", "yakuza 6", "like a dragon infinite wealth", "like a dragon ishin"],
+  "image": "images-jeux-video/yakuzalikeadragon.png"
+},
+{
+  "title": "The Legend of Zelda: Link's Awakening",
+  "accept": ["zelda links awakening switch", "links awakening switch", "zelda links awakening remake", "links awakening remake", "zelda links awakening 2019"],
+  "reject": ["zelda links awakening gameboy", "links awakening dx", "zelda a link to the past", "zelda echoes of wisdom"],
+  "image": "images-jeux-video/zeldaalinksawakening.png"
+},
+{
+  "title": "The Legend of Zelda: Link's Awakening",
+  "accept": ["zelda links awakening gameboy", "links awakening gameboy", "links awakening gb", "links awakening dx", "zelda links awakening 1993"],
+  "reject": ["zelda links awakening switch", "links awakening remake", "zelda a link to the past"],
+  "image": "images-jeux-video/zeldaalinksawakeninggb.png"
+},
+{
+  "title": "The Legend of Zelda: Echoes of Wisdom",
+  "accept": ["zelda echoes of wisdom", "echoes of wisdom", "zelda eow", "echoes of wisdom zelda"],
+  "reject": ["zelda", "zelda links awakening", "zelda tears of the kingdom", "zelda breath of the wild"],
+  "image": "images-jeux-video/zeldaechoesofwisdom.png"
+},
+{
+  "title": "The Legend of Zelda: Phantom Hourglass",
+  "accept": ["zelda phantom hourglass", "phantom hourglass", "the legend of zelda phantom hourglass"],
+  "reject": ["zelda", "zelda spirit tracks", "zelda wind waker"],
+  "image": "images-jeux-video/zeldaphantomhourglass.png"
+},
+{
+  "title": "The Legend of Zelda: Skyward Sword",
+  "accept": ["zelda skyward sword", "skyward sword", "the legend of zelda skyward sword", "skyward sword hd"],
+  "reject": ["zelda", "zelda twilight princess", "zelda breath of the wild", "zelda tears of the kingdom"],
+  "image": "images-jeux-video/zeldaskywardsword.png"
+},
+{
+  "title": "The Legend of Zelda: Tears of the Kingdom",
+  "accept": ["zelda tears of the kingdom", "tears of the kingdom", "zelda totk", "totk", "the legend of zelda tears of the kingdom"],
+  "reject": ["zelda", "zelda breath of the wild", "breath of the wild", "botw"],
+  "image": "images-jeux-video/zeldatotk.png"
+},
+{
+  "title": "The Legend of Zelda: The Wind Waker",
+  "accept": ["zelda wind waker", "the wind waker", "wind waker", "zelda the wind waker", "wind waker hd"],
+  "reject": ["zelda", "zelda phantom hourglass", "zelda twilight princess", "zelda skyward sword"],
+  "image": "images-jeux-video/zeldawindwaker.png"
+},
+
+{
   "title": "Silent Hill: Townfall",
   "accept": [
     "silent hill townfall",

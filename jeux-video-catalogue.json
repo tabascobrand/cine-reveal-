@@ -314,7 +314,7 @@
 {
   "title": "The Legend of Zelda: Tears of the Kingdom",
   "accept": ["zelda tears of the kingdom", "tears of the kingdom", "zelda totk", "totk", "the legend of zelda tears of the kingdom"],
-  "reject": ["zelda", "zelda breath of the wild", "breath of the wild", "botw"],
+  "reject": ["zelda", "zelda breath of the wild", "breath of the wild", "botw","zelda botw"],
   "image": "images-jeux-video/zeldatotk.png"
 },
 {
@@ -1411,7 +1411,7 @@
   {
     "title": "Rayman 2: The Great Escape",
     "accept": [
-      "Rayman 2",
+      "Rayman 2","rayman2",
       "Rayman 2: The Great Escape",
       "rayman ps1"
     ],

@@ -338,6 +338,13 @@
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 5L19 19M19 5L5 19' stroke='black' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
   }
   @media (max-width:650px) {.poster-container{width:100%;max-width:100%;}.game-area{gap:12px;}}
+
+  /* Accueil : espacement uniforme entre les éléments (24 px). */
+  #screenStart { gap: 24px; }
+  #screenStart > .btn-primary { margin-top: 0; }
+  #screenStart > .leaderboard-preview { margin-top: 0; }
+  #screenStart .leaderboard-title { margin-bottom: 24px; }
+  #screenStart #catalogNotice:empty { display: none; }
 </style>
 </head>
 <body class="start-scroll">

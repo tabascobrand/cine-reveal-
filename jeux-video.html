@@ -476,7 +476,7 @@ document.addEventListener('mousedown', event => {
   event.preventDefault();
 }, true);
 
-const LEADERBOARD_API = null; // Classement jeux-video : API dédiée à créer avant publication.
+const LEADERBOARD_API = '/api/leaderboard';
 let leaderboardScoreSubmitted = false;
 
 function escapeLeaderboardHTML(value){
@@ -492,7 +492,7 @@ function renderLeaderboard(targetId, scores){
   const target = document.getElementById(targetId);
   if(!target) return;
   if(!Array.isArray(scores) || scores.length===0){
-    target.innerHTML='<div class="leaderboard-empty">CLASSEMENT JEUX VIDÉO EN PRÉPARATION</div>';
+    target.innerHTML='<div class="leaderboard-empty">AUCUN SCORE ENREGISTRÉ POUR LE MOMENT</div>';
     return;
   }
   target.innerHTML=scores.map((row,index)=>`
@@ -510,7 +510,7 @@ async function loadLeaderboard(){
     return;
   }
   try{
-    const res=await fetch(LEADERBOARD_API+'?game=cine',{cache:'no-store'});
+    const res=await fetch(LEADERBOARD_API+'?game=video',{cache:'no-store'});
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data=await res.json();
     renderLeaderboard('leaderboardStart',data.scores);

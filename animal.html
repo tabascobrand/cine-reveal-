@@ -329,6 +329,21 @@
     color: #444455;
   }
 
+  /* Bandeau promotionnel Jeu Vidéo Reveal — écran d’accueil uniquement */
+  #screenStart .video-reveal-promo {
+    display: inline-flex; flex-direction: column; align-items: center; width: fit-content; max-width: 100%;
+    padding: 10px 17px; border: 1px solid #A855F7;
+    background: rgba(168,85,247,0.10); color: #A855F7;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;
+    letter-spacing: 2px; line-height: 1.35; text-decoration: none;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  #screenStart .video-reveal-promo .promo-title { color: #A855F7; font-size: 1.35rem; white-space: nowrap; }
+  #screenStart .video-reveal-promo .promo-sub { color: #f0eeea; font-size: 1rem; white-space: nowrap; }
+  #screenStart .video-reveal-promo:hover,
+  #screenStart .video-reveal-promo:focus-visible {
+    background: rgba(168,85,247,0.22); border-color: #c58cff;
+  }
 </style>
 </head>
 <body class="start-scroll">
@@ -354,6 +369,7 @@
 
 <div class="screen active" id="screenStart">
   <div class="screen-title">ANIMAL REVEAL</div>
+  <a class="video-reveal-promo" href="jeux-video.html"><span class="promo-title">JEUX VIDÉO REVEAL</span><span class="promo-sub">DEVINE LE JEU VIDÉO</span></a>
   <button class="btn-primary" onclick="startGame()">JOUER</button>
   <div class="leaderboard-preview">
     <div class="leaderboard-title">CLASSEMENT MONDIAL</div>

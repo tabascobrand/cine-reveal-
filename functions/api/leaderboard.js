@@ -3,7 +3,7 @@ export async function onRequestGet(context) {
   const url = new URL(context.request.url);
   const game = url.searchParams.get("game");
 
-  if (!["cine", "animal"].includes(game)) {
+  if (!["cine", "animal", "video"].includes(game)) {
     return Response.json({ error: "Invalid game" }, { status: 400 });
   }
 
@@ -40,7 +40,7 @@ export async function onRequestPost(context) {
     const score = Number(body.score);
     const secret = String(body.secret || "").trim();
 
-    if (!["cine", "animal"].includes(game)) {
+    if (!["cine", "animal", "video"].includes(game)) {
       return Response.json({ error: "Invalid game" }, { status: 400 });
     }
 

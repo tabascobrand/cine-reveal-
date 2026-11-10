@@ -348,10 +348,10 @@
   .video-banner-arrow {margin-left:auto;color:var(--gold);font-size:1.2rem;}
   @media (max-width:650px) {.poster-container{width:100%;max-width:100%;}.game-area{gap:12px;}}
 
-  .generation-grid{display:grid;grid-template-columns:1fr 1fr;width:100%;column-gap:20px;row-gap:20px;margin-top:22px}
-  .generation-btn{background:transparent;color:#ef4444;border:2px solid #ef4444;padding:19px 10px;font-family:'Bebas Neue',sans-serif;font-size:1.32rem;letter-spacing:1.4px;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s,transform .2s}
+  .generation-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;column-gap:20px;row-gap:20px;margin-top:14px}
+  .generation-btn{background:transparent;color:#ef4444;border:2px solid #ef4444;padding:19px 10px;font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:4px;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s,transform .2s}
   .generation-btn:hover,.generation-btn:focus-visible{background:rgba(239,68,68,.075);color:#ef4444;box-shadow:none;transform:none}
-  .generation-btn.all{grid-column:1/-1;font-size:1.6rem}
+  .generation-btn.all{grid-column:1/-1;font-size:1.6rem;margin-bottom:34px}
   .return-btn{border:0;background:transparent;color:#ef4444;font:600 12px Inter,sans-serif;letter-spacing:1px;cursor:pointer;padding:10px}
   .poster-img{object-fit:contain}
   @media(max-width:650px){.poster-container{max-width:min(100%,70dvh);max-height:min(100vw,70dvh)}.generation-grid{column-gap:12px;row-gap:15px}.generation-btn{font-size:1.1rem;padding:16px 5px}}

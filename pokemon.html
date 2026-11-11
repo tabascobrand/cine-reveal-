@@ -829,7 +829,7 @@ async function getFrenchNames(){
       }
     }
     map={};
-    for(const n of Object.values(namesById))if(n['9']&&n['5'])map[normalize(n['9'])]=n['5'];
+    for(const n of Object.values(namesById))if(n['9']&&n['5'])map[normalize(n['9']).replace(/\s+/g,'')]=n['5'];
     try{localStorage.setItem(POKEMON_NAME_CACHE,JSON.stringify(map));}catch(e){}
   }catch(e){console.warn('Traductions françaises indisponibles',e);}
   return map;
@@ -843,7 +843,7 @@ async function loadVideoCatalog(){
   const subset=entries.filter(e=>!selectedGeneration||e.generation===selectedGeneration);
   FILMS=subset.map(e=>{
     const en=e.english.replace(/-/g,' ');
-    const fr=translations[normalize(en)]||'';
+    const fr=translations[normalize(en).replace(/\s+/g,'')]||'';
     const aliases=new Set([...e.accept,en,e.english,e.title]);
     if(fr)aliases.add(fr);
     return {title:fr||e.title,accept:[...aliases],reject:[],cleanSrc:e.image,fullSrc:e.image};
@@ -1263,11 +1263,13 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
   const film=queue[currentIdx];
   let matched=false, wasFuzzy=false;
   if(!(film.reject || []).some(rejected => titleVariants(this.value).some(v => titleVariants(rejected).includes(v)))){
-    for(const alias of film.accept){
-      const r=isFuzzyMatch(this.value,alias);
-      if(r==='exact'){matched=true;wasFuzzy=false;break;}
-      if(r==='fuzzy'){matched=true;wasFuzzy=true;}
-    }
+    // Pokémon : correspondance stricte FR/EN. Aucune tolérance Levenshtein :
+    // Nidoran ne doit jamais valider Nidorina, Têtarte ne valide pas Tartard.
+    // Accents, majuscules, apostrophes et ponctuation restent facultatifs.
+    const entered = normalize(this.value).replace(/\s+/g, '');
+    matched = entered.length > 0 && film.accept.some(alias =>
+      normalize(alias).replace(/\s+/g, '') === entered
+    );
   }
   if(matched) triggerCorrect(film,this,wasFuzzy);
   else triggerWrong(this);

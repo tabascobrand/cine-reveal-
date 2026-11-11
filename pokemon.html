@@ -886,6 +886,29 @@ let queue,currentIdx,totalScore,roundScores,revealPct=0,revealInterval=null,curr
 let revealStartedAt=0;
 const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=100;
 const SESSION_SIZE = 10;
+// Easter egg MissingNo. : 0,1 % par Pokémon, une seule rencontre maximum par partie.
+const MISSINGNO_CHANCE = 0.001;
+const MISSINGNO_BONUS = 1000;
+const MISSINGNO_ENTRY = {
+  title: 'MissingNo.',
+  accept: ['MissingNo', 'MissingNo.', 'Missing No', 'Missing No.'],
+  reject: [],
+  cleanSrc: 'images-pokemon/missingno.png',
+  fullSrc: 'images-pokemon/missingno.png',
+  isMissingNo: true
+};
+function addMissingNoEasterEgg(session) {
+  // On ne perturbe pas la file des Pokémon ordinaires.
+  const selected = [...session];
+  for (let i = 0; i < selected.length; i++) {
+    if (Math.random() < MISSINGNO_CHANCE) {
+      selected[i] = MISSINGNO_ENTRY;
+      break;
+    }
+  }
+  return selected;
+}
+
 
 function showScorePopup(text, variant, sublabel){
   const el=document.getElementById('scorePopup');
@@ -897,6 +920,11 @@ function showScorePopup(text, variant, sublabel){
     el.style.color='#ff6a3d';
     el.style.textShadow='0 0 30px rgba(255,106,61,0.8), 0 3px 10px rgba(0,0,0,0.9)';
     el.style.fontSize='clamp(4.5rem, 22vw, 11rem)';
+  } else if(variant==='missingno'){
+    el.style.color='#b9ffbf';
+    el.style.textShadow='3px 0 #a855f7, -3px 0 #ef4444, 0 0 28px rgba(185,255,191,0.75)';
+    el.style.fontSize='clamp(3rem, 14vw, 7rem)';
+    el.style.animationDuration='2.5s';
   } else if(variant==='streak-heaven'){
     el.style.color='#fffbe8';
     el.style.textShadow='0 0 40px rgba(255,245,200,0.95), 0 0 90px rgba(255,215,120,0.65)';
@@ -1063,7 +1091,7 @@ function getNextSession(){
     session.push(...globalQueue.splice(0,needed));
   }
   try { localStorage.setItem(FILM_QUEUE_KEY,JSON.stringify(globalQueue)); } catch(e) {}
-  return session.map(i=>FILMS[i]);
+  return addMissingNoEasterEgg(session.map(i=>FILMS[i]));
 }
 
 function initProgressSegments(){
@@ -1255,8 +1283,13 @@ function triggerCorrect(film,inp,wasFuzzy){
   showFullPoster();
   document.getElementById('filmTitle').textContent=film.title;
   document.getElementById('filmTitle').style.display='block';
-  const earned=currentPts; totalScore+=earned;
-  showScorePopup('+'+earned+' pts');
+  const earned=film.isMissingNo ? MISSINGNO_BONUS : currentPts;
+  totalScore+=earned;
+  if(film.isMissingNo){
+    showScorePopup('+1000 pts', 'missingno', 'POKÉMON N°000 — MISSINGNO.');
+  } else {
+    showScorePopup('+'+earned+' pts');
+  }
   handleStreakSuccess();
   markProgressSegment(currentIdx, true);
   roundScores.push({title:film.title,pts:earned,fuzzy:wasFuzzy});
@@ -1306,7 +1339,7 @@ function endGame(){
   document.body.classList.add('score-visible');
   document.getElementById('screenEnd').classList.add('active');
   window.scrollTo(0,0);
-  const max=queue.length*MAX_PTS, pct=Math.round((totalScore/max)*100);
+  const max=queue.length*MAX_PTS, pct=Math.min(100,Math.round((totalScore/max)*100));
   document.getElementById('endTitle').textContent=totalScore+' pts';
   document.getElementById('endSub').textContent=
     pct>=80?' ':

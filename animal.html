@@ -136,7 +136,7 @@
     width: 100%; max-width: 440px; margin-top: 44px;
   }
   /* Alignement du classement sur la page d’accueil, comme CINÉ REVEAL. */
-  #screenStart .leaderboard-preview { margin-top: 19px; }
+  #screenStart .leaderboard-preview { margin-top: 7px; }
   #screenStart .leaderboard-title { margin-bottom: 30px; }
   .leaderboard-title {
     font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 4px;
@@ -331,6 +331,7 @@
 
   /* Bandeau promotionnel Jeu Vidéo Reveal — écran d’accueil uniquement */
   #screenStart .video-reveal-promo {
+    position: relative; top: -10px;
     display: inline-flex; flex-direction: column; align-items: center; width: fit-content; max-width: 100%;
     padding: 10px 17px; border: 1px solid #A855F7;
     background: rgba(168,85,247,0.10); color: #A855F7;
@@ -1377,7 +1378,7 @@ function initSound(){
   if(!soundAudio){
     soundAudio = new Audio(SOUND_SRC);
     soundAudio.loop = false;
-    soundAudio.volume = 0.12;
+    soundAudio.volume = 0.05;
   }
 }
 function startSound(){

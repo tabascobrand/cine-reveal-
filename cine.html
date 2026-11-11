@@ -354,6 +354,7 @@
 
   /* Accueil : espacement uniforme entre les éléments (24 px). */
   #screenStart { gap: 24px; }
+  #screenStart .video-reveal-promo { position: relative; top: -10px; }
   #screenStart > .btn-primary { margin-top: 0; }
   #screenStart > .leaderboard-preview { margin-top: 0; }
   #screenStart .leaderboard-title { margin-bottom: 24px; }
@@ -6356,7 +6357,7 @@ function initForest(){
   if(!forestAudio){
     forestAudio = new Audio(FOREST_SRC);
     forestAudio.loop = false;
-    forestAudio.volume = 0.12;
+    forestAudio.volume = 0.05;
   }
 }
 function startForest(){

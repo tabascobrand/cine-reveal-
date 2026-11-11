@@ -1258,7 +1258,7 @@ const FOREST_SRC = '/foret.mp3';
 const FOREST_DURATION = 20 * 60;
 const FOREST_SAFE_END = FOREST_DURATION - 5 * 60;
 let forestAudio = null;
-let forestMuted = false;
+let forestMuted = true;
 
 function initForest(){
   if(!forestAudio){
@@ -1325,10 +1325,10 @@ function resetGameAudio(){
   musicAudio.muted=true;
   musicStarted=false;
   updateMusicButton();
-  forestMuted=false;
-  if(forestAudio){forestAudio.pause();forestAudio.muted=false;forestAudio.currentTime=0;}
+  forestMuted=true;
+  if(forestAudio){forestAudio.pause();forestAudio.muted=true;forestAudio.currentTime=0;}
   const btn=document.getElementById('forestBtn');
-  document.getElementById('forestSlash').style.display='none';
+  document.getElementById('forestSlash').style.display='block';
   btn.style.color='var(--gold)';btn.style.opacity='1';
   effectsMuted=false;
   effectsMaster.gain.setValueAtTime(1, AC.currentTime);
@@ -1338,7 +1338,7 @@ function resetGameAudio(){
   const effectsBtn=document.getElementById('effectsBtn');
   effectsBtn.style.color='var(--gold)';effectsBtn.style.opacity='1';
   effectsBtn.title='Couper les effets sonores';effectsBtn.setAttribute('aria-label',effectsBtn.title);
-  btn.title='Couper les oiseaux';btn.setAttribute('aria-label',btn.title);
+  btn.title='Activer les oiseaux';btn.setAttribute('aria-label',btn.title);
 }
 
 function goHome(){ document.body.classList.remove('score-visible'); window.location.href='index.html'; }

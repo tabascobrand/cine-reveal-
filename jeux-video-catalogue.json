@@ -2668,7 +2668,7 @@
       "nba 2k25",
       "nba2k25"
     ],
-    "reject": [],
+    "reject": [nba2k],
     "image": "images-jeux-video/nba2k25.png"
   },
   {

@@ -1743,7 +1743,7 @@
       "cs2",
       "counterstrike 2"
     ],
-    "reject": [],
+    "reject": ["counter strike","cs"],
     "image": "images-jeux-video/counterstrike2.png"
   },
   {

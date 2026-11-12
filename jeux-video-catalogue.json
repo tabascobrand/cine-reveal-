@@ -197,12 +197,6 @@
   "image": "images-jeux-video/tonyhawk2.png"
 },
 {
-  "title": "Uncharted 2: Among Thieves",
-  "accept": ["uncharted 2", "uncharted 2 among thieves", "uncharted ii", "among thieves"],
-  "reject": ["uncharted", "uncharted 1", "uncharted 3", "uncharted 4", "uncharted lost legacy"],
-  "image": "images-jeux-video/uncharted2.png"
-},
-{
   "title": "Uncharted 4: A Thief's End",
   "accept": ["uncharted 4", "uncharted 4 a thiefs end", "uncharted iv", "a thiefs end"],
   "reject": ["uncharted", "uncharted 1", "uncharted 2", "uncharted 3", "uncharted lost legacy"],

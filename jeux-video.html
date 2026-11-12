@@ -734,7 +734,10 @@ const NUMBER_WORDS = {
   ii:'2',iii:'3',iv:'4',v:'5',vi:'6',vii:'7',viii:'8',ix:'9',x:'10'
 };
 function canonicalNumbers(str){
-  return normalize(str).split(' ').map(w=>NUMBER_WORDS[w]||w).join(' ');
+  // Sépare les numéros collés aux mots : rayman2, farcry3, ff7, tf2...
+  // Ainsi, un numéro d'épisode ne peut plus passer pour une faute de frappe.
+  return normalize(str).replace(/([a-z])([0-9])/g,'$1 $2').replace(/([0-9])([a-z])/g,'$1 $2')
+    .split(' ').map(w=>NUMBER_WORDS[w]||w).join(' ');
 }
 function titleVariants(str){
   const n=canonicalNumbers(str).replace(/^ze\b/,'the');
@@ -1141,11 +1144,20 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
   AC.resume();
   const film=queue[currentIdx];
   let matched=false, wasFuzzy=false;
-  if(!(film.reject || []).some(rejected => titleVariants(this.value).some(v => titleVariants(rejected).includes(v)))){
-    for(const alias of film.accept){
-      const r=isFuzzyMatch(this.value,alias);
-      if(r==='exact'){matched=true;wasFuzzy=false;break;}
-      if(r==='fuzzy'){matched=true;wasFuzzy=true;}
+  // Les réponses exactes autorisées passent toujours en premier.
+  // Les rejets exacts passent ensuite, sans rejeter une réponse plus longue
+  // qui contient simplement le même mot (ex. rayman 2 face à rayman).
+  const exactAccept=film.accept.some(alias=>isFuzzyMatch(this.value,alias)==='exact');
+  const exactReject=(film.reject||[]).some(alias=>isFuzzyMatch(this.value,alias)==='exact');
+  if(exactAccept){
+    matched=true;
+  } else if(!exactReject){
+    // Une réponse proche d'un autre épisode connu ne doit pas être
+    // récupérée par la tolérance orthographique du bon épisode.
+    const nearRejected=(film.reject||[]).some(alias=>isFuzzyMatch(this.value,alias)==='fuzzy');
+    if(!nearRejected){
+      matched=film.accept.some(alias=>isFuzzyMatch(this.value,alias)==='fuzzy');
+      wasFuzzy=matched;
     }
   }
   if(matched) triggerCorrect(film,this,wasFuzzy);

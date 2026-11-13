@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link rel="icon" href="favicon.ico.drapeaux">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DRAPEAU REVEAL — Devine le drapeau</title>
+<title>DRAPEAUX REVEAL — Devine le drapeau</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -121,7 +121,7 @@
   }
   .screen.active { display: flex; }
   .screen-title { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 6px; color: var(--gold); }
-/* Ouverture horizontale lente du titre DRAPEAU REVEAL */
+/* Ouverture horizontale lente du titre DRAPEAUX REVEAL */
 #screenStart .screen-title {
     clip-path: inset(0 50% 0 50%);
     animation: revealTitleOpen 3.5s cubic-bezier(0.45, 0, 0.15, 1) forwards;
@@ -350,7 +350,7 @@
 <body class="start-scroll">
 <header>
   <div style="display:flex;align-items:center;gap:14px">
-    <a class="logo" href="index.html" style="cursor:pointer;text-decoration:none;">DRAPEAU<span>REVEAL</span></a>
+    <a class="logo" href="index.html" style="cursor:pointer;text-decoration:none;">DRAPEAUX<span>REVEAL</span></a>
     <span id="gameAudioControls" style="display:none;align-items:center;gap:14px">
     <button id="effectsBtn" onclick="toggleEffects()" title="Couper les effets sonores" aria-label="Couper les effets sonores" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:color 0.2s;position:relative;top:-3px;">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -387,7 +387,7 @@
 <div class="streak-fx" id="streakFX"></div>
 
 <div class="screen active" id="screenStart">
-  <div class="screen-title">DRAPEAU REVEAL</div>
+  <div class="screen-title">DRAPEAUX REVEAL</div>
   <button class="btn-primary" onclick="startGame()">JOUER</button>
   <div id="catalogNotice" class="screen-sub" role="status"></div>
   <div class="leaderboard-preview">
@@ -684,7 +684,7 @@ function isFuzzyMatch(input,target){
   return false;
 }
 
-// Drapeau Reveal : catalogue généré par le logiciel Drapeau Reveal V5.
+// Drapeaux Reveal : catalogue généré par le logiciel Drapeaux Reveal V5.
 // Les 249 images restent des PNG nommés par code ISO (ex. fr.png).
 // Version de test privée : réponses visibles dans le JSON côté navigateur.
 let FILMS = [];
@@ -954,7 +954,7 @@ function loadFilm(){
   document.getElementById('feedback').className='feedback';
   document.getElementById('skipBtn').disabled=false;
   document.getElementById('validateAnswerBtn').disabled=false;
-  document.getElementById('roundLabel').textContent=`DRAPEAU ${currentIdx+1} / ${queue.length}`;
+  document.getElementById('roundLabel').textContent=`DRAPEAUX ${currentIdx+1} / ${queue.length}`;
   document.getElementById('posterContainer').className='poster-container';
   function onReady(){
     if(answered) return; // évite double déclenchement

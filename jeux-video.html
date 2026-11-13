@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link rel="icon" href="favicon.ico.jeuxvideo.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JEUX VIDÉO REVEAL — Devine le jeu</title>
+<title>JEUX VIDÉO REVEAL — Devine le jeu vidéo</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -150,7 +150,7 @@
   #screenStart .leaderboard-preview { margin-top: 19px; }
   .leaderboard-title {
     font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 4px;
-    text-align: center; color: var(--gold); margin-bottom: 14px;
+    text-align: center; color: var(--gold); margin-bottom: 30px;
   }
   .leaderboard-row {
     display: flex; align-items: center; gap: 14px;
@@ -337,14 +337,14 @@
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 5L19 19M19 5L5 19' stroke='black' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 5L19 19M19 5L5 19' stroke='black' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
   }
-  /* Bandeau de lancement : aperçu seulement, déplacé sur /cine au lancement officiel. */
-  .video-launch-banner {width:100%;max-width:440px;display:flex;align-items:center;justify-content:center;
-    border:1px solid rgba(168,85,247,.45);background:rgba(168,85,247,.075);padding:13px 15px;text-align:center;text-decoration:none;cursor:pointer;}
-  .video-banner-icon {color:var(--gold);font-size:1.6rem;line-height:1;}
-  .video-launch-banner strong {display:block;color:var(--gold);font-family:'Bebas Neue',sans-serif;font-size:1.45rem;letter-spacing:2px;line-height:1.25;}
-  .video-launch-banner small {display:block;color:var(--white);font-family:'Bebas Neue',sans-serif;font-size:1.45rem;letter-spacing:2px;line-height:1.25;margin-top:4px;}
-  .video-banner-arrow {margin-left:auto;color:var(--gold);font-size:1.2rem;}
   @media (max-width:650px) {.poster-container{width:100%;max-width:100%;}.game-area{gap:12px;}}
+
+  /* Accueil : espacement uniforme entre les éléments (24 px). */
+  #screenStart { gap: 24px; }
+  #screenStart > .btn-primary { margin-top: 0; position: relative; top: -6px; }
+  #screenStart > .leaderboard-preview { margin-top: 0; }
+  #screenStart .leaderboard-title { margin-bottom: 24px; }
+  #screenStart #catalogNotice:empty { display: none; }
 </style>
 </head>
 <body class="start-scroll">
@@ -360,7 +360,7 @@
       </svg>
       <svg id="effectsSlash" width="20" height="20" viewBox="0 0 24 24" style="display:none;position:absolute;inset:4px;pointer-events:none;color:var(--white)" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 21 L21 3"/></svg>
     </button>
-    <button id="forestBtn" onclick="toggleForest()" title="Couper les oiseaux" aria-label="Couper les oiseaux" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:color 0.2s;position:relative;top:-3px;">
+    <button id="forestBtn" onclick="toggleForest()" title="Activer les oiseaux" aria-label="Activer les oiseaux" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:color 0.2s;position:relative;top:-3px;">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <!-- Oiseau n°12 : silhouette minimaliste, aile, oeil et deux pattes -->
         <path d="M2.8 18.2 L7.4 13.5 C9.5 11.5 10.4 7.4 14.3 5.3 C17.5 3.6 20.2 5.3 20.8 7.5 L23 8.6 L20.6 9.7 C20.5 14.8 17.2 18.4 12.2 18.4 L2.8 18.2 Z"/>
@@ -368,7 +368,7 @@
         <circle cx="18.3" cy="7.7" r="0.65" fill="currentColor" stroke="none"/>
         <path d="M11.5 18.4 L12.2 21 M15.4 17.9 L16.1 21"/>
       </svg>
-      <svg id="forestSlash" width="22" height="22" viewBox="0 0 24 24" style="display:none;position:absolute;inset:4px;pointer-events:none;color:var(--white);" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21 L21 3"/></svg>
+      <svg id="forestSlash" width="22" height="22" viewBox="0 0 24 24" style="display:block;position:absolute;inset:4px;pointer-events:none;color:var(--white);" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21 L21 3"/></svg>
     </button>
     <button id="musicBtn" onclick="toggleMusic()" title="Activer la musique" aria-label="Activer la musique" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);opacity:1;display:flex;align-items:center;justify-content:center;position:relative;top:-3px;">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
@@ -390,9 +390,6 @@
   <div class="screen-title">JEUXVIDÉO REVEAL</div>
   <button class="btn-primary" onclick="startGame()">JOUER</button>
   <div id="catalogNotice" class="screen-sub" role="status"></div>
-  <a class="video-launch-banner" href="/jeux-video" aria-label="NOUVEAU : JEUX VIDÉO REVEAL">
-    <span><strong>NOUVEAU : JEUX VIDÉO REVEAL</strong><small>Devine le jeu vidéo</small></span>
-  </a>
   <div class="leaderboard-preview">
     <div class="leaderboard-title">CLASSEMENT MONDIAL</div>
     <div id="leaderboardStart"><div class="leaderboard-empty">Chargement…</div></div>
@@ -486,7 +483,7 @@ document.addEventListener('mousedown', event => {
   event.preventDefault();
 }, true);
 
-const LEADERBOARD_API = null; // Classement jeux-video : API dédiée à créer avant publication.
+const LEADERBOARD_API = '/api/leaderboard'; // Classement mondial Jeux Vidéo Reveal.
 let leaderboardScoreSubmitted = false;
 
 function escapeLeaderboardHTML(value){
@@ -502,7 +499,7 @@ function renderLeaderboard(targetId, scores){
   const target = document.getElementById(targetId);
   if(!target) return;
   if(!Array.isArray(scores) || scores.length===0){
-    target.innerHTML='<div class="leaderboard-empty">CLASSEMENT JEUX VIDÉO EN PRÉPARATION</div>';
+    target.innerHTML='<div class="leaderboard-empty">AUCUN SCORE ENREGISTRÉ POUR LE MOMENT</div>';
     return;
   }
   target.innerHTML=scores.map((row,index)=>`
@@ -520,7 +517,7 @@ async function loadLeaderboard(){
     return;
   }
   try{
-    const res=await fetch(LEADERBOARD_API+'?game=cine',{cache:'no-store'});
+    const res=await fetch(LEADERBOARD_API+'?game=video',{cache:'no-store'});
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data=await res.json();
     renderLeaderboard('leaderboardStart',data.scores);
@@ -737,7 +734,10 @@ const NUMBER_WORDS = {
   ii:'2',iii:'3',iv:'4',v:'5',vi:'6',vii:'7',viii:'8',ix:'9',x:'10'
 };
 function canonicalNumbers(str){
-  return normalize(str).split(' ').map(w=>NUMBER_WORDS[w]||w).join(' ');
+  // Sépare les numéros collés aux mots : rayman2, farcry3, ff7, tf2...
+  // Ainsi, un numéro d'épisode ne peut plus passer pour une faute de frappe.
+  return normalize(str).replace(/([a-z])([0-9])/g,'$1 $2').replace(/([0-9])([a-z])/g,'$1 $2')
+    .split(' ').map(w=>NUMBER_WORDS[w]||w).join(' ');
 }
 function titleVariants(str){
   const n=canonicalNumbers(str).replace(/^ze\b/,'the');
@@ -1144,11 +1144,20 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
   AC.resume();
   const film=queue[currentIdx];
   let matched=false, wasFuzzy=false;
-  if(!(film.reject || []).some(rejected => titleVariants(this.value).some(v => titleVariants(rejected).includes(v)))){
-    for(const alias of film.accept){
-      const r=isFuzzyMatch(this.value,alias);
-      if(r==='exact'){matched=true;wasFuzzy=false;break;}
-      if(r==='fuzzy'){matched=true;wasFuzzy=true;}
+  // Les réponses exactes autorisées passent toujours en premier.
+  // Les rejets exacts passent ensuite, sans rejeter une réponse plus longue
+  // qui contient simplement le même mot (ex. rayman 2 face à rayman).
+  const exactAccept=film.accept.some(alias=>isFuzzyMatch(this.value,alias)==='exact');
+  const exactReject=(film.reject||[]).some(alias=>isFuzzyMatch(this.value,alias)==='exact');
+  if(exactAccept){
+    matched=true;
+  } else if(!exactReject){
+    // Une réponse proche d'un autre épisode connu ne doit pas être
+    // récupérée par la tolérance orthographique du bon épisode.
+    const nearRejected=(film.reject||[]).some(alias=>isFuzzyMatch(this.value,alias)==='fuzzy');
+    if(!nearRejected){
+      matched=film.accept.some(alias=>isFuzzyMatch(this.value,alias)==='fuzzy');
+      wasFuzzy=matched;
     }
   }
   if(matched) triggerCorrect(film,this,wasFuzzy);
@@ -1262,7 +1271,7 @@ const FOREST_SRC = '/foret.mp3';
 const FOREST_DURATION = 20 * 60;
 const FOREST_SAFE_END = FOREST_DURATION - 5 * 60;
 let forestAudio = null;
-let forestMuted = false;
+let forestMuted = true;
 
 function initForest(){
   if(!forestAudio){
@@ -1329,10 +1338,10 @@ function resetGameAudio(){
   musicAudio.muted=true;
   musicStarted=false;
   updateMusicButton();
-  forestMuted=false;
-  if(forestAudio){forestAudio.pause();forestAudio.muted=false;forestAudio.currentTime=0;}
+  forestMuted=true;
+  if(forestAudio){forestAudio.pause();forestAudio.muted=true;forestAudio.currentTime=0;}
   const btn=document.getElementById('forestBtn');
-  document.getElementById('forestSlash').style.display='none';
+  document.getElementById('forestSlash').style.display='block';
   btn.style.color='var(--gold)';btn.style.opacity='1';
   effectsMuted=false;
   effectsMaster.gain.setValueAtTime(1, AC.currentTime);
@@ -1342,7 +1351,7 @@ function resetGameAudio(){
   const effectsBtn=document.getElementById('effectsBtn');
   effectsBtn.style.color='var(--gold)';effectsBtn.style.opacity='1';
   effectsBtn.title='Couper les effets sonores';effectsBtn.setAttribute('aria-label',effectsBtn.title);
-  btn.title='Couper les oiseaux';btn.setAttribute('aria-label',btn.title);
+  btn.title='Activer les oiseaux';btn.setAttribute('aria-label',btn.title);
 }
 
 function goHome(){ document.body.classList.remove('score-visible'); window.location.href='index.html'; }

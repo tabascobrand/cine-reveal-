@@ -152,6 +152,7 @@
     font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 4px;
     text-align: center; color: var(--gold); margin-bottom: 14px;
   }
+  #screenStart .leaderboard-title { margin-bottom: 30px; }
   .leaderboard-row {
     display: flex; align-items: center; gap: 14px;
     padding: 12px 16px; background: var(--panel); border-left: 3px solid var(--dim);
@@ -337,6 +338,27 @@
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 5L19 19M19 5L5 19' stroke='black' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 5L19 19M19 5L5 19' stroke='black' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
   }
+  /* Promotion Jeu Vidéo Reveal : uniquement sur l'accueil Ciné */
+  #screenStart .video-reveal-promo {
+    display: inline-flex; flex-direction: column; align-items: center;
+    align-self: center; width: max-content; max-width: 100%;
+    padding: 11px 18px; border: 1px solid rgba(168,85,247,.55);
+    background: rgba(168,85,247,.075); text-align: center;
+    font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px;
+    line-height: 1.3; text-decoration: none;
+  }
+  #screenStart .video-reveal-promo .promo-title { color: #A855F7; font-size: 1.35rem; }
+  #screenStart .video-reveal-promo .promo-sub { color: #f0eeea; font-size: 1rem; margin-top: 3px; }
+  #screenStart .video-reveal-promo:hover { background: rgba(168,85,247,.18); }
+  #screenStart > .btn-primary { margin-top: 0; }
+
+  /* Accueil : espacement uniforme entre les éléments (24 px). */
+  #screenStart { gap: 24px; }
+  #screenStart .video-reveal-promo { position: relative; top: -7px; }
+  #screenStart > .btn-primary { margin-top: 0; }
+  #screenStart > .leaderboard-preview { margin-top: 0; }
+  #screenStart .leaderboard-title { margin-bottom: 24px; }
+  #screenStart #catalogNotice:empty { display: none; }
 </style>
 </head>
 <body class="start-scroll">
@@ -352,7 +374,7 @@
       </svg>
       <svg id="effectsSlash" width="20" height="20" viewBox="0 0 24 24" style="display:none;position:absolute;inset:4px;pointer-events:none;color:var(--white)" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 21 L21 3"/></svg>
     </button>
-    <button id="forestBtn" onclick="toggleForest()" title="Couper les oiseaux" aria-label="Couper les oiseaux" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:color 0.2s;position:relative;top:-3px;">
+    <button id="forestBtn" onclick="toggleForest()" title="Activer les oiseaux" aria-label="Activer les oiseaux" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:color 0.2s;position:relative;top:-3px;">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <!-- Oiseau n°12 : silhouette minimaliste, aile, oeil et deux pattes -->
         <path d="M2.8 18.2 L7.4 13.5 C9.5 11.5 10.4 7.4 14.3 5.3 C17.5 3.6 20.2 5.3 20.8 7.5 L23 8.6 L20.6 9.7 C20.5 14.8 17.2 18.4 12.2 18.4 L2.8 18.2 Z"/>
@@ -360,7 +382,7 @@
         <circle cx="18.3" cy="7.7" r="0.65" fill="currentColor" stroke="none"/>
         <path d="M11.5 18.4 L12.2 21 M15.4 17.9 L16.1 21"/>
       </svg>
-      <svg id="forestSlash" width="22" height="22" viewBox="0 0 24 24" style="display:none;position:absolute;inset:4px;pointer-events:none;color:var(--white);" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21 L21 3"/></svg>
+      <svg id="forestSlash" width="22" height="22" viewBox="0 0 24 24" style="display:block;position:absolute;inset:4px;pointer-events:none;color:var(--white);" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21 L21 3"/></svg>
     </button>
     <button id="musicBtn" onclick="toggleMusic()" title="Activer la musique" aria-label="Activer la musique" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);opacity:1;display:flex;align-items:center;justify-content:center;position:relative;top:-3px;">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
@@ -380,6 +402,7 @@
 
 <div class="screen active" id="screenStart">
   <div class="screen-title">CINÉ REVEAL</div>
+  <a class="video-reveal-promo" href="jeux-video.html"><span class="promo-title">JEUX VIDÉO REVEAL</span><span class="promo-sub">DEVINE LE JEU VIDÉO</span></a>
   <button class="btn-primary" onclick="startGame()">JOUER</button>
   <div class="leaderboard-preview">
     <div class="leaderboard-title">CLASSEMENT MONDIAL</div>
@@ -6328,13 +6351,13 @@ const FOREST_SRC = 'foret.mp3';
 const FOREST_DURATION = 20 * 60;
 const FOREST_SAFE_END = FOREST_DURATION - 5 * 60;
 let forestAudio = null;
-let forestMuted = false;
+let forestMuted = true;
 
 function initForest(){
   if(!forestAudio){
     forestAudio = new Audio(FOREST_SRC);
     forestAudio.loop = false;
-    forestAudio.volume = 0.12;
+    forestAudio.volume = 0.05;
   }
 }
 function startForest(){
@@ -6395,11 +6418,13 @@ function resetGameAudio(){
   musicAudio.muted=true;
   musicStarted=false;
   updateMusicButton();
-  forestMuted=false;
-  if(forestAudio){forestAudio.pause();forestAudio.muted=false;forestAudio.currentTime=0;}
+  forestMuted=true;
+  if(forestAudio){forestAudio.pause();forestAudio.muted=true;forestAudio.currentTime=0;}
   const btn=document.getElementById('forestBtn');
-  document.getElementById('forestSlash').style.display='none';
+  document.getElementById('forestSlash').style.display='block';
   btn.style.color='var(--gold)';btn.style.opacity='1';
+  btn.title='Activer les oiseaux';
+  btn.setAttribute('aria-label', btn.title);
   effectsMuted=false;
   effectsMaster.gain.setValueAtTime(1, AC.currentTime);
   document.getElementById('effectsSlash').style.display='none';

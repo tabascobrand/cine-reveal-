@@ -1,0 +1,429 @@
+[
+  {
+    "title": "Monster",
+    "accept": [
+      "Monster"
+    ],
+    "reject": [],
+    "image": "images-logos/monster-logo.svg"
+  },
+  {
+    "title": "NASA",
+    "accept": [
+      "NASA"
+    ],
+    "reject": [],
+    "image": "images-logos/nasa-6.svg"
+  },
+  {
+    "title": "Nike",
+    "accept": [
+      "Nike"
+    ],
+    "reject": [],
+    "image": "images-logos/nike-4-2.svg"
+  },
+  {
+    "title": "Pirelli",
+    "accept": [
+      "Pirelli"
+    ],
+    "reject": [],
+    "image": "images-logos/pirelli-2.svg"
+  },
+  {
+    "title": "Pokémon",
+    "accept": [
+      "Pokémon",
+      "Pokemon"
+    ],
+    "reject": [],
+    "image": "images-logos/pokemon-23.svg"
+  },
+  {
+    "title": "Porsche",
+    "accept": [
+      "Porsche"
+    ],
+    "reject": [],
+    "image": "images-logos/porsche-1.svg"
+  },
+  {
+    "title": "Porsche",
+    "accept": [
+      "Porsche"
+    ],
+    "reject": [],
+    "image": "images-logos/porsche-2.svg"
+  },
+  {
+    "title": "PlayStation 5",
+    "accept": [
+      "PlayStation 5",
+      "PS5",
+      "PlayStation"
+    ],
+    "reject": [],
+    "image": "images-logos/ps5.svg"
+  },
+  {
+    "title": "Puma",
+    "accept": [
+      "Puma"
+    ],
+    "reject": [],
+    "image": "images-logos/puma-logo.svg"
+  },
+  {
+    "title": "Ray-Ban",
+    "accept": [
+      "Ray-Ban"
+    ],
+    "reject": [],
+    "image": "images-logos/ray-ban.svg"
+  },
+  {
+    "title": "Red Bull",
+    "accept": [
+      "Red Bull",
+      "Redbull",
+      "Red Bull Energy Drink"
+    ],
+    "reject": [],
+    "image": "images-logos/redbullenergydrink.svg"
+  },
+  {
+    "title": "Rohde & Schwarz",
+    "accept": [
+      "Rohde & Schwarz",
+      "Rohde Schwarz"
+    ],
+    "reject": [],
+    "image": "images-logos/rohde-schwarz-logo.svg"
+  },
+  {
+    "title": "Samsung",
+    "accept": [
+      "Samsung"
+    ],
+    "reject": [],
+    "image": "images-logos/samsung-8.svg"
+  },
+  {
+    "title": "Shell",
+    "accept": [
+      "Shell"
+    ],
+    "reject": [],
+    "image": "images-logos/shell-4.svg"
+  },
+  {
+    "title": "Snapchat",
+    "accept": [
+      "Snapchat"
+    ],
+    "reject": [],
+    "image": "images-logos/snapchat-1.svg"
+  },
+  {
+    "title": "Suzuki",
+    "accept": [
+      "Suzuki"
+    ],
+    "reject": [],
+    "image": "images-logos/suzuki-12.svg"
+  },
+  {
+    "title": "The North Face",
+    "accept": [
+      "The North Face",
+      "North Face"
+    ],
+    "reject": [],
+    "image": "images-logos/the-north-face-1.svg"
+  },
+  {
+    "title": "Toyota",
+    "accept": [
+      "Toyota"
+    ],
+    "reject": [],
+    "image": "images-logos/toyota-7.svg"
+  },
+  {
+    "title": "Visa",
+    "accept": [
+      "Visa"
+    ],
+    "reject": [],
+    "image": "images-logos/visa-10.svg"
+  },
+  {
+    "title": "Volkswagen",
+    "accept": [
+      "Volkswagen"
+    ],
+    "reject": [],
+    "image": "images-logos/volkswagen-1.svg"
+  },
+  {
+    "title": "WhatsApp",
+    "accept": [
+      "WhatsApp",
+      "Whats App"
+    ],
+    "reject": [],
+    "image": "images-logos/whatsapp-3.svg"
+  },
+  {
+    "title": "Yamaha",
+    "accept": [
+      "Yamaha"
+    ],
+    "reject": [],
+    "image": "images-logos/yamaha-2-1.svg"
+  },
+  {
+    "title": "Adidas",
+    "accept": [
+      "Adidas"
+    ],
+    "reject": [],
+    "image": "images-logos/adidas.svg"
+  },
+  {
+    "title": "Apple",
+    "accept": [
+      "Apple"
+    ],
+    "reject": [],
+    "image": "images-logos/apple-13.svg"
+  },
+  {
+    "title": "BMW",
+    "accept": [
+      "BMW",
+      "B M W"
+    ],
+    "reject": [],
+    "image": "images-logos/bmw-logo.svg"
+  },
+  {
+    "title": "Caterpillar",
+    "accept": [
+      "Caterpillar"
+    ],
+    "reject": [],
+    "image": "images-logos/caterpillar-2.svg"
+  },
+  {
+    "title": "CE",
+    "accept": [
+      "CE"
+    ],
+    "reject": [],
+    "image": "images-logos/ce-4.svg"
+  },
+  {
+    "title": "Chanel",
+    "accept": [
+      "Chanel"
+    ],
+    "reject": [],
+    "image": "images-logos/chanel-2.svg"
+  },
+  {
+    "title": "ChatGPT",
+    "accept": [
+      "ChatGPT",
+      "Chat GPT",
+      "OpenAI ChatGPT"
+    ],
+    "reject": [],
+    "image": "images-logos/chatgpt-3.svg"
+  },
+  {
+    "title": "ChatGPT",
+    "accept": [
+      "ChatGPT",
+      "Chat GPT",
+      "OpenAI ChatGPT"
+    ],
+    "reject": [],
+    "image": "images-logos/chatgpt-6.svg"
+  },
+  {
+    "title": "Claude",
+    "accept": [
+      "Claude"
+    ],
+    "reject": [],
+    "image": "images-logos/claude-logo.svg"
+  },
+  {
+    "title": "Coca-Cola",
+    "accept": [
+      "Coca-Cola",
+      "Coca Cola",
+      "CocaCola"
+    ],
+    "reject": [],
+    "image": "images-logos/coca-cola-2021.svg"
+  },
+  {
+    "title": "DeepSeek",
+    "accept": [
+      "DeepSeek"
+    ],
+    "reject": [],
+    "image": "images-logos/deepseek-2.svg"
+  },
+  {
+    "title": "DHL",
+    "accept": [
+      "DHL"
+    ],
+    "reject": [],
+    "image": "images-logos/dhl-1.svg"
+  },
+  {
+    "title": "Cars",
+    "accept": [
+      "Cars",
+      "Disney Cars",
+      "Pixar Cars"
+    ],
+    "reject": [],
+    "image": "images-logos/disney-and-pixar-cars.svg"
+  },
+  {
+    "title": "FC Barcelone",
+    "accept": [
+      "FC Barcelone",
+      "FC Barcelona",
+      "Barça",
+      "Barca"
+    ],
+    "reject": [],
+    "image": "images-logos/fc-barcelona.svg"
+  },
+  {
+    "title": "Ford",
+    "accept": [
+      "Ford"
+    ],
+    "reject": [],
+    "image": "images-logos/ford-8.svg"
+  },
+  {
+    "title": "FSC",
+    "accept": [
+      "FSC"
+    ],
+    "reject": [],
+    "image": "images-logos/fsc-3.svg"
+  },
+  {
+    "title": "Ghostbusters",
+    "accept": [
+      "Ghostbusters",
+      "SOS Fantômes",
+      "SOS Fantomes"
+    ],
+    "reject": [],
+    "image": "images-logos/ghostbusters-1.svg"
+  },
+  {
+    "title": "Honda",
+    "accept": [
+      "Honda"
+    ],
+    "reject": [],
+    "image": "images-logos/honda-11.svg"
+  },
+  {
+    "title": "Huawei",
+    "accept": [
+      "Huawei"
+    ],
+    "reject": [],
+    "image": "images-logos/huawei.svg"
+  },
+  {
+    "title": "Huawei",
+    "accept": [
+      "Huawei"
+    ],
+    "reject": [],
+    "image": "images-logos/huawei-2.svg"
+  },
+  {
+    "title": "Instagram",
+    "accept": [
+      "Instagram"
+    ],
+    "reject": [],
+    "image": "images-logos/instagram-2016-5.svg"
+  },
+  {
+    "title": "Jeep",
+    "accept": [
+      "Jeep"
+    ],
+    "reject": [],
+    "image": "images-logos/jeep-7.svg"
+  },
+  {
+    "title": "Jordan",
+    "accept": [
+      "Jordan"
+    ],
+    "reject": [],
+    "image": "images-logos/jordan-2.svg"
+  },
+  {
+    "title": "Lacoste",
+    "accept": [
+      "Lacoste"
+    ],
+    "reject": [],
+    "image": "images-logos/lacoste-logo.svg"
+  },
+  {
+    "title": "Lamborghini",
+    "accept": [
+      "Lamborghini"
+    ],
+    "reject": [],
+    "image": "images-logos/lamborghini.svg"
+  },
+  {
+    "title": "Levi’s",
+    "accept": [
+      "Levi’s",
+      "Levis",
+      "Levi Strauss"
+    ],
+    "reject": [],
+    "image": "images-logos/levis-1.svg"
+  },
+  {
+    "title": "LinkedIn",
+    "accept": [
+      "LinkedIn",
+      "Linked In"
+    ],
+    "reject": [],
+    "image": "images-logos/linkedin-icon-2.svg"
+  },
+  {
+    "title": "Mercedes-Benz",
+    "accept": [
+      "Mercedes-Benz",
+      "Mercedes",
+      "Mercedes Benz"
+    ],
+    "reject": [],
+    "image": "images-logos/mercedes-benz-1.svg"
+  }
+]

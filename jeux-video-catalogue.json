@@ -1,23 +1,4 @@
 [
-{
-  "title": "Sonic Racing: CrossWorlds",
-  "accept": [
-    "sonic racing crossworlds",
-    "sonic racing cross worlds",
-    "sonic racing crossworld",
-    "sonic crossworlds",
-    "sonic cross worlds",
-    "crossworlds"
-  ],
-  "reject": [
-    "team sonic racing",
-    "sonic all stars racing",
-    "sonic all stars racing transformed",
-    "sonic riders",
-    "sonic"
-  ],
-  "image": "images-jeux-video/sonicracingcrossworlds.png"
-},
 
 {
   "title": "Assassin's Creed Shadows",
@@ -216,12 +197,6 @@
   "image": "images-jeux-video/tonyhawk2.png"
 },
 {
-  "title": "Uncharted 2: Among Thieves",
-  "accept": ["uncharted 2", "uncharted 2 among thieves", "uncharted ii", "among thieves"],
-  "reject": ["uncharted", "uncharted 1", "uncharted 3", "uncharted 4", "uncharted lost legacy"],
-  "image": "images-jeux-video/uncharted2.png"
-},
-{
   "title": "Uncharted 4: A Thief's End",
   "accept": ["uncharted 4", "uncharted 4 a thiefs end", "uncharted iv", "a thiefs end"],
   "reject": ["uncharted", "uncharted 1", "uncharted 2", "uncharted 3", "uncharted lost legacy"],
@@ -314,7 +289,7 @@
 {
   "title": "The Legend of Zelda: Tears of the Kingdom",
   "accept": ["zelda tears of the kingdom", "tears of the kingdom", "zelda totk", "totk", "the legend of zelda tears of the kingdom"],
-  "reject": ["zelda", "zelda breath of the wild", "breath of the wild", "botw"],
+  "reject": ["zelda", "zelda breath of the wild", "breath of the wild", "botw","zelda botw"],
   "image": "images-jeux-video/zeldatotk.png"
 },
 {
@@ -1411,7 +1386,7 @@
   {
     "title": "Rayman 2: The Great Escape",
     "accept": [
-      "Rayman 2",
+      "Rayman 2","rayman2",
       "Rayman 2: The Great Escape",
       "rayman ps1"
     ],
@@ -1762,7 +1737,7 @@
       "cs2",
       "counterstrike 2"
     ],
-    "reject": [],
+    "reject": ["counter strike","cs"],
     "image": "images-jeux-video/counterstrike2.png"
   },
   {
@@ -2693,7 +2668,7 @@
       "nba 2k25",
       "nba2k25"
     ],
-    "reject": [],
+    "reject": ["nba2k"],
     "image": "images-jeux-video/nba2k25.png"
   },
   {

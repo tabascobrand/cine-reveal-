@@ -9,7 +9,7 @@
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg: #0a0a0f; --panel: #12121a; --gold: #4169FF;
+    --bg: #0a0a0f; --panel: #12121a; --gold: #0055FF;
     --red: #e02d2d; --white: #f0eeea; --gray: #444455; --dim: #22222f;
   }
   body {
@@ -121,7 +121,7 @@
   }
   .screen.active { display: flex; }
   .screen-title { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 6px; color: var(--gold); }
-/* Ouverture horizontale lente du titre X REVEAL */
+/* Ouverture horizontale lente du titre DRAPEAUX REVEAL */
 #screenStart .screen-title {
     clip-path: inset(0 50% 0 50%);
     animation: revealTitleOpen 3.5s cubic-bezier(0.45, 0, 0.15, 1) forwards;
@@ -317,7 +317,7 @@
   .site-footer-thirdparty { font-size: 0.48rem; color: #444455; }
 
 
-/* Barre de volume musique : rail bleu cobalt, curseur noir constant. */
+/* Barre de volume musique : rail bleu plasma, curseur noir constant. */
 #musicVolume { -webkit-appearance:none; appearance:none; width:66px; height:6px; background:var(--gold); border:0; border-radius:0; outline:none; cursor:pointer; accent-color:var(--gold); }
 #musicVolume::-webkit-slider-runnable-track { height:6px; background:var(--gold); border:0; border-radius:0; }
 #musicVolume::-moz-range-track { height:6px; background:var(--gold); border:0; border-radius:0; }
@@ -326,7 +326,7 @@
 #musicVolume::-moz-range-thumb { width:10px; height:12px; background:#08090f; border:1px solid var(--gold); border-radius:0; box-shadow:none; }
 #musicVolume:hover::-webkit-slider-thumb, #musicVolume:focus::-webkit-slider-thumb, #musicVolume:active::-webkit-slider-thumb { background:#08090f; border-color:var(--gold); box-shadow:none; }
 #musicVolume:hover::-moz-range-thumb, #musicVolume:focus::-moz-range-thumb, #musicVolume:active::-moz-range-thumb { background:#08090f; border-color:var(--gold); box-shadow:none; }
-  /* Croix de nettoyage du champ de recherche : bleu cobalt. */
+  /* Croix de nettoyage du champ de recherche : bleu plasma. */
   #answerInput::-webkit-search-cancel-button {
     -webkit-appearance: none;
     appearance: none;
@@ -350,7 +350,7 @@
 <body class="start-scroll">
 <header>
   <div style="display:flex;align-items:center;gap:14px">
-    <a class="logo" href="index.html" style="cursor:pointer;text-decoration:none;">X<span>REVEAL</span></a>
+    <a class="logo" href="index.html" style="cursor:pointer;text-decoration:none;">DRAPEAUX <span>REVEAL</span></a>
     <span id="gameAudioControls" style="display:none;align-items:center;gap:14px">
     <button id="effectsBtn" onclick="toggleEffects()" title="Couper les effets sonores" aria-label="Couper les effets sonores" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:color 0.2s;position:relative;top:-3px;">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -387,7 +387,7 @@
 <div class="streak-fx" id="streakFX"></div>
 
 <div class="screen active" id="screenStart">
-  <div class="screen-title">X REVEAL</div>
+  <div class="screen-title">DRAPEAUX REVEAL</div>
   <button class="btn-primary" onclick="startGame()">JOUER</button>
   <div id="catalogNotice" class="screen-sub" role="status"></div>
   <div class="leaderboard-preview">
@@ -483,7 +483,7 @@ document.addEventListener('mousedown', event => {
   event.preventDefault();
 }, true);
 
-const LEADERBOARD_API = null; // Classement Drapeau Reveal volontairement inactif : aucun appel réseau.
+const LEADERBOARD_API = null; // Classement Drapeaux Reveal volontairement inactif : aucun appel réseau.
 let leaderboardScoreSubmitted = false;
 
 function escapeLeaderboardHTML(value){

@@ -1,0 +1,3078 @@
+[
+  {
+    "code": "af",
+    "title": "Afghanistan",
+    "part1": [
+      "Afghanistan",
+      "Islamic Republic of Afghanistan"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/af.png"
+  },
+  {
+    "code": "za",
+    "title": "Afrique du Sud",
+    "part1": [
+      "Afrique du Sud",
+      "South Africa",
+      "Republic of South Africa"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/za.png"
+  },
+  {
+    "code": "al",
+    "title": "Albanie",
+    "part1": [
+      "Albanie",
+      "Albania",
+      "Republic of Albania"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/al.png"
+  },
+  {
+    "code": "dz",
+    "title": "Algérie",
+    "part1": [
+      "Algérie",
+      "Algeria",
+      "People's Democratic Republic of Algeria"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/dz.png"
+  },
+  {
+    "code": "de",
+    "title": "Allemagne",
+    "part1": [
+      "Allemagne",
+      "Germany",
+      "Federal Republic of Germany"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/de.png"
+  },
+  {
+    "code": "ad",
+    "title": "Andorre",
+    "part1": [
+      "Andorre",
+      "Andorra",
+      "Principality of Andorra"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ad.png"
+  },
+  {
+    "code": "ao",
+    "title": "Angola",
+    "part1": [
+      "Angola",
+      "Republic of Angola"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ao.png"
+  },
+  {
+    "code": "ai",
+    "title": "Anguilla",
+    "part1": [
+      "Anguilla"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ai.png"
+  },
+  {
+    "code": "aq",
+    "title": "Antarctique",
+    "part1": [
+      "Antarctique",
+      "Antarctica"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/aq.png"
+  },
+  {
+    "code": "ag",
+    "title": "Antigua-et-Barbuda",
+    "part1": [
+      "Antigua-et-Barbuda",
+      "Antigua and Barbuda"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ag.png"
+  },
+  {
+    "code": "sa",
+    "title": "Arabie saoudite",
+    "part1": [
+      "Arabie saoudite",
+      "Saudi Arabia",
+      "Kingdom of Saudi Arabia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/sa.png"
+  },
+  {
+    "code": "ar",
+    "title": "Argentine",
+    "part1": [
+      "Argentine",
+      "Argentina",
+      "Argentine Republic"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ar.png"
+  },
+  {
+    "code": "am",
+    "title": "Arménie",
+    "part1": [
+      "Arménie",
+      "Armenia",
+      "Republic of Armenia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/am.png"
+  },
+  {
+    "code": "aw",
+    "title": "Aruba",
+    "part1": [
+      "Aruba"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/aw.png"
+  },
+  {
+    "code": "au",
+    "title": "Australie",
+    "part1": [
+      "Australie",
+      "Australia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/au.png"
+  },
+  {
+    "code": "at",
+    "title": "Autriche",
+    "part1": [
+      "Autriche",
+      "Austria",
+      "Republic of Austria"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/at.png"
+  },
+  {
+    "code": "az",
+    "title": "Azerbaïdjan",
+    "part1": [
+      "Azerbaïdjan",
+      "Azerbaijan",
+      "Republic of Azerbaijan"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/az.png"
+  },
+  {
+    "code": "bs",
+    "title": "Bahamas",
+    "part1": [
+      "Bahamas",
+      "Commonwealth of the Bahamas"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/bs.png"
+  },
+  {
+    "code": "bh",
+    "title": "Bahreïn",
+    "part1": [
+      "Bahreïn",
+      "Bahrain",
+      "Kingdom of Bahrain"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/bh.png"
+  },
+  {
+    "code": "bd",
+    "title": "Bangladesh",
+    "part1": [
+      "Bangladesh",
+      "People's Republic of Bangladesh"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/bd.png"
+  },
+  {
+    "code": "bb",
+    "title": "Barbade",
+    "part1": [
+      "Barbade",
+      "Barbados"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/bb.png"
+  },
+  {
+    "code": "be",
+    "title": "Belgique",
+    "part1": [
+      "Belgique",
+      "Belgium",
+      "Kingdom of Belgium"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/be.png"
+  },
+  {
+    "code": "bz",
+    "title": "Belize",
+    "part1": [
+      "Belize"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/bz.png"
+  },
+  {
+    "code": "bj",
+    "title": "Bénin",
+    "part1": [
+      "Bénin",
+      "Republic of Benin"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/bj.png"
+  },
+  {
+    "code": "bm",
+    "title": "Bermudes",
+    "part1": [
+      "Bermudes",
+      "Bermuda"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/bm.png"
+  },
+  {
+    "code": "bt",
+    "title": "Bhoutan",
+    "part1": [
+      "Bhoutan",
+      "Bhutan",
+      "Kingdom of Bhutan"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/bt.png"
+  },
+  {
+    "code": "by",
+    "title": "Biélorussie",
+    "part1": [
+      "Biélorussie",
+      "Belarus",
+      "Republic of Belarus"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/by.png"
+  },
+  {
+    "code": "bo",
+    "title": "Bolivie",
+    "part1": [
+      "Bolivie",
+      "Bolivia, Plurinational State of",
+      "Plurinational State of Bolivia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/bo.png"
+  },
+  {
+    "code": "ba",
+    "title": "Bosnie-Herzégovine",
+    "part1": [
+      "Bosnie-Herzégovine",
+      "Bosnia and Herzegovina",
+      "Republic of Bosnia and Herzegovina"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ba.png"
+  },
+  {
+    "code": "bw",
+    "title": "Botswana",
+    "part1": [
+      "Botswana",
+      "Republic of Botswana"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/bw.png"
+  },
+  {
+    "code": "br",
+    "title": "Brésil",
+    "part1": [
+      "Brésil",
+      "Brazil",
+      "Federative Republic of Brazil"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/br.png"
+  },
+  {
+    "code": "bn",
+    "title": "Brunei",
+    "part1": [
+      "Brunei",
+      "Brunei Darussalam"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/bn.png"
+  },
+  {
+    "code": "bg",
+    "title": "Bulgarie",
+    "part1": [
+      "Bulgarie",
+      "Bulgaria",
+      "Republic of Bulgaria"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/bg.png"
+  },
+  {
+    "code": "bf",
+    "title": "Burkina Faso",
+    "part1": [
+      "Burkina Faso"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/bf.png"
+  },
+  {
+    "code": "bi",
+    "title": "Burundi",
+    "part1": [
+      "Burundi",
+      "Republic of Burundi"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/bi.png"
+  },
+  {
+    "code": "kh",
+    "title": "Cambodge",
+    "part1": [
+      "Cambodge",
+      "Cambodia",
+      "Kingdom of Cambodia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/kh.png"
+  },
+  {
+    "code": "cm",
+    "title": "Cameroun",
+    "part1": [
+      "Cameroun",
+      "Cameroon",
+      "Republic of Cameroon"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/cm.png"
+  },
+  {
+    "code": "ca",
+    "title": "Canada",
+    "part1": [
+      "Canada"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ca.png"
+  },
+  {
+    "code": "cv",
+    "title": "Cap-Vert",
+    "part1": [
+      "Cap-Vert",
+      "Cabo Verde",
+      "Republic of Cabo Verde"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/cv.png"
+  },
+  {
+    "code": "cl",
+    "title": "Chili",
+    "part1": [
+      "Chili",
+      "Chile",
+      "Republic of Chile"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/cl.png"
+  },
+  {
+    "code": "cn",
+    "title": "Chine",
+    "part1": [
+      "Chine",
+      "China",
+      "People's Republic of China"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/cn.png"
+  },
+  {
+    "code": "cy",
+    "title": "Chypre",
+    "part1": [
+      "Chypre",
+      "Cyprus",
+      "Republic of Cyprus"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/cy.png"
+  },
+  {
+    "code": "co",
+    "title": "Colombie",
+    "part1": [
+      "Colombie",
+      "Colombia",
+      "Republic of Colombia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/co.png"
+  },
+  {
+    "code": "km",
+    "title": "Comores",
+    "part1": [
+      "Comores",
+      "Comoros",
+      "Union of the Comoros"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/km.png"
+  },
+  {
+    "code": "cg",
+    "title": "Congo-Brazzaville",
+    "part1": [
+      "Congo-Brazzaville",
+      "Congo",
+      "Republic of the Congo"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/cg.png"
+  },
+  {
+    "code": "cd",
+    "title": "Congo-Kinshasa",
+    "part1": [
+      "Congo-Kinshasa",
+      "Congo, The Democratic Republic of the"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/cd.png"
+  },
+  {
+    "code": "kp",
+    "title": "Corée du Nord",
+    "part1": [
+      "Corée du Nord",
+      "Korea, Democratic People's Republic of",
+      "Democratic People's Republic of Korea"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/kp.png"
+  },
+  {
+    "code": "kr",
+    "title": "Corée du Sud",
+    "part1": [
+      "Corée du Sud",
+      "Korea, Republic of"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/kr.png"
+  },
+  {
+    "code": "cr",
+    "title": "Costa Rica",
+    "part1": [
+      "Costa Rica",
+      "Republic of Costa Rica"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/cr.png"
+  },
+  {
+    "code": "ci",
+    "title": "Côte d’Ivoire",
+    "part1": [
+      "Côte d’Ivoire",
+      "Côte d'Ivoire",
+      "Republic of Côte d'Ivoire"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ci.png"
+  },
+  {
+    "code": "hr",
+    "title": "Croatie",
+    "part1": [
+      "Croatie",
+      "Croatia",
+      "Republic of Croatia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/hr.png"
+  },
+  {
+    "code": "cu",
+    "title": "Cuba",
+    "part1": [
+      "Cuba",
+      "Republic of Cuba"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/cu.png"
+  },
+  {
+    "code": "cw",
+    "title": "Curaçao",
+    "part1": [
+      "Curaçao"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/cw.png"
+  },
+  {
+    "code": "dk",
+    "title": "Danemark",
+    "part1": [
+      "Danemark",
+      "Denmark",
+      "Kingdom of Denmark"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/dk.png"
+  },
+  {
+    "code": "dj",
+    "title": "Djibouti",
+    "part1": [
+      "Djibouti",
+      "Republic of Djibouti"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/dj.png"
+  },
+  {
+    "code": "dm",
+    "title": "Dominique",
+    "part1": [
+      "Dominique",
+      "Dominica",
+      "Commonwealth of Dominica"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/dm.png"
+  },
+  {
+    "code": "eg",
+    "title": "Égypte",
+    "part1": [
+      "Égypte",
+      "Egypt",
+      "Arab Republic of Egypt"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/eg.png"
+  },
+  {
+    "code": "ae",
+    "title": "Émirats arabes unis",
+    "part1": [
+      "Émirats arabes unis",
+      "United Arab Emirates"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ae.png"
+  },
+  {
+    "code": "ec",
+    "title": "Équateur",
+    "part1": [
+      "Équateur",
+      "Ecuador",
+      "Republic of Ecuador"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ec.png"
+  },
+  {
+    "code": "er",
+    "title": "Érythrée",
+    "part1": [
+      "Érythrée",
+      "Eritrea",
+      "the State of Eritrea"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/er.png"
+  },
+  {
+    "code": "es",
+    "title": "Espagne",
+    "part1": [
+      "Espagne",
+      "Spain",
+      "Kingdom of Spain"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/es.png"
+  },
+  {
+    "code": "ee",
+    "title": "Estonie",
+    "part1": [
+      "Estonie",
+      "Estonia",
+      "Republic of Estonia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ee.png"
+  },
+  {
+    "code": "sz",
+    "title": "Eswatini",
+    "part1": [
+      "Eswatini",
+      "Kingdom of Eswatini"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/sz.png"
+  },
+  {
+    "code": "va",
+    "title": "État de la Cité du Vatican",
+    "part1": [
+      "État de la Cité du Vatican",
+      "Holy See (Vatican City State)"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/va.png"
+  },
+  {
+    "code": "us",
+    "title": "États-Unis",
+    "part1": [
+      "États-Unis",
+      "United States",
+      "United States of America"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/us.png"
+  },
+  {
+    "code": "et",
+    "title": "Éthiopie",
+    "part1": [
+      "Éthiopie",
+      "Ethiopia",
+      "Federal Democratic Republic of Ethiopia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/et.png"
+  },
+  {
+    "code": "fj",
+    "title": "Fidji",
+    "part1": [
+      "Fidji",
+      "Fiji",
+      "Republic of Fiji"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/fj.png"
+  },
+  {
+    "code": "fi",
+    "title": "Finlande",
+    "part1": [
+      "Finlande",
+      "Finland",
+      "Republic of Finland"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/fi.png"
+  },
+  {
+    "code": "fr",
+    "title": "France",
+    "part1": [
+      "France",
+      "French Republic"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/fr.png"
+  },
+  {
+    "code": "ga",
+    "title": "Gabon",
+    "part1": [
+      "Gabon",
+      "Gabonese Republic"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ga.png"
+  },
+  {
+    "code": "gm",
+    "title": "Gambie",
+    "part1": [
+      "Gambie",
+      "Gambia",
+      "Republic of the Gambia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/gm.png"
+  },
+  {
+    "code": "ge",
+    "title": "Géorgie",
+    "part1": [
+      "Géorgie",
+      "Georgia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ge.png"
+  },
+  {
+    "code": "gs",
+    "title": "Géorgie du Sud-et-les Îles Sandwich du Sud",
+    "part1": [
+      "Géorgie du Sud-et-les Îles Sandwich du Sud",
+      "South Georgia and the South Sandwich Islands"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/gs.png"
+  },
+  {
+    "code": "gh",
+    "title": "Ghana",
+    "part1": [
+      "Ghana",
+      "Republic of Ghana"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/gh.png"
+  },
+  {
+    "code": "gi",
+    "title": "Gibraltar",
+    "part1": [
+      "Gibraltar"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/gi.png"
+  },
+  {
+    "code": "gr",
+    "title": "Grèce",
+    "part1": [
+      "Grèce",
+      "Greece",
+      "Hellenic Republic"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/gr.png"
+  },
+  {
+    "code": "gd",
+    "title": "Grenade",
+    "part1": [
+      "Grenade",
+      "Grenada"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/gd.png"
+  },
+  {
+    "code": "gl",
+    "title": "Groenland",
+    "part1": [
+      "Groenland",
+      "Greenland"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/gl.png"
+  },
+  {
+    "code": "gp",
+    "title": "Guadeloupe",
+    "part1": [
+      "Guadeloupe"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/gp.png"
+  },
+  {
+    "code": "gu",
+    "title": "Guam",
+    "part1": [
+      "Guam"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/gu.png"
+  },
+  {
+    "code": "gt",
+    "title": "Guatemala",
+    "part1": [
+      "Guatemala",
+      "Republic of Guatemala"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/gt.png"
+  },
+  {
+    "code": "gg",
+    "title": "Guernesey",
+    "part1": [
+      "Guernesey",
+      "Guernsey"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/gg.png"
+  },
+  {
+    "code": "gn",
+    "title": "Guinée",
+    "part1": [
+      "Guinée",
+      "Guinea",
+      "Republic of Guinea"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/gn.png"
+  },
+  {
+    "code": "gq",
+    "title": "Guinée équatoriale",
+    "part1": [
+      "Guinée équatoriale",
+      "Equatorial Guinea",
+      "Republic of Equatorial Guinea"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/gq.png"
+  },
+  {
+    "code": "gw",
+    "title": "Guinée-Bissau",
+    "part1": [
+      "Guinée-Bissau",
+      "Guinea-Bissau",
+      "Republic of Guinea-Bissau"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/gw.png"
+  },
+  {
+    "code": "gy",
+    "title": "Guyana",
+    "part1": [
+      "Guyana",
+      "Republic of Guyana"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/gy.png"
+  },
+  {
+    "code": "gf",
+    "title": "Guyane française",
+    "part1": [
+      "Guyane française",
+      "French Guiana"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/gf.png"
+  },
+  {
+    "code": "ht",
+    "title": "Haïti",
+    "part1": [
+      "Haïti",
+      "Republic of Haiti"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ht.png"
+  },
+  {
+    "code": "hn",
+    "title": "Honduras",
+    "part1": [
+      "Honduras",
+      "Republic of Honduras"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/hn.png"
+  },
+  {
+    "code": "hu",
+    "title": "Hongrie",
+    "part1": [
+      "Hongrie",
+      "Hungary"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/hu.png"
+  },
+  {
+    "code": "bv",
+    "title": "Île Bouvet",
+    "part1": [
+      "Île Bouvet",
+      "Bouvet Island"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/bv.png"
+  },
+  {
+    "code": "cx",
+    "title": "Île Christmas",
+    "part1": [
+      "Île Christmas",
+      "Christmas Island"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/cx.png"
+  },
+  {
+    "code": "im",
+    "title": "Île de Man",
+    "part1": [
+      "Île de Man",
+      "Isle of Man"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/im.png"
+  },
+  {
+    "code": "nf",
+    "title": "Île Norfolk",
+    "part1": [
+      "Île Norfolk",
+      "Norfolk Island"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/nf.png"
+  },
+  {
+    "code": "ax",
+    "title": "Îles Åland",
+    "part1": [
+      "Îles Åland",
+      "Åland Islands"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ax.png"
+  },
+  {
+    "code": "ky",
+    "title": "Îles Caïmans",
+    "part1": [
+      "Îles Caïmans",
+      "Cayman Islands"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ky.png"
+  },
+  {
+    "code": "cc",
+    "title": "Îles Cocos",
+    "part1": [
+      "Îles Cocos",
+      "Cocos (Keeling) Islands"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/cc.png"
+  },
+  {
+    "code": "ck",
+    "title": "Îles Cook",
+    "part1": [
+      "Îles Cook",
+      "Cook Islands"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ck.png"
+  },
+  {
+    "code": "fo",
+    "title": "Îles Féroé",
+    "part1": [
+      "Îles Féroé",
+      "Faroe Islands"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/fo.png"
+  },
+  {
+    "code": "hm",
+    "title": "Îles Heard-et-MacDonald",
+    "part1": [
+      "Îles Heard-et-MacDonald",
+      "Heard Island and McDonald Islands"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/hm.png"
+  },
+  {
+    "code": "fk",
+    "title": "Îles Malouines",
+    "part1": [
+      "Îles Malouines",
+      "Falkland Islands (Malvinas)"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/fk.png"
+  },
+  {
+    "code": "mp",
+    "title": "Îles Mariannes du Nord",
+    "part1": [
+      "Îles Mariannes du Nord",
+      "Northern Mariana Islands",
+      "Commonwealth of the Northern Mariana Islands"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/mp.png"
+  },
+  {
+    "code": "mh",
+    "title": "Îles Marshall",
+    "part1": [
+      "Îles Marshall",
+      "Marshall Islands",
+      "Republic of the Marshall Islands"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/mh.png"
+  },
+  {
+    "code": "um",
+    "title": "Îles mineures éloignées des États-Unis",
+    "part1": [
+      "Îles mineures éloignées des États-Unis",
+      "United States Minor Outlying Islands"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/um.png"
+  },
+  {
+    "code": "pn",
+    "title": "Îles Pitcairn",
+    "part1": [
+      "Îles Pitcairn",
+      "Pitcairn"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/pn.png"
+  },
+  {
+    "code": "sb",
+    "title": "Îles Salomon",
+    "part1": [
+      "Îles Salomon",
+      "Solomon Islands"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/sb.png"
+  },
+  {
+    "code": "tc",
+    "title": "Îles Turques-et-Caïques",
+    "part1": [
+      "Îles Turques-et-Caïques",
+      "Turks and Caicos Islands"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/tc.png"
+  },
+  {
+    "code": "vg",
+    "title": "Îles Vierges britanniques",
+    "part1": [
+      "Îles Vierges britanniques",
+      "Virgin Islands, British",
+      "British Virgin Islands"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/vg.png"
+  },
+  {
+    "code": "vi",
+    "title": "Îles Vierges des États-Unis",
+    "part1": [
+      "Îles Vierges des États-Unis",
+      "Virgin Islands, U.S.",
+      "Virgin Islands of the United States"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/vi.png"
+  },
+  {
+    "code": "in",
+    "title": "Inde",
+    "part1": [
+      "Inde",
+      "India",
+      "Republic of India"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/in.png"
+  },
+  {
+    "code": "id",
+    "title": "Indonésie",
+    "part1": [
+      "Indonésie",
+      "Indonesia",
+      "Republic of Indonesia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/id.png"
+  },
+  {
+    "code": "iq",
+    "title": "Irak",
+    "part1": [
+      "Irak",
+      "Iraq",
+      "Republic of Iraq"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/iq.png"
+  },
+  {
+    "code": "ir",
+    "title": "Iran",
+    "part1": [
+      "Iran",
+      "Iran, Islamic Republic of",
+      "Islamic Republic of Iran"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ir.png"
+  },
+  {
+    "code": "ie",
+    "title": "Irlande",
+    "part1": [
+      "Irlande",
+      "Ireland"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ie.png"
+  },
+  {
+    "code": "is",
+    "title": "Islande",
+    "part1": [
+      "Islande",
+      "Iceland",
+      "Republic of Iceland"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/is.png"
+  },
+  {
+    "code": "il",
+    "title": "Israël",
+    "part1": [
+      "Israël",
+      "State of Israel"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/il.png"
+  },
+  {
+    "code": "it",
+    "title": "Italie",
+    "part1": [
+      "Italie",
+      "Italy",
+      "Italian Republic"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/it.png"
+  },
+  {
+    "code": "jm",
+    "title": "Jamaïque",
+    "part1": [
+      "Jamaïque",
+      "Jamaica"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/jm.png"
+  },
+  {
+    "code": "jp",
+    "title": "Japon",
+    "part1": [
+      "Japon",
+      "Japan"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/jp.png"
+  },
+  {
+    "code": "je",
+    "title": "Jersey",
+    "part1": [
+      "Jersey"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/je.png"
+  },
+  {
+    "code": "jo",
+    "title": "Jordanie",
+    "part1": [
+      "Jordanie",
+      "Jordan",
+      "Hashemite Kingdom of Jordan"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/jo.png"
+  },
+  {
+    "code": "kz",
+    "title": "Kazakhstan",
+    "part1": [
+      "Kazakhstan",
+      "Republic of Kazakhstan"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/kz.png"
+  },
+  {
+    "code": "ke",
+    "title": "Kenya",
+    "part1": [
+      "Kenya",
+      "Republic of Kenya"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ke.png"
+  },
+  {
+    "code": "kg",
+    "title": "Kirghizstan",
+    "part1": [
+      "Kirghizstan",
+      "Kyrgyzstan",
+      "Kyrgyz Republic"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/kg.png"
+  },
+  {
+    "code": "ki",
+    "title": "Kiribati",
+    "part1": [
+      "Kiribati",
+      "Republic of Kiribati"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ki.png"
+  },
+  {
+    "code": "kw",
+    "title": "Koweït",
+    "part1": [
+      "Koweït",
+      "Kuwait",
+      "State of Kuwait"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/kw.png"
+  },
+  {
+    "code": "re",
+    "title": "La Réunion",
+    "part1": [
+      "La Réunion",
+      "Réunion"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/re.png"
+  },
+  {
+    "code": "la",
+    "title": "Laos",
+    "part1": [
+      "Laos",
+      "Lao People's Democratic Republic"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/la.png"
+  },
+  {
+    "code": "ls",
+    "title": "Lesotho",
+    "part1": [
+      "Lesotho",
+      "Kingdom of Lesotho"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ls.png"
+  },
+  {
+    "code": "lv",
+    "title": "Lettonie",
+    "part1": [
+      "Lettonie",
+      "Latvia",
+      "Republic of Latvia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/lv.png"
+  },
+  {
+    "code": "lb",
+    "title": "Liban",
+    "part1": [
+      "Liban",
+      "Lebanon",
+      "Lebanese Republic"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/lb.png"
+  },
+  {
+    "code": "lr",
+    "title": "Liberia",
+    "part1": [
+      "Liberia",
+      "Republic of Liberia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/lr.png"
+  },
+  {
+    "code": "ly",
+    "title": "Libye",
+    "part1": [
+      "Libye",
+      "Libya"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ly.png"
+  },
+  {
+    "code": "li",
+    "title": "Liechtenstein",
+    "part1": [
+      "Liechtenstein",
+      "Principality of Liechtenstein"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/li.png"
+  },
+  {
+    "code": "lt",
+    "title": "Lituanie",
+    "part1": [
+      "Lituanie",
+      "Lithuania",
+      "Republic of Lithuania"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/lt.png"
+  },
+  {
+    "code": "lu",
+    "title": "Luxembourg",
+    "part1": [
+      "Luxembourg",
+      "Grand Duchy of Luxembourg"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/lu.png"
+  },
+  {
+    "code": "mk",
+    "title": "Macédoine du Nord",
+    "part1": [
+      "Macédoine du Nord",
+      "North Macedonia",
+      "Republic of North Macedonia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/mk.png"
+  },
+  {
+    "code": "mg",
+    "title": "Madagascar",
+    "part1": [
+      "Madagascar",
+      "Republic of Madagascar"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/mg.png"
+  },
+  {
+    "code": "my",
+    "title": "Malaisie",
+    "part1": [
+      "Malaisie",
+      "Malaysia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/my.png"
+  },
+  {
+    "code": "mw",
+    "title": "Malawi",
+    "part1": [
+      "Malawi",
+      "Republic of Malawi"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/mw.png"
+  },
+  {
+    "code": "mv",
+    "title": "Maldives",
+    "part1": [
+      "Maldives",
+      "Republic of Maldives"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/mv.png"
+  },
+  {
+    "code": "ml",
+    "title": "Mali",
+    "part1": [
+      "Mali",
+      "Republic of Mali"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ml.png"
+  },
+  {
+    "code": "mt",
+    "title": "Malte",
+    "part1": [
+      "Malte",
+      "Malta",
+      "Republic of Malta"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/mt.png"
+  },
+  {
+    "code": "ma",
+    "title": "Maroc",
+    "part1": [
+      "Maroc",
+      "Morocco",
+      "Kingdom of Morocco"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ma.png"
+  },
+  {
+    "code": "mq",
+    "title": "Martinique",
+    "part1": [
+      "Martinique"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/mq.png"
+  },
+  {
+    "code": "mu",
+    "title": "Maurice",
+    "part1": [
+      "Maurice",
+      "Mauritius",
+      "Republic of Mauritius"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/mu.png"
+  },
+  {
+    "code": "mr",
+    "title": "Mauritanie",
+    "part1": [
+      "Mauritanie",
+      "Mauritania",
+      "Islamic Republic of Mauritania"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/mr.png"
+  },
+  {
+    "code": "yt",
+    "title": "Mayotte",
+    "part1": [
+      "Mayotte"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/yt.png"
+  },
+  {
+    "code": "mx",
+    "title": "Mexique",
+    "part1": [
+      "Mexique",
+      "Mexico",
+      "United Mexican States"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/mx.png"
+  },
+  {
+    "code": "fm",
+    "title": "Micronésie",
+    "part1": [
+      "Micronésie",
+      "Micronesia, Federated States of",
+      "Federated States of Micronesia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/fm.png"
+  },
+  {
+    "code": "md",
+    "title": "Moldavie",
+    "part1": [
+      "Moldavie",
+      "Moldova, Republic of",
+      "Republic of Moldova"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/md.png"
+  },
+  {
+    "code": "mc",
+    "title": "Monaco",
+    "part1": [
+      "Monaco",
+      "Principality of Monaco"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/mc.png"
+  },
+  {
+    "code": "mn",
+    "title": "Mongolie",
+    "part1": [
+      "Mongolie",
+      "Mongolia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/mn.png"
+  },
+  {
+    "code": "me",
+    "title": "Monténégro",
+    "part1": [
+      "Monténégro"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/me.png"
+  },
+  {
+    "code": "ms",
+    "title": "Montserrat",
+    "part1": [
+      "Montserrat"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ms.png"
+  },
+  {
+    "code": "mz",
+    "title": "Mozambique",
+    "part1": [
+      "Mozambique",
+      "Republic of Mozambique"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/mz.png"
+  },
+  {
+    "code": "mm",
+    "title": "Myanmar (Birmanie)",
+    "part1": [
+      "Myanmar (Birmanie)",
+      "Myanmar",
+      "Republic of Myanmar"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/mm.png"
+  },
+  {
+    "code": "na",
+    "title": "Namibie",
+    "part1": [
+      "Namibie",
+      "Namibia",
+      "Republic of Namibia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/na.png"
+  },
+  {
+    "code": "nr",
+    "title": "Nauru",
+    "part1": [
+      "Nauru",
+      "Republic of Nauru"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/nr.png"
+  },
+  {
+    "code": "np",
+    "title": "Népal",
+    "part1": [
+      "Népal",
+      "Federal Democratic Republic of Nepal"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/np.png"
+  },
+  {
+    "code": "ni",
+    "title": "Nicaragua",
+    "part1": [
+      "Nicaragua",
+      "Republic of Nicaragua"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ni.png"
+  },
+  {
+    "code": "ne",
+    "title": "Niger",
+    "part1": [
+      "Niger",
+      "Republic of the Niger"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ne.png"
+  },
+  {
+    "code": "ng",
+    "title": "Nigeria",
+    "part1": [
+      "Nigeria",
+      "Federal Republic of Nigeria"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ng.png"
+  },
+  {
+    "code": "nu",
+    "title": "Niue",
+    "part1": [
+      "Niue"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/nu.png"
+  },
+  {
+    "code": "no",
+    "title": "Norvège",
+    "part1": [
+      "Norvège",
+      "Norway",
+      "Kingdom of Norway"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/no.png"
+  },
+  {
+    "code": "nc",
+    "title": "Nouvelle-Calédonie",
+    "part1": [
+      "Nouvelle-Calédonie",
+      "New Caledonia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/nc.png"
+  },
+  {
+    "code": "nz",
+    "title": "Nouvelle-Zélande",
+    "part1": [
+      "Nouvelle-Zélande",
+      "New Zealand"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/nz.png"
+  },
+  {
+    "code": "om",
+    "title": "Oman",
+    "part1": [
+      "Oman",
+      "Sultanate of Oman"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/om.png"
+  },
+  {
+    "code": "ug",
+    "title": "Ouganda",
+    "part1": [
+      "Ouganda",
+      "Uganda",
+      "Republic of Uganda"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ug.png"
+  },
+  {
+    "code": "uz",
+    "title": "Ouzbékistan",
+    "part1": [
+      "Ouzbékistan",
+      "Uzbekistan",
+      "Republic of Uzbekistan"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/uz.png"
+  },
+  {
+    "code": "pk",
+    "title": "Pakistan",
+    "part1": [
+      "Pakistan",
+      "Islamic Republic of Pakistan"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/pk.png"
+  },
+  {
+    "code": "pw",
+    "title": "Palaos",
+    "part1": [
+      "Palaos",
+      "Palau",
+      "Republic of Palau"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/pw.png"
+  },
+  {
+    "code": "pa",
+    "title": "Panama",
+    "part1": [
+      "Panama",
+      "Republic of Panama"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/pa.png"
+  },
+  {
+    "code": "pg",
+    "title": "Papouasie-Nouvelle-Guinée",
+    "part1": [
+      "Papouasie-Nouvelle-Guinée",
+      "Papua New Guinea",
+      "Independent State of Papua New Guinea"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/pg.png"
+  },
+  {
+    "code": "py",
+    "title": "Paraguay",
+    "part1": [
+      "Paraguay",
+      "Republic of Paraguay"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/py.png"
+  },
+  {
+    "code": "nl",
+    "title": "Pays-Bas",
+    "part1": [
+      "Pays-Bas",
+      "Netherlands",
+      "Kingdom of the Netherlands"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/nl.png"
+  },
+  {
+    "code": "bq",
+    "title": "Pays-Bas caribéens",
+    "part1": [
+      "Pays-Bas caribéens",
+      "Bonaire, Sint Eustatius and Saba"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/bq.png"
+  },
+  {
+    "code": "pe",
+    "title": "Pérou",
+    "part1": [
+      "Pérou",
+      "Peru",
+      "Republic of Peru"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/pe.png"
+  },
+  {
+    "code": "ph",
+    "title": "Philippines",
+    "part1": [
+      "Philippines",
+      "Republic of the Philippines"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ph.png"
+  },
+  {
+    "code": "pl",
+    "title": "Pologne",
+    "part1": [
+      "Pologne",
+      "Poland",
+      "Republic of Poland"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/pl.png"
+  },
+  {
+    "code": "pf",
+    "title": "Polynésie française",
+    "part1": [
+      "Polynésie française",
+      "French Polynesia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/pf.png"
+  },
+  {
+    "code": "pr",
+    "title": "Porto Rico",
+    "part1": [
+      "Porto Rico",
+      "Puerto Rico"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/pr.png"
+  },
+  {
+    "code": "pt",
+    "title": "Portugal",
+    "part1": [
+      "Portugal",
+      "Portuguese Republic"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/pt.png"
+  },
+  {
+    "code": "qa",
+    "title": "Qatar",
+    "part1": [
+      "Qatar",
+      "State of Qatar"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/qa.png"
+  },
+  {
+    "code": "hk",
+    "title": "R.A.S. chinoise de Hong Kong",
+    "part1": [
+      "R.A.S. chinoise de Hong Kong",
+      "Hong Kong",
+      "Hong Kong Special Administrative Region of China"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/hk.png"
+  },
+  {
+    "code": "mo",
+    "title": "R.A.S. chinoise de Macao",
+    "part1": [
+      "R.A.S. chinoise de Macao",
+      "Macao",
+      "Macao Special Administrative Region of China"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/mo.png"
+  },
+  {
+    "code": "cf",
+    "title": "République centrafricaine",
+    "part1": [
+      "République centrafricaine",
+      "Central African Republic"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/cf.png"
+  },
+  {
+    "code": "do",
+    "title": "République dominicaine",
+    "part1": [
+      "République dominicaine",
+      "Dominican Republic"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/do.png"
+  },
+  {
+    "code": "ro",
+    "title": "Roumanie",
+    "part1": [
+      "Roumanie",
+      "Romania"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ro.png"
+  },
+  {
+    "code": "gb",
+    "title": "Royaume-Uni",
+    "part1": [
+      "Royaume-Uni",
+      "United Kingdom",
+      "United Kingdom of Great Britain and Northern Ireland"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/gb.png"
+  },
+  {
+    "code": "ru",
+    "title": "Russie",
+    "part1": [
+      "Russie",
+      "Russian Federation"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ru.png"
+  },
+  {
+    "code": "rw",
+    "title": "Rwanda",
+    "part1": [
+      "Rwanda",
+      "Rwandese Republic"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/rw.png"
+  },
+  {
+    "code": "eh",
+    "title": "Sahara occidental",
+    "part1": [
+      "Sahara occidental",
+      "Western Sahara"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/eh.png"
+  },
+  {
+    "code": "bl",
+    "title": "Saint-Barthélemy",
+    "part1": [
+      "Saint-Barthélemy",
+      "Saint Barthélemy"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/bl.png"
+  },
+  {
+    "code": "kn",
+    "title": "Saint-Christophe-et-Niévès",
+    "part1": [
+      "Saint-Christophe-et-Niévès",
+      "Saint Kitts and Nevis"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/kn.png"
+  },
+  {
+    "code": "sm",
+    "title": "Saint-Marin",
+    "part1": [
+      "Saint-Marin",
+      "San Marino",
+      "Republic of San Marino"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/sm.png"
+  },
+  {
+    "code": "mf",
+    "title": "Saint-Martin",
+    "part1": [
+      "Saint-Martin",
+      "Saint Martin (French part)"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/mf.png"
+  },
+  {
+    "code": "sx",
+    "title": "Saint-Martin (partie néerlandaise)",
+    "part1": [
+      "Saint-Martin (partie néerlandaise)",
+      "Sint Maarten (Dutch part)"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/sx.png"
+  },
+  {
+    "code": "pm",
+    "title": "Saint-Pierre-et-Miquelon",
+    "part1": [
+      "Saint-Pierre-et-Miquelon",
+      "Saint Pierre and Miquelon"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/pm.png"
+  },
+  {
+    "code": "vc",
+    "title": "Saint-Vincent-et-les Grenadines",
+    "part1": [
+      "Saint-Vincent-et-les Grenadines",
+      "Saint Vincent and the Grenadines"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/vc.png"
+  },
+  {
+    "code": "sh",
+    "title": "Sainte-Hélène",
+    "part1": [
+      "Sainte-Hélène",
+      "Saint Helena, Ascension and Tristan da Cunha"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/sh.png"
+  },
+  {
+    "code": "lc",
+    "title": "Sainte-Lucie",
+    "part1": [
+      "Sainte-Lucie",
+      "Saint Lucia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/lc.png"
+  },
+  {
+    "code": "sv",
+    "title": "Salvador",
+    "part1": [
+      "Salvador",
+      "El Salvador",
+      "Republic of El Salvador"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/sv.png"
+  },
+  {
+    "code": "ws",
+    "title": "Samoa",
+    "part1": [
+      "Samoa",
+      "Independent State of Samoa"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ws.png"
+  },
+  {
+    "code": "as",
+    "title": "Samoa américaines",
+    "part1": [
+      "Samoa américaines",
+      "American Samoa"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/as.png"
+  },
+  {
+    "code": "st",
+    "title": "Sao Tomé-et-Principe",
+    "part1": [
+      "Sao Tomé-et-Principe",
+      "Sao Tome and Principe",
+      "Democratic Republic of Sao Tome and Principe"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/st.png"
+  },
+  {
+    "code": "sn",
+    "title": "Sénégal",
+    "part1": [
+      "Sénégal",
+      "Republic of Senegal"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/sn.png"
+  },
+  {
+    "code": "rs",
+    "title": "Serbie",
+    "part1": [
+      "Serbie",
+      "Serbia",
+      "Republic of Serbia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/rs.png"
+  },
+  {
+    "code": "sc",
+    "title": "Seychelles",
+    "part1": [
+      "Seychelles",
+      "Republic of Seychelles"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/sc.png"
+  },
+  {
+    "code": "sl",
+    "title": "Sierra Leone",
+    "part1": [
+      "Sierra Leone",
+      "Republic of Sierra Leone"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/sl.png"
+  },
+  {
+    "code": "sg",
+    "title": "Singapour",
+    "part1": [
+      "Singapour",
+      "Singapore",
+      "Republic of Singapore"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/sg.png"
+  },
+  {
+    "code": "sk",
+    "title": "Slovaquie",
+    "part1": [
+      "Slovaquie",
+      "Slovakia",
+      "Slovak Republic"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/sk.png"
+  },
+  {
+    "code": "si",
+    "title": "Slovénie",
+    "part1": [
+      "Slovénie",
+      "Slovenia",
+      "Republic of Slovenia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/si.png"
+  },
+  {
+    "code": "so",
+    "title": "Somalie",
+    "part1": [
+      "Somalie",
+      "Somalia",
+      "Federal Republic of Somalia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/so.png"
+  },
+  {
+    "code": "sd",
+    "title": "Soudan",
+    "part1": [
+      "Soudan",
+      "Sudan",
+      "Republic of the Sudan"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/sd.png"
+  },
+  {
+    "code": "ss",
+    "title": "Soudan du Sud",
+    "part1": [
+      "Soudan du Sud",
+      "South Sudan",
+      "Republic of South Sudan"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ss.png"
+  },
+  {
+    "code": "lk",
+    "title": "Sri Lanka",
+    "part1": [
+      "Sri Lanka",
+      "Democratic Socialist Republic of Sri Lanka"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/lk.png"
+  },
+  {
+    "code": "se",
+    "title": "Suède",
+    "part1": [
+      "Suède",
+      "Sweden",
+      "Kingdom of Sweden"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/se.png"
+  },
+  {
+    "code": "ch",
+    "title": "Suisse",
+    "part1": [
+      "Suisse",
+      "Switzerland",
+      "Swiss Confederation"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ch.png"
+  },
+  {
+    "code": "sr",
+    "title": "Suriname",
+    "part1": [
+      "Suriname",
+      "Republic of Suriname"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/sr.png"
+  },
+  {
+    "code": "sj",
+    "title": "Svalbard et Jan Mayen",
+    "part1": [
+      "Svalbard et Jan Mayen",
+      "Svalbard and Jan Mayen"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/sj.png"
+  },
+  {
+    "code": "sy",
+    "title": "Syrie",
+    "part1": [
+      "Syrie",
+      "Syrian Arab Republic"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/sy.png"
+  },
+  {
+    "code": "tj",
+    "title": "Tadjikistan",
+    "part1": [
+      "Tadjikistan",
+      "Tajikistan",
+      "Republic of Tajikistan"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/tj.png"
+  },
+  {
+    "code": "tw",
+    "title": "Taïwan",
+    "part1": [
+      "Taïwan",
+      "Taiwan, Province of China"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/tw.png"
+  },
+  {
+    "code": "tz",
+    "title": "Tanzanie",
+    "part1": [
+      "Tanzanie",
+      "Tanzania, United Republic of",
+      "United Republic of Tanzania"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/tz.png"
+  },
+  {
+    "code": "td",
+    "title": "Tchad",
+    "part1": [
+      "Tchad",
+      "Chad",
+      "Republic of Chad"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/td.png"
+  },
+  {
+    "code": "cz",
+    "title": "Tchéquie",
+    "part1": [
+      "Tchéquie",
+      "Czechia",
+      "Czech Republic"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/cz.png"
+  },
+  {
+    "code": "tf",
+    "title": "Terres australes françaises",
+    "part1": [
+      "Terres australes françaises",
+      "French Southern Territories"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/tf.png"
+  },
+  {
+    "code": "io",
+    "title": "Territoire britannique de l’océan Indien",
+    "part1": [
+      "Territoire britannique de l’océan Indien",
+      "British Indian Ocean Territory"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/io.png"
+  },
+  {
+    "code": "ps",
+    "title": "Territoires palestiniens",
+    "part1": [
+      "Territoires palestiniens",
+      "Palestine, State of",
+      "the State of Palestine"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ps.png"
+  },
+  {
+    "code": "th",
+    "title": "Thaïlande",
+    "part1": [
+      "Thaïlande",
+      "Thailand",
+      "Kingdom of Thailand"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/th.png"
+  },
+  {
+    "code": "tl",
+    "title": "Timor oriental",
+    "part1": [
+      "Timor oriental",
+      "Timor-Leste",
+      "Democratic Republic of Timor-Leste"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/tl.png"
+  },
+  {
+    "code": "tg",
+    "title": "Togo",
+    "part1": [
+      "Togo",
+      "Togolese Republic"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/tg.png"
+  },
+  {
+    "code": "tk",
+    "title": "Tokelau",
+    "part1": [
+      "Tokelau"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/tk.png"
+  },
+  {
+    "code": "to",
+    "title": "Tonga",
+    "part1": [
+      "Tonga",
+      "Kingdom of Tonga"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/to.png"
+  },
+  {
+    "code": "tt",
+    "title": "Trinité-et-Tobago",
+    "part1": [
+      "Trinité-et-Tobago",
+      "Trinidad and Tobago",
+      "Republic of Trinidad and Tobago"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/tt.png"
+  },
+  {
+    "code": "tn",
+    "title": "Tunisie",
+    "part1": [
+      "Tunisie",
+      "Tunisia",
+      "Republic of Tunisia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/tn.png"
+  },
+  {
+    "code": "tm",
+    "title": "Turkménistan",
+    "part1": [
+      "Turkménistan"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/tm.png"
+  },
+  {
+    "code": "tr",
+    "title": "Turquie",
+    "part1": [
+      "Turquie",
+      "Türkiye",
+      "Republic of Türkiye"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/tr.png"
+  },
+  {
+    "code": "tv",
+    "title": "Tuvalu",
+    "part1": [
+      "Tuvalu"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/tv.png"
+  },
+  {
+    "code": "ua",
+    "title": "Ukraine",
+    "part1": [
+      "Ukraine"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ua.png"
+  },
+  {
+    "code": "uy",
+    "title": "Uruguay",
+    "part1": [
+      "Uruguay",
+      "Eastern Republic of Uruguay"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/uy.png"
+  },
+  {
+    "code": "vu",
+    "title": "Vanuatu",
+    "part1": [
+      "Vanuatu",
+      "Republic of Vanuatu"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/vu.png"
+  },
+  {
+    "code": "ve",
+    "title": "Venezuela",
+    "part1": [
+      "Venezuela",
+      "Venezuela, Bolivarian Republic of",
+      "Bolivarian Republic of Venezuela"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ve.png"
+  },
+  {
+    "code": "vn",
+    "title": "Viêt Nam",
+    "part1": [
+      "Viêt Nam",
+      "Socialist Republic of Viet Nam"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/vn.png"
+  },
+  {
+    "code": "wf",
+    "title": "Wallis-et-Futuna",
+    "part1": [
+      "Wallis-et-Futuna",
+      "Wallis and Futuna"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/wf.png"
+  },
+  {
+    "code": "ye",
+    "title": "Yémen",
+    "part1": [
+      "Yémen",
+      "Republic of Yemen"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/ye.png"
+  },
+  {
+    "code": "zm",
+    "title": "Zambie",
+    "part1": [
+      "Zambie",
+      "Zambia",
+      "Republic of Zambia"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/zm.png"
+  },
+  {
+    "code": "zw",
+    "title": "Zimbabwe",
+    "part1": [
+      "Zimbabwe",
+      "Republic of Zimbabwe"
+    ],
+    "part2": null,
+    "reject1": [],
+    "reject2": [],
+    "src": "drapeaux-images/zw.png"
+  }
+]

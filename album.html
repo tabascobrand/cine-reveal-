@@ -1,0 +1,6449 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="favicon.ico.cine.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALBUM REVEAL — Devine la pochette</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a0f; --panel: #12121a; --gold: #FF8A4C;
+    --red: #e02d2d; --white: #f0eeea; --gray: #444455; --dim: #22222f;
+  }
+  body {
+    background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif;
+    height: 100vh; height: 100dvh; display: flex; flex-direction: column;
+    align-items: center; padding: 0; overflow: hidden;
+  }
+  body.score-visible { height: auto; min-height: 100vh; overflow-y: auto; }
+  body.start-scroll { height: auto; min-height: 100vh; overflow-y: auto; }
+  body.start-scroll #screenStart { flex-shrink: 0; }
+  body.start-scroll .site-footer { position: static; margin-top: auto; padding: 18px 12px 12px; }
+  #screenEnd.active {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 20px; width: 100%; max-width: none; padding: 30px 20px 60px;
+  }
+  header {
+    width: 100%; padding: 18px 32px; display: flex;
+    align-items: center; justify-content: space-between; border-bottom: 1px solid #1e1e2e;
+  }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 4px; color: var(--gold); }
+  .logo span { color: var(--white); }
+  .score-display { display: flex; flex-direction: column; align-items: flex-end; }
+  .score-label { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gray); }
+  .score-value { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold); line-height: 1; }
+  .progress-bar-wrap { width: 100%; height: 5px; display: flex; gap: 3px; }
+  .progress-seg { flex: 1; height: 100%; background: var(--dim); border-radius: 1px; transition: background 0.3s ease; }
+  .progress-seg.pg-correct { background: #4caf6e; }
+  .progress-seg.pg-missed { background: #e2564f; }
+  .game-area {
+    width: 100%; max-width: 1360px; padding: 10px 16px 10px;
+    display: flex; flex-direction: column; align-items: center; gap: 9px;
+    flex: 1; overflow: hidden;
+  }
+  /* Se déclenche quand la hauteur visible se réduit (clavier mobile ouvert),
+     pas quand l'écran est juste étroit (mobile en mode normal, sans clavier) */
+  @media (max-height: 500px) {
+    .game-area { padding: 8px 16px 0; gap: 8px; }
+    .poster-container { max-height: 32vh; max-height: 32dvh; }
+    header { padding: 8px 20px; }
+    .progress-bar-wrap { height: 2px; }
+  }
+  .round-info {
+    display: flex; justify-content: space-between; width: 100%;
+    font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold);
+  }
+  .poster-container {
+    position: relative; width: min(100%, 900px, calc(100dvh - 205px)); aspect-ratio: 1/1;
+    flex-shrink: 1; min-height: 0;
+    max-height: calc(100vh - 205px); max-height: calc(100dvh - 205px);
+    margin: 0 auto;
+    background: #000; overflow: hidden; border: 2px solid #1e1e2e; transition: border-color 0.15s;
+  }
+  .poster-container.flash-correct { border-color: #3ecf6f; }
+  .poster-container.flash-wrong   { border-color: var(--red); }
+  .poster-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+  /* Empêche le navigateur de déplacer ou prévisualiser les affiches au glisser-déposer. */
+  .poster-img { pointer-events: none; user-select: none; -webkit-user-select: none; -webkit-user-drag: none; }
+  .poster-img.hide  { visibility: hidden; }
+  .poster-img.ready { visibility: visible; }
+  .reveal-mask { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+  .pts-badge {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(0,0,0,0.75); border: 1px solid var(--gold);
+    color: var(--gold); font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem; padding: 4px 12px; letter-spacing: 2px; transition: color 0.3s;
+  }
+  .pts-badge.low { color: var(--red); border-color: var(--red); }
+  .timer-wrap { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 6px; }
+  .timer-row { display: flex; justify-content: space-between; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); }
+  .timer-bar { width: 100%; height: 4px; background: var(--dim); border-radius: 2px; overflow: hidden; }
+  .timer-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.1s linear, background 0.3s; }
+  .timer-fill.urgent { background: var(--red); }
+  .input-wrap { width: 100%; max-width: 440px; display: flex; gap: 10px; }
+  .input-wrap input {
+    flex: 1; background: var(--panel); border: 1px solid var(--gray); border-radius: 2px;
+    color: var(--white); font-size: 1rem; font-family: 'Inter', sans-serif;
+    padding: 12px 16px; outline: none; transition: border-color 0.2s; letter-spacing: 0.5px;
+  }
+  .input-wrap input:focus { border-color: var(--gold); }
+  .input-wrap input.correct { border-color: #3ecf6f; background: #0d2018; }
+  .input-wrap input.wrong   { border-color: var(--red); background: #200d0d; }
+  .btn-validate {
+    background: var(--gold); border: 1px solid var(--gold); color: #09090f;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 1.3px;
+    padding: 0 13px; cursor: pointer; border-radius: 2px;
+    font-family: 'Inter', sans-serif; white-space: nowrap;
+  }
+  .btn-validate:hover { filter: brightness(1.1); }
+  .btn-validate:disabled { opacity: 0.45; cursor: default; }
+  .input-wrap input { min-width: 0; }
+  @media (max-width: 480px) {
+    .input-wrap { gap: 6px; }
+    .btn-validate, .btn-skip { padding-left: 9px; padding-right: 9px; font-size: 0.62rem; letter-spacing: 0.6px; }
+  }
+  .btn-skip {
+    background: transparent; border: 1px solid var(--gray); color: var(--gray);
+    font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
+    padding: 0 16px; cursor: pointer; transition: all 0.2s; border-radius: 2px;
+  }
+  .btn-skip:hover { border-color: var(--white); color: var(--white); }
+  .feedback { font-size: 0.8rem; letter-spacing: 1px; height: 20px; color: var(--gray); }
+  .feedback.ok    { color: #3ecf6f; }
+  .feedback.ko    { color: var(--red); }
+  .feedback.fuzzy { color: #f5a623; }
+  .screen {
+    display: none; width: 100%; max-width: 440px;
+    flex-direction: column; align-items: center; gap: 20px;
+    padding: 40px 20px; text-align: center;
+  }
+  .screen.active { display: flex; }
+  .screen-title { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 6px; color: var(--gold); }
+/* Ouverture horizontale lente du titre ALBUM REVEAL */
+#screenStart .screen-title {
+    clip-path: inset(0 50% 0 50%);
+    animation: revealTitleOpen 3.5s cubic-bezier(0.45, 0, 0.15, 1) forwards;
+}
+
+@keyframes revealTitleOpen {
+    0% {
+        clip-path: inset(0 50% 0 50%);
+    }
+    100% {
+        clip-path: inset(0 0 0 0);
+    }
+}
+  .screen-sub { color: var(--gray); font-size: 0.85rem; letter-spacing: 1px; line-height: 1.6; }
+  .btn-primary {
+    background: var(--gold); color: #000; font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem; letter-spacing: 3px; border: none; padding: 14px 40px;
+    cursor: pointer; transition: opacity 0.2s; margin-top: 8px;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+
+  /* ── Leaderboard réel ── */
+  .leaderboard-preview {
+    width: 100%; max-width: 440px; margin-top: 44px;
+  }
+  #screenStart .leaderboard-preview { margin-top: 19px; }
+  .leaderboard-title {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 4px;
+    text-align: center; color: var(--gold); margin-bottom: 14px;
+  }
+  #screenStart .leaderboard-title { margin-bottom: 30px; }
+  .leaderboard-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 16px; background: var(--panel); border-left: 3px solid var(--dim);
+    margin-bottom: 8px;
+  }
+  .leaderboard-rank {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--gray); width: 22px;
+  }
+  .leaderboard-name {
+    flex: 1; min-width: 0; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;
+    font-size: 1.05rem; color: var(--white);
+    white-space: normal; overflow-wrap: anywhere; word-break: break-word;
+  }
+  .leaderboard-score {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--gold);
+  }
+  .leaderboard-empty {
+    color: var(--gray); font-size: 0.75rem; letter-spacing: 1px;
+    text-align: center; padding: 14px 8px;
+  }
+  .leaderboard-submit {
+    width: 100%; max-width: 440px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.9fr); gap: 8px; margin-top: 4px;
+  }
+  .leaderboard-submit input {
+    width: 100%; min-width: 0; background: var(--panel); border: 1px solid var(--gray);
+    color: var(--white); font-family: 'Inter', sans-serif; padding: 11px 12px; outline: none;
+  }
+  .leaderboard-submit input:focus { border-color: var(--gold); }
+  .leaderboard-secret-wrap {
+    width: 100%; min-width: 0; display: flex; flex-direction: column; gap: 4px;
+  }
+  .leaderboard-secret-wrap input { width: 100%; flex: none; }
+  .leaderboard-secret-note {
+    color: var(--gray); font-size: 0.56rem; letter-spacing: 0.7px; text-align: left;
+  }
+  .leaderboard-submit button {
+    background: var(--gold); color: #000; border: 0; padding: 0 18px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 2px; cursor: pointer;
+    width: 100%; min-width: 0; min-height: 48px; text-align: center; display: flex; align-items: center; justify-content: center;
+  }
+  .leaderboard-status {
+    min-height: 18px; color: var(--gray); font-size: 0.7rem; letter-spacing: 1px; text-align: center;
+  }
+
+  /* ── Mise en page deux colonnes de l'écran de fin (résultats / classement) ── */
+  .end-columns {
+    display: flex; gap: 36px; width: 100%; max-width: 1000px;
+    align-items: flex-start;
+  }
+  .end-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+  .end-col-leaderboard .leaderboard-preview { margin-top: 0; max-width: 100%; }
+  .end-col-leaderboard .leaderboard-submit { max-width: 100%; }
+  @media (max-width: 760px) {
+    .end-columns { flex-direction: column; }
+  }
+
+  .final-breakdown { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+  .breakdown-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; background: var(--panel); border-left: 3px solid var(--dim); font-size: 0.85rem;
+  }
+  .breakdown-row.scored { border-left-color: #4caf6e; }
+  .breakdown-row.missed { border-left-color: #e2564f; }
+  .breakdown-row .pts { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--gold); }
+  @keyframes shake {
+    0%,100%{ transform:translateX(0); } 15%{ transform:translateX(-7px); }
+    30%{ transform:translateX(7px); } 45%{ transform:translateX(-5px); }
+    60%{ transform:translateX(5px); } 75%{ transform:translateX(-3px); } 90%{ transform:translateX(3px); }
+  }
+  .poster-container.shaking { animation: shake 0.4s ease; }
+  @keyframes flashGreen {
+    0%{ box-shadow:0 0 0 0 rgba(62,207,111,0.5); }
+    50%{ box-shadow:0 0 0 20px rgba(62,207,111,0); }
+    100%{ box-shadow:none; }
+  }
+  .poster-container.correct-flash { animation: flashGreen 0.6s ease; }
+
+  .score-popup {
+    position: fixed; top: 42%; left: 50%;
+    font-family: 'Bebas Neue', sans-serif; font-size: 3.4rem; letter-spacing: 3px;
+    color: var(--gold); text-shadow: 0 0 24px rgba(255,138,76,0.65), 0 2px 6px rgba(0,0,0,0.85);
+    pointer-events: none; opacity: 0; z-index: 200; white-space: nowrap;
+    transform: translate(-50%, -50%) scale(0.7);
+  }
+  .score-popup.show { animation: scorePop 1.1s cubic-bezier(.2,.9,.3,1) forwards; }
+  .score-popup-sub {
+    font-size: 0.22em; letter-spacing: 2px; opacity: 0.7;
+    margin-top: 4px; text-align: center;
+  }
+  @keyframes scorePop {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+    15%  { opacity: 1; transform: translate(-50%, -50%) scale(1.18); }
+    28%  { transform: translate(-50%, -50%) scale(1); }
+    72%  { opacity: 1; transform: translate(-50%, calc(-50% - 34px)) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, calc(-50% - 64px)) scale(0.92); }
+  }
+
+  /* ── Mini-badge de série, collé au bord du cadre ── */
+  .streak-mini {
+    position: absolute; top: 10px; right: -8px; transform: translateX(100%);
+    display: none; align-items: baseline; gap: 2px;
+    background: rgba(0,0,0,0.6); border: 1px solid rgba(255,106,61,0.4); border-radius: 4px;
+    padding: 4px 8px; margin-left: 6px; z-index: 20;
+    font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .streak-mini.show { opacity: 0.7; }
+  .streak-mini .streak-mini-count { font-size: 0.95rem; color: #ff6a3d; }
+  .streak-mini .streak-mini-max { font-size: 0.68rem; color: var(--gray); }
+  .streak-mini.pulse { animation: streakMiniPulse 0.35s ease; }
+  @keyframes streakMiniPulse {
+    0%   { transform: translateX(100%) scale(1); }
+    45%  { transform: translateX(100%) scale(1.3); }
+    100% { transform: translateX(100%) scale(1); }
+  }
+
+  /* ── Couche d'effets sobres pour les paliers de série ── */
+  .streak-fx { position: fixed; inset: 0; pointer-events: none; z-index: 150; overflow: hidden; }
+  .streak-glow {
+    position: absolute; top: 42%; left: 50%; width: 280px; height: 280px;
+    transform: translate(-50%,-50%); border-radius: 50%;
+    background: radial-gradient(circle, var(--glow-color, rgba(255,106,61,0.35)) 0%, transparent 72%);
+    opacity: 0;
+    animation: streakGlowPulse 1s ease-out forwards;
+  }
+  @keyframes streakGlowPulse {
+    0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.6); }
+    30%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%,-50%) scale(1.6); }
+  }
+  .streak-ring {
+    position: absolute; top: 42%; left: 50%; width: 10px; height: 10px; border-radius: 50%;
+    border: 2px solid var(--ring-color, #ff6a3d);
+    transform: translate(-50%,-50%) scale(1); opacity: 0.85;
+    animation: streakRingExpand 0.9s ease-out forwards;
+  }
+  @keyframes streakRingExpand {
+    0%   { transform: translate(-50%,-50%) scale(1); opacity: 0.85; }
+    100% { transform: translate(-50%,-50%) scale(42); opacity: 0; }
+  }
+  .streak-heaven-wash {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 40%, rgba(255,251,232,0.55) 0%, rgba(255,215,120,0.16) 45%, rgba(255,251,232,0) 75%);
+    opacity: 0;
+    animation: streakHeavenWash 3.8s ease-in-out forwards;
+  }
+  @keyframes streakHeavenWash {
+    0%   { opacity: 0; }
+    15%  { opacity: 1; }
+    75%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* ── Footer REVEAL permanent ── */
+  .site-footer {
+    position: fixed; left: 0; right: 0; bottom: 7px; z-index: 1000;
+    padding: 0 12px; text-align: center; font-family: 'Inter', sans-serif;
+    font-size: 0.54rem; line-height: 1.45; letter-spacing: 0.3px;
+    color: #555566; pointer-events: none;
+  }
+  .site-footer a { color: #777788; text-decoration: none; pointer-events: auto; }
+  .site-footer a:hover { color: var(--white); }
+  .site-footer-thirdparty { font-size: 0.48rem; color: #444455; }
+
+
+/* Barre de volume musique : rail jaune, curseur noir constant. */
+#musicVolume { -webkit-appearance:none; appearance:none; width:66px; height:6px; background:var(--gold); border:0; border-radius:0; outline:none; cursor:pointer; accent-color:var(--gold); }
+#musicVolume::-webkit-slider-runnable-track { height:6px; background:var(--gold); border:0; border-radius:0; }
+#musicVolume::-moz-range-track { height:6px; background:var(--gold); border:0; border-radius:0; }
+#musicVolume::-moz-range-progress { height:6px; background:var(--gold); border:0; }
+#musicVolume::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:10px; height:12px; margin-top:-3px; background:#08090f; border:1px solid var(--gold); border-radius:0; box-shadow:none; }
+#musicVolume::-moz-range-thumb { width:10px; height:12px; background:#08090f; border:1px solid var(--gold); border-radius:0; box-shadow:none; }
+#musicVolume:hover::-webkit-slider-thumb, #musicVolume:focus::-webkit-slider-thumb, #musicVolume:active::-webkit-slider-thumb { background:#08090f; border-color:var(--gold); box-shadow:none; }
+#musicVolume:hover::-moz-range-thumb, #musicVolume:focus::-moz-range-thumb, #musicVolume:active::-moz-range-thumb { background:#08090f; border-color:var(--gold); box-shadow:none; }
+  /* Croix de nettoyage du champ de recherche : jaune, sans bleu natif. */
+  #answerInput::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    background: var(--gold);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 5L19 19M19 5L5 19' stroke='black' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 5L19 19M19 5L5 19' stroke='black' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  /* Promotion Jeux Vidéo */
+  #screenStart .video-reveal-promo {
+    display: inline-flex; flex-direction: column; align-items: center;
+    align-self: center; width: max-content; max-width: 100%;
+    padding: 11px 18px; border: 1px solid rgba(168,85,247,.55);
+    background: rgba(168,85,247,.075); text-align: center;
+    font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px;
+    line-height: 1.3; text-decoration: none;
+  }
+  #screenStart .video-reveal-promo .promo-title { color: #A855F7; font-size: 1.35rem; }
+  #screenStart .video-reveal-promo .promo-sub { color: #f0eeea; font-size: 1rem; margin-top: 3px; }
+  #screenStart .video-reveal-promo:hover { background: rgba(168,85,247,.18); }
+  #screenStart > .btn-primary { margin-top: 0; }
+
+  /* Accueil : espacement uniforme entre les éléments (24 px). */
+  #screenStart { gap: 24px; }
+  #screenStart .video-reveal-promo { position: relative; top: -7px; }
+  #screenStart > .btn-primary { margin-top: 0; }
+  #screenStart > .leaderboard-preview { margin-top: 0; }
+  #screenStart .leaderboard-title { margin-bottom: 24px; }
+  #screenStart #catalogNotice:empty { display: none; }
+</style>
+</head>
+<body class="start-scroll">
+<header>
+  <div style="display:flex;align-items:center;gap:14px">
+    <a class="logo" href="index.html" style="cursor:pointer;text-decoration:none;">ALBUM<span>REVEAL</span></a>
+    <span id="gameAudioControls" style="display:none;align-items:center;gap:14px">
+    <button id="effectsBtn" onclick="toggleEffects()" title="Couper les effets sonores" aria-label="Couper les effets sonores" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:color 0.2s;position:relative;top:-3px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+        <path id="wave1" d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        <path id="wave2" d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+      </svg>
+      <svg id="effectsSlash" width="20" height="20" viewBox="0 0 24 24" style="display:none;position:absolute;inset:4px;pointer-events:none;color:var(--white)" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 21 L21 3"/></svg>
+    </button>
+    <button id="forestBtn" onclick="toggleForest()" title="Activer les oiseaux" aria-label="Activer les oiseaux" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:color 0.2s;position:relative;top:-3px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <!-- Oiseau n°12 : silhouette minimaliste, aile, oeil et deux pattes -->
+        <path d="M2.8 18.2 L7.4 13.5 C9.5 11.5 10.4 7.4 14.3 5.3 C17.5 3.6 20.2 5.3 20.8 7.5 L23 8.6 L20.6 9.7 C20.5 14.8 17.2 18.4 12.2 18.4 L2.8 18.2 Z"/>
+        <path d="M6.1 17.5 C9.3 15.1 11.5 12.2 15.5 12.1"/>
+        <circle cx="18.3" cy="7.7" r="0.65" fill="currentColor" stroke="none"/>
+        <path d="M11.5 18.4 L12.2 21 M15.4 17.9 L16.1 21"/>
+      </svg>
+      <svg id="forestSlash" width="22" height="22" viewBox="0 0 24 24" style="display:block;position:absolute;inset:4px;pointer-events:none;color:var(--white);" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21 L21 3"/></svg>
+    </button>
+    <button id="musicBtn" onclick="toggleMusic()" title="Activer la musique" aria-label="Activer la musique" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);opacity:1;display:flex;align-items:center;justify-content:center;position:relative;top:-3px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <svg id="musicSlash" width="22" height="22" viewBox="0 0 24 24" style="display:block;position:absolute;inset:4px;pointer-events:none;color:var(--white)" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 21 L21 3"/></svg>
+    </button>
+    <input id="musicVolume" type="range" min="0" max="100" value="12" step="1" aria-label="Volume de la musique" title="Volume de la musique" oninput="setMusicVolume(this.value)" style="display:none;width:66px;cursor:pointer;vertical-align:middle;margin:0 0 5px -7px;" />
+    </span>
+  </div>
+  <div class="score-display">
+    <div class="score-label">Score</div>
+    <div class="score-value" id="headerScore">0</div>
+  </div>
+</header>
+<div class="progress-bar-wrap" id="progressBarWrap"></div>
+<div class="score-popup" id="scorePopup"></div>
+<div class="streak-fx" id="streakFX"></div>
+
+<div class="screen active" id="screenStart">
+  <div class="screen-title">ALBUM REVEAL</div>
+  <div class="screen-sub">DEVINE L’ARTISTE, PUIS LE TITRE DE L’ALBUM · 25 + 25 POINTS</div>
+  <a class="video-reveal-promo" href="jeux-video.html"><span class="promo-title">JEUX VIDÉO REVEAL</span><span class="promo-sub">DEVINE LE JEU VIDÉO</span></a>
+  <button class="btn-primary" onclick="startGame()">JOUER</button>
+  <div class="leaderboard-preview" style="display:none">
+    <div class="leaderboard-title">CLASSEMENT MONDIAL</div>
+    <div id="leaderboardStart"><div class="leaderboard-empty">Chargement…</div></div>
+  </div>
+</div>
+
+<div class="game-area" id="gameArea" style="display:none">
+  <div class="round-info">
+    <span id="roundLabel">ALBUM 1 / 10</span>
+    <span id="revealPct">0% révélé</span>
+  </div>
+  <div class="poster-container" id="posterContainer">
+    <img class="poster-img hide" id="posterImgFull"  src="" alt="pochette originale" draggable="false">
+    <img class="poster-img hide" id="posterImgClean" src="" alt="pochette nettoyée" draggable="false">
+    <canvas class="reveal-mask" id="revealCanvas"></canvas>
+    <div id="filmTitle" style="
+      position:absolute; bottom:0; left:0; right:0;
+      background:rgba(0,0,0,0.72); color:#f0eeea;
+      font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:2px;
+      text-align:center; padding:7px 12px;
+      display:none; text-transform:uppercase; line-height:1.4;
+    "></div>
+    <div class="streak-mini" id="streakMini">
+      <span class="streak-mini-count" id="streakMiniCount">0</span><span class="streak-mini-max">/10</span>
+    </div>
+    <div class="pts-badge" id="ptsBadge">100 pts</div>
+  </div>
+  <div class="timer-wrap">
+    <div class="timer-row"><span>RÉVÉLATION</span><span id="timerLabel">0%</span></div>
+    <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
+  </div>
+  <div class="input-wrap">
+  <input type="search" id="answerInput" name="film-search-query" placeholder="Artiste… (Entrée pour valider)" autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true">
+    <button class="btn-validate" id="validateAnswerBtn" type="button" onclick="validateCurrentAnswer()">VALIDER</button>
+    <button class="btn-skip" id="skipBtn" onclick="skipFilm()">PASSER</button>
+  </div>
+  <div class="feedback" id="feedback"></div>
+</div>
+
+<div class="screen" id="screenEnd">
+  <div class="screen-title" id="endTitle">RÉSULTAT</div>
+  <div class="screen-sub" id="endSub"></div>
+  <div class="end-columns">
+    <div class="end-col end-col-results">
+      <div class="final-breakdown" id="breakdown"></div>
+      <button class="btn-primary" onclick="restartGame()" style="align-self:center">REJOUER</button>
+    </div>
+    <div class="end-col end-col-leaderboard" style="display:none">
+      <div class="leaderboard-preview">
+        <div class="leaderboard-title">CLASSEMENT MONDIAL</div>
+        <div class="leaderboard-submit">
+          <input id="leaderboardName" type="text" maxlength="19" placeholder="TON PSEUDO" autocomplete="off" spellcheck="false">
+          <div class="leaderboard-secret-wrap">
+            <input id="leaderboardSecret" type="password" maxlength="30" placeholder="****" autocomplete="off" spellcheck="false">
+            <div class="leaderboard-secret-note">À CONSERVER POUR METTRE LE SCORE À JOUR</div>
+          </div>
+          <button id="leaderboardSubmitBtn" type="button" onclick="submitLeaderboardScore()">VALIDER</button>
+        </div>
+        <div class="leaderboard-status" id="leaderboardStatus"></div>
+        <div id="leaderboardEnd"><div class="leaderboard-empty">Chargement…</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<footer class="site-footer">
+  <div>© 2026 — Tristan Gaston Vallet — Tous droits réservés · <a href="mailto:contact@reveal.page">contact@reveal.page</a></div>
+  <div class="site-footer-thirdparty">Les images, affiches, logos, marques et œuvres représentées demeurent la propriété de leurs ayants droit respectifs.</div>
+</footer>
+
+<script>
+// Bloque l'aperçu natif des images lors d'un glisser-déposer (Opera/Chrome/mobile).
+document.getElementById('posterContainer').addEventListener('dragstart', event => event.preventDefault());
+// Empêche aussi les glissements commencés HORS du cadre (zones vides du jeu).
+// On conserve la sélection, la saisie et les clics dans les champs et boutons.
+document.addEventListener('dragstart', event => {
+  if (document.getElementById('gameArea').style.display !== 'none') {
+    event.preventDefault();
+  }
+}, true);
+document.addEventListener('selectstart', event => {
+  if (document.getElementById('gameArea').style.display === 'none') return;
+  if (event.target.closest('input, textarea, [contenteditable="true"]')) return;
+  event.preventDefault();
+}, true);
+// Un départ de glissement sur le fond ne doit pas produire de sélection fantôme.
+document.addEventListener('mousedown', event => {
+  if (document.getElementById('gameArea').style.display === 'none') return;
+  if (event.button !== 0 || event.target.closest('input, textarea, button, a, [contenteditable="true"]')) return;
+  event.preventDefault();
+}, true);
+
+const LEADERBOARD_API = '/api/leaderboard';
+let leaderboardScoreSubmitted = false;
+
+function escapeLeaderboardHTML(value){
+  return String(value ?? '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
+
+function renderLeaderboard(targetId, scores){
+  const target = document.getElementById(targetId);
+  if(!target) return;
+  if(!Array.isArray(scores) || scores.length===0){
+    target.innerHTML='<div class="leaderboard-empty">AUCUN SCORE POUR LE MOMENT</div>';
+    return;
+  }
+  target.innerHTML=scores.map((row,index)=>`
+    <div class="leaderboard-row">
+      <span class="leaderboard-rank">${index+1}</span>
+      <span class="leaderboard-name">${escapeLeaderboardHTML(row.player_name)}</span>
+      <span class="leaderboard-score">${Number(row.score)||0}</span>
+    </div>`).join('');
+}
+
+async function loadLeaderboard(){
+  try{
+    const res=await fetch(LEADERBOARD_API+'?game=album',{cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    renderLeaderboard('leaderboardStart',data.scores);
+    renderLeaderboard('leaderboardEnd',data.scores);
+  }catch(err){
+    const msg='<div class="leaderboard-empty">CLASSEMENT INDISPONIBLE</div>';
+    const a=document.getElementById('leaderboardStart');
+    const b=document.getElementById('leaderboardEnd');
+    if(a) a.innerHTML=msg;
+    if(b) b.innerHTML=msg;
+  }
+}
+
+async function submitLeaderboardScore(){
+  if(leaderboardScoreSubmitted) return;
+
+  const input=document.getElementById('leaderboardName');
+  const secretInput=document.getElementById('leaderboardSecret');
+  const btn=document.getElementById('leaderboardSubmitBtn');
+  const status=document.getElementById('leaderboardStatus');
+
+  const playerName=(input?.value||'').trim();
+  const secret=(secretInput?.value||'').trim();
+
+  if(playerName.length<1 || playerName.length>19 || !/^[a-zA-Z0-9À-ÿ _.-]+$/.test(playerName)){
+    if(status){ status.textContent='PSEUDO : 1 À 19 CARACTÈRES'; status.style.color='#e2564f'; }
+    return;
+  }
+
+  if(secret.length<4 || secret.length>30){
+    if(status){ status.textContent='CODE SECRET : 4 CARACTÈRES MINIMUM'; status.style.color='#e2564f'; }
+    return;
+  }
+
+  try{
+    if(btn) btn.disabled=true;
+    if(status){ status.textContent='ENVOI…'; status.style.color='var(--gray)'; }
+
+    const res=await fetch(LEADERBOARD_API,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        game:'album',
+        player_name:playerName,
+        score:totalScore,
+        secret:secret
+      })
+    });
+
+    const data=await res.json().catch(()=>({}));
+
+    if(!res.ok){
+      if(res.status===409 && data.error==='Player name already taken'){
+        if(status){ status.textContent='PSEUDO DÉJÀ PRIS OU CODE INCORRECT'; status.style.color='#e2564f'; }
+        if(btn) btn.disabled=false;
+        return;
+      }
+
+      if(res.status===409 && data.error==='Reserved legacy player'){
+        if(status){ status.textContent='PSEUDO DE TEST RÉSERVÉ — CHOISIS-EN UN AUTRE'; status.style.color='#e2564f'; }
+        if(btn) btn.disabled=false;
+        return;
+      }
+
+      throw new Error(data.error||('HTTP '+res.status));
+    }
+
+    leaderboardScoreSubmitted=true;
+    if(input) input.disabled=true;
+    if(secretInput) secretInput.disabled=true;
+    if(status){
+      status.textContent=data.status==='updated'
+        ? 'RECORD VÉRIFIÉ — MEILLEUR SCORE CONSERVÉ'
+        : 'PSEUDO CRÉÉ — SCORE ENREGISTRÉ';
+      status.style.color='#4caf6e';
+    }
+
+    await loadLeaderboard();
+
+  }catch(err){
+    if(btn) btn.disabled=false;
+    if(status){ status.textContent='ERREUR — RÉESSAIE'; status.style.color='#e2564f'; }
+  }
+}
+
+// Classement album non activé côté serveur.
+
+// Entrée dans le pseudo ou le code secret = clic sur VALIDER
+['leaderboardName', 'leaderboardSecret'].forEach(id => {
+  const field = document.getElementById(id);
+  if (field) {
+    field.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        submitLeaderboardScore();
+      }
+    });
+  }
+});
+
+const AC = new (window.AudioContext || window.webkitAudioContext)();
+const effectsMaster = AC.createGain();
+effectsMaster.connect(AC.destination);
+let effectsMuted = false;
+function toggleEffects(){
+  effectsMuted = !effectsMuted;
+  effectsMaster.gain.setValueAtTime(effectsMuted ? 0 : 1, AC.currentTime);
+  const btn = document.getElementById('effectsBtn');
+  document.getElementById('wave1').style.display = effectsMuted ? 'none' : '';
+  document.getElementById('wave2').style.display = effectsMuted ? 'none' : '';
+  document.getElementById('effectsSlash').style.display = effectsMuted ? 'block' : 'none';
+  btn.style.color = 'var(--gold)';
+  btn.style.opacity = '1';
+  btn.title = effectsMuted ? 'Activer les effets sonores' : 'Couper les effets sonores';
+  btn.setAttribute('aria-label', btn.title);
+}
+function playWrong() {
+  const buf=AC.createBuffer(1,AC.sampleRate*0.18,AC.sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*Math.pow(1-i/data.length,1.5);
+  const src=AC.createBufferSource(); src.buffer=buf;
+  const g=AC.createGain(); g.gain.setValueAtTime(0.55,AC.currentTime); g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.22);
+  const bq=AC.createBiquadFilter(); bq.type='bandpass'; bq.frequency.setValueAtTime(280,AC.currentTime); bq.frequency.exponentialRampToValueAtTime(80,AC.currentTime+0.18); bq.Q.value=1.2;
+  src.connect(bq); bq.connect(g); g.connect(effectsMaster); src.start();
+}
+function playCorrect() {
+  const t = AC.currentTime;
+
+  // Reverb synthétique douce
+  function makeReverb(dur, decay){
+    const len = AC.sampleRate * dur;
+    const buf = AC.createBuffer(2, len, AC.sampleRate);
+    for(let c=0;c<2;c++){
+      const d = buf.getChannelData(c);
+      for(let i=0;i<len;i++) d[i] = (Math.random()*2-1) * Math.pow(1-i/len, decay);
+    }
+    const conv = AC.createConvolver();
+    conv.buffer = buf;
+    return conv;
+  }
+  const reverb = makeReverb(2.0, 2.2);
+  const reverbGain = AC.createGain();
+  reverbGain.gain.value = 0.32;
+  reverb.connect(reverbGain); reverbGain.connect(effectsMaster);
+
+  // Master très doux
+  const master = AC.createGain();
+  master.gain.value = 0.0367;
+  master.connect(effectsMaster);
+  master.connect(reverb);
+
+  // Delay léger
+  const delay = AC.createDelay(0.7);
+  delay.delayTime.value = 0.3;
+  const delayGain = AC.createGain();
+  delayGain.gain.value = 0.18;
+  delay.connect(delayGain); delayGain.connect(master);
+
+  // Joue une note type flûte : sine + souffle
+  function playFlute(freq, start, dur, vol){
+    const osc = AC.createOscillator();
+    const g = AC.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, start);
+    osc.frequency.linearRampToValueAtTime(freq * 1.003, start + dur * 0.7);
+    g.gain.setValueAtTime(0, start);
+    g.gain.linearRampToValueAtTime(vol, start + 0.05);
+    g.gain.setValueAtTime(vol * 0.85, start + dur * 0.55);
+    g.gain.exponentialRampToValueAtTime(0.001, start + dur);
+    osc.connect(g); g.connect(master); g.connect(delay);
+    osc.start(start); osc.stop(start + dur + 0.1);
+
+    // Souffle flûte
+    const bLen = Math.floor(AC.sampleRate * dur);
+    const bBuf = AC.createBuffer(1, bLen, AC.sampleRate);
+    const bd = bBuf.getChannelData(0);
+    for(let i=0;i<bLen;i++) bd[i] = (Math.random()*2-1) * Math.pow(1-i/bLen, 1.8) * 0.018;
+    const breath = AC.createBufferSource();
+    breath.buffer = bBuf;
+    const bpf = AC.createBiquadFilter();
+    bpf.type = 'bandpass'; bpf.frequency.value = freq * 2.2; bpf.Q.value = 1.2;
+    const bg = AC.createGain(); bg.gain.value = vol * 0.35;
+    breath.connect(bpf); bpf.connect(bg); bg.connect(master);
+    breath.start(start);
+  }
+
+  // Trois notes espacées, douces — accord de Do majeur
+  playFlute(523.25, t,        0.55, 1.0);   // Do5
+  playFlute(659.25, t + 0.15, 0.50, 0.75);  // Mi5
+  playFlute(783.99, t + 0.28, 0.60, 0.55);  // Sol5
+}
+function levenshtein(a,b){
+  const m=a.length,n=b.length;
+  const dp=Array.from({length:m+1},(_,i)=>[i,...Array(n).fill(0)]);
+  for(let j=0;j<=n;j++) dp[0][j]=j;
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++) dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  return dp[m][n];
+}
+function normalize(str){
+  return String(str||'').toLowerCase().trim().normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'').replace(/['’]/g,' ')
+    .replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+}
+// Nombres en chiffres, lettres et chiffres romains : FR et EN.
+const NUMBER_WORDS = {
+  zero:'0',one:'1',two:'2',three:'3',four:'4',five:'5',six:'6',seven:'7',eight:'8',nine:'9',ten:'10',
+  eleven:'11',twelve:'12',thirteen:'13',fourteen:'14',fifteen:'15',sixteen:'16',seventeen:'17',eighteen:'18',nineteen:'19',twenty:'20',
+  un:'1',une:'1',deux:'2',trois:'3',quatre:'4',cinq:'5',six:'6',sept:'7',huit:'8',neuf:'9',dix:'10',onze:'11',douze:'12',treize:'13',quatorze:'14',quinze:'15',seize:'16',vingt:'20',
+  premier:'1',premiere:'1',first:'1',second:'2',deuxieme:'2',third:'3',troisieme:'3',fourth:'4',quatrieme:'4',fifth:'5',cinquieme:'5',
+  ii:'2',iii:'3',iv:'4',v:'5',vi:'6',vii:'7',viii:'8',ix:'9',x:'10'
+};
+function canonicalNumbers(str){
+  return normalize(str).split(' ').map(w=>NUMBER_WORDS[w]||w).join(' ');
+}
+function titleVariants(str){
+  const n=canonicalNumbers(str).replace(/^ze\b/,'the');
+  const result=new Set([n]);
+  // Articles français et anglais interchangeables UNIQUEMENT en début de titre.
+  const article=/^(the|les|des|le|la|un|une|a|an|l)\s+/;
+  const base=n.replace(article,'').trim();
+  if(base){
+    result.add(base);
+    for(const prefix of ['the','les','des','le','la','un','une','a','an','l']) result.add(prefix+' '+base);
+  }
+  return [...result].filter(Boolean);
+}
+const SAGA_FAMILIES = ['taxi','bronzes','seigneur','visiteurs','pirate'];
+function getSagaFamily(str){return SAGA_FAMILIES.find(f=>str.startsWith(f))||null;}
+function isFuzzyMatch(input,target){
+  const aVariants=titleVariants(input), bVariants=titleVariants(target);
+  for(const a of aVariants)for(const b of bVariants){
+    if(a===b)return 'exact';
+    // Interdire les confusions entre épisodes, même si la distance est faible.
+    const numsA=a.match(/\b\d+\b/g)||[], numsB=b.match(/\b\d+\b/g)||[];
+    if(numsA.join(',')!==numsB.join(','))continue;
+    const fam=getSagaFamily(b);
+    if(fam && getSagaFamily(a)!==fam)continue;
+    const dist=levenshtein(a,b);
+    const maxDist=b.length<=5?1:b.length<=10?2:3;
+    if(dist<=maxDist)return 'fuzzy';
+  }
+  return false;
+}
+
+const FILMS = [
+  {
+    "title": "113 — Les Princes de la ville",
+    "artist": "113",
+    "album": "Les Princes de la ville",
+    "part1": [
+      "113"
+    ],
+    "part2": [
+      "Les Princes de la ville"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/113-les-princes-de-la-ville-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/113-les-princes-de-la-ville.jpg"
+  },
+  {
+    "title": "2Pac — All Eyez on Me",
+    "artist": "2Pac",
+    "album": "All Eyez on Me",
+    "part1": [
+      "2Pac"
+    ],
+    "part2": [
+      "All Eyez on Me"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/2pac-all-eyez-on-me-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/2pac-all-eyez-on-me.jpg"
+  },
+  {
+    "title": "50 Cent — Get Rich or Die Tryin'",
+    "artist": "50 Cent",
+    "album": "Get Rich or Die Tryin'",
+    "part1": [
+      "50 Cent"
+    ],
+    "part2": [
+      "Get Rich or Die Tryin'"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/50-cent-get-rich-or-die-tryin-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/50-cent-get-rich-or-die-tryin.jpg"
+  },
+  {
+    "title": "A$AP Rocky — LONG.LIVE.A$AP",
+    "artist": "A$AP Rocky",
+    "album": "LONG.LIVE.A$AP",
+    "part1": [
+      "A$AP Rocky"
+    ],
+    "part2": [
+      "LONG.LIVE.A$AP"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/a-ap-rocky-long-live-a-ap-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/a-ap-rocky-long-live-a-ap.jpg"
+  },
+  {
+    "title": "a-ha — Hunting High and Low",
+    "artist": "a-ha",
+    "album": "Hunting High and Low",
+    "part1": [
+      "a-ha"
+    ],
+    "part2": [
+      "Hunting High and Low"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/a-ha-hunting-high-and-low-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/a-ha-hunting-high-and-low.jpg"
+  },
+  {
+    "title": "ACDC — Back in Black",
+    "artist": "ACDC",
+    "album": "Back in Black",
+    "part1": [
+      "ACDC"
+    ],
+    "part2": [
+      "Back in Black"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/acdc-back-in-black-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/acdc-back-in-black.jpg"
+  },
+  {
+    "title": "Adele — 21",
+    "artist": "Adele",
+    "album": "21",
+    "part1": [
+      "Adele"
+    ],
+    "part2": [
+      "21"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/adele-21-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/adele-21.jpg"
+  },
+  {
+    "title": "Adele — 25",
+    "artist": "Adele",
+    "album": "25",
+    "part1": [
+      "Adele"
+    ],
+    "part2": [
+      "25"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/adele-25-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/adele-25.jpg"
+  },
+  {
+    "title": "Air — Moon Safari",
+    "artist": "Air",
+    "album": "Moon Safari",
+    "part1": [
+      "Air"
+    ],
+    "part2": [
+      "Moon Safari"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/air-moon-safari-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/air-moon-safari.jpg"
+  },
+  {
+    "title": "Akhenaton — Métèque et mat",
+    "artist": "Akhenaton",
+    "album": "Métèque et mat",
+    "part1": [
+      "Akhenaton"
+    ],
+    "part2": [
+      "Métèque et mat"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/akhenaton-meteque-et-mat-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/akhenaton-meteque-et-mat.jpg"
+  },
+  {
+    "title": "Al Green — Let's Stay Together",
+    "artist": "Al Green",
+    "album": "Let's Stay Together",
+    "part1": [
+      "Al Green"
+    ],
+    "part2": [
+      "Let's Stay Together"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/al-green-let-s-stay-together-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/al-green-let-s-stay-together.jpg"
+  },
+  {
+    "title": "Alain Bashung — Chatterton",
+    "artist": "Alain Bashung",
+    "album": "Chatterton",
+    "part1": [
+      "Alain Bashung"
+    ],
+    "part2": [
+      "Chatterton"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/alain-bashung-chatterton-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/alain-bashung-chatterton.jpg"
+  },
+  {
+    "title": "Alain Bashung — Osez Joséphine",
+    "artist": "Alain Bashung",
+    "album": "Osez Joséphine",
+    "part1": [
+      "Alain Bashung"
+    ],
+    "part2": [
+      "Osez Joséphine"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/alain-bashung-osez-josephine-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/alain-bashung-osez-josephine.jpg"
+  },
+  {
+    "title": "Alain Souchon — Au ras des pâquerettes",
+    "artist": "Alain Souchon",
+    "album": "Au ras des pâquerettes",
+    "part1": [
+      "Alain Souchon"
+    ],
+    "part2": [
+      "Au ras des pâquerettes"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/alain-souchon-au-ras-des-paquerettes-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/alain-souchon-au-ras-des-paquerettes.jpg"
+  },
+  {
+    "title": "Alan Silvestri — Forrest Gump",
+    "artist": "Alan Silvestri",
+    "album": "Forrest Gump",
+    "part1": [
+      "Alan Silvestri"
+    ],
+    "part2": [
+      "Forrest Gump"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/alan-silvestri-forrest-gump-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/alan-silvestri-forrest-gump.jpg"
+  },
+  {
+    "title": "Alicia Keys — Songs in A Minor",
+    "artist": "Alicia Keys",
+    "album": "Songs in A Minor",
+    "part1": [
+      "Alicia Keys"
+    ],
+    "part2": [
+      "Songs in A Minor"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/alicia-keys-songs-in-a-minor-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/alicia-keys-songs-in-a-minor.jpg"
+  },
+  {
+    "title": "Alizée — Gourmandises",
+    "artist": "Alizée",
+    "album": "Gourmandises",
+    "part1": [
+      "Alizée"
+    ],
+    "part2": [
+      "Gourmandises"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/alizee-gourmandises-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/alizee-gourmandises.jpg"
+  },
+  {
+    "title": "Alpha Blondy — Jérusalem",
+    "artist": "Alpha Blondy",
+    "album": "Jérusalem",
+    "part1": [
+      "Alpha Blondy"
+    ],
+    "part2": [
+      "Jérusalem"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/alpha-blondy-jerusalem-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/alpha-blondy-jerusalem.jpg"
+  },
+  {
+    "title": "Amel Bent — Un jour d'été",
+    "artist": "Amel Bent",
+    "album": "Un jour d'été",
+    "part1": [
+      "Amel Bent"
+    ],
+    "part2": [
+      "Un jour d'été"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/amel-bent-un-jour-d-ete-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/amel-bent-un-jour-d-ete.jpg"
+  },
+  {
+    "title": "Amy Winehouse — Back to Black",
+    "artist": "Amy Winehouse",
+    "album": "Back to Black",
+    "part1": [
+      "Amy Winehouse"
+    ],
+    "part2": [
+      "Back to Black"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/amy-winehouse-back-to-black-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/amy-winehouse-back-to-black.jpg"
+  },
+  {
+    "title": "Aphex Twin — Selected Ambient Works 85-92",
+    "artist": "Aphex Twin",
+    "album": "Selected Ambient Works 85-92",
+    "part1": [
+      "Aphex Twin"
+    ],
+    "part2": [
+      "Selected Ambient Works 85-92"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/aphex-twin-selected-ambient-works-85-92-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/aphex-twin-selected-ambient-works-85-92.jpg"
+  },
+  {
+    "title": "Arcade Fire — Funeral",
+    "artist": "Arcade Fire",
+    "album": "Funeral",
+    "part1": [
+      "Arcade Fire"
+    ],
+    "part2": [
+      "Funeral"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/arcade-fire-funeral-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/arcade-fire-funeral.jpg"
+  },
+  {
+    "title": "Arctic Monkeys — AM",
+    "artist": "Arctic Monkeys",
+    "album": "AM",
+    "part1": [
+      "Arctic Monkeys"
+    ],
+    "part2": [
+      "AM"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/arctic-monkeys-am-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/arctic-monkeys-am.jpg"
+  },
+  {
+    "title": "Arctic Monkeys — Whatever People Say I Am, That's What I'm Not",
+    "artist": "Arctic Monkeys",
+    "album": "Whatever People Say I Am, That's What I'm Not",
+    "part1": [
+      "Arctic Monkeys"
+    ],
+    "part2": [
+      "Whatever People Say I Am, That's What I'm Not"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/arctic-monkeys-whatever-people-say-i-am-that-s-what-i-m-not-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/arctic-monkeys-whatever-people-say-i-am-that-s-what-i-m-not.jpg"
+  },
+  {
+    "title": "Aretha Franklin — Lady Soul",
+    "artist": "Aretha Franklin",
+    "album": "Lady Soul",
+    "part1": [
+      "Aretha Franklin"
+    ],
+    "part2": [
+      "Lady Soul"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/aretha-franklin-lady-soul-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/aretha-franklin-lady-soul.jpg"
+  },
+  {
+    "title": "Avril Lavigne — Let Go",
+    "artist": "Avril Lavigne",
+    "album": "Let Go",
+    "part1": [
+      "Avril Lavigne"
+    ],
+    "part2": [
+      "Let Go"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/avril-lavigne-let-go-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/avril-lavigne-let-go.jpg"
+  },
+  {
+    "title": "Axelle Red — Sans plus attendre",
+    "artist": "Axelle Red",
+    "album": "Sans plus attendre",
+    "part1": [
+      "Axelle Red"
+    ],
+    "part2": [
+      "Sans plus attendre"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/axelle-red-sans-plus-attendre-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/axelle-red-sans-plus-attendre.jpg"
+  },
+  {
+    "title": "Aya Nakamura — Journal intime",
+    "artist": "Aya Nakamura",
+    "album": "Journal intime",
+    "part1": [
+      "Aya Nakamura"
+    ],
+    "part2": [
+      "Journal intime"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/aya-nakamura-journal-intime-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/aya-nakamura-journal-intime.jpg"
+  },
+  {
+    "title": "Bad Bunny — Un Verano Sin Ti",
+    "artist": "Bad Bunny",
+    "album": "Un Verano Sin Ti",
+    "part1": [
+      "Bad Bunny"
+    ],
+    "part2": [
+      "Un Verano Sin Ti"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/bad-bunny-un-verano-sin-ti-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/bad-bunny-un-verano-sin-ti.jpg"
+  },
+  {
+    "title": "BB Brunes — Blonde comme moi",
+    "artist": "BB Brunes",
+    "album": "Blonde comme moi",
+    "part1": [
+      "BB Brunes"
+    ],
+    "part2": [
+      "Blonde comme moi"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/bb-brunes-blonde-comme-moi-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/bb-brunes-blonde-comme-moi.jpg"
+  },
+  {
+    "title": "Bee Gees — Spirits Having Flown",
+    "artist": "Bee Gees",
+    "album": "Spirits Having Flown",
+    "part1": [
+      "Bee Gees"
+    ],
+    "part2": [
+      "Spirits Having Flown"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/bee-gees-spirits-having-flown-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/bee-gees-spirits-having-flown.jpg"
+  },
+  {
+    "title": "Ben Mazué — Paradis",
+    "artist": "Ben Mazué",
+    "album": "Paradis",
+    "part1": [
+      "Ben Mazué"
+    ],
+    "part2": [
+      "Paradis"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/ben-mazue-paradis-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/ben-mazue-paradis.jpg"
+  },
+  {
+    "title": "Beyoncé — Cowboy Carter",
+    "artist": "Beyoncé",
+    "album": "Cowboy Carter",
+    "part1": [
+      "Beyoncé"
+    ],
+    "part2": [
+      "Cowboy Carter"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/beyonce-cowboy-carter-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/beyonce-cowboy-carter.jpg"
+  },
+  {
+    "title": "Beyoncé — Lemonade",
+    "artist": "Beyoncé",
+    "album": "Lemonade",
+    "part1": [
+      "Beyoncé"
+    ],
+    "part2": [
+      "Lemonade"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/beyonce-lemonade-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/beyonce-lemonade.jpg"
+  },
+  {
+    "title": "Beyoncé — Renaissance",
+    "artist": "Beyoncé",
+    "album": "Renaissance",
+    "part1": [
+      "Beyoncé"
+    ],
+    "part2": [
+      "Renaissance"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/beyonce-renaissance-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/beyonce-renaissance.jpg"
+  },
+  {
+    "title": "Bigflo & Oli — La vraie vie",
+    "artist": "Bigflo & Oli",
+    "album": "La vraie vie",
+    "part1": [
+      "Bigflo & Oli"
+    ],
+    "part2": [
+      "La vraie vie"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/bigflo-oli-la-vraie-vie-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/bigflo-oli-la-vraie-vie.jpg"
+  },
+  {
+    "title": "Billie Eilish — When We All Fall Asleep, Where Do We Go",
+    "artist": "Billie Eilish",
+    "album": "When We All Fall Asleep, Where Do We Go",
+    "part1": [
+      "Billie Eilish"
+    ],
+    "part2": [
+      "When We All Fall Asleep, Where Do We Go"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/billie-eilish-when-we-all-fall-asleep-where-do-we-go-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/billie-eilish-when-we-all-fall-asleep-where-do-we-go.jpg"
+  },
+  {
+    "title": "Billy Crawford — Ride",
+    "artist": "Billy Crawford",
+    "album": "Ride",
+    "part1": [
+      "Billy Crawford"
+    ],
+    "part2": [
+      "Ride"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/billy-crawford-ride-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/billy-crawford-ride.jpg"
+  },
+  {
+    "title": "Billy Joel — 52nd Street",
+    "artist": "Billy Joel",
+    "album": "52nd Street",
+    "part1": [
+      "Billy Joel"
+    ],
+    "part2": [
+      "52nd Street"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/billy-joel-52nd-street-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/billy-joel-52nd-street.jpg"
+  },
+  {
+    "title": "Billy Joel — The Stranger",
+    "artist": "Billy Joel",
+    "album": "The Stranger",
+    "part1": [
+      "Billy Joel"
+    ],
+    "part2": [
+      "The Stranger"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/billy-joel-the-stranger-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/billy-joel-the-stranger.jpg"
+  },
+  {
+    "title": "Björk — Debut",
+    "artist": "Björk",
+    "album": "Debut",
+    "part1": [
+      "Björk"
+    ],
+    "part2": [
+      "Debut"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/bjork-debut-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/bjork-debut.jpg"
+  },
+  {
+    "title": "Björk — Homogenic",
+    "artist": "Björk",
+    "album": "Homogenic",
+    "part1": [
+      "Björk"
+    ],
+    "part2": [
+      "Homogenic"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/bjork-homogenic-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/bjork-homogenic.jpg"
+  },
+  {
+    "title": "Björk — Post",
+    "artist": "Björk",
+    "album": "Post",
+    "part1": [
+      "Björk"
+    ],
+    "part2": [
+      "Post"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/bjork-post-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/bjork-post.jpg"
+  },
+  {
+    "title": "Black Eyed Peas — Elephunk",
+    "artist": "Black Eyed Peas",
+    "album": "Elephunk",
+    "part1": [
+      "Black Eyed Peas"
+    ],
+    "part2": [
+      "Elephunk"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/black-eyed-peas-elephunk-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/black-eyed-peas-elephunk.jpg"
+  },
+  {
+    "title": "Black M — Les yeux plus gros que le monde",
+    "artist": "Black M",
+    "album": "Les yeux plus gros que le monde",
+    "part1": [
+      "Black M"
+    ],
+    "part2": [
+      "Les yeux plus gros que le monde"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/black-m-les-yeux-plus-gros-que-le-monde-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/black-m-les-yeux-plus-gros-que-le-monde.jpg"
+  },
+  {
+    "title": "blink-182 — Enema of the State",
+    "artist": "blink-182",
+    "album": "Enema of the State",
+    "part1": [
+      "blink-182"
+    ],
+    "part2": [
+      "Enema of the State"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/blink-182-enema-of-the-state-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/blink-182-enema-of-the-state.jpg"
+  },
+  {
+    "title": "Blur — Parklife",
+    "artist": "Blur",
+    "album": "Parklife",
+    "part1": [
+      "Blur"
+    ],
+    "part2": [
+      "Parklife"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/blur-parklife-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/blur-parklife.jpg"
+  },
+  {
+    "title": "Bob Marley & The Wailers — Exodus",
+    "artist": "Bob Marley & The Wailers",
+    "album": "Exodus",
+    "part1": [
+      "Bob Marley & The Wailers"
+    ],
+    "part2": [
+      "Exodus"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/bob-marley-the-wailers-exodus-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/bob-marley-the-wailers-exodus.jpg"
+  },
+  {
+    "title": "Bob Marley & The Wailers — Rastaman Vibration",
+    "artist": "Bob Marley & The Wailers",
+    "album": "Rastaman Vibration",
+    "part1": [
+      "Bob Marley & The Wailers"
+    ],
+    "part2": [
+      "Rastaman Vibration"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/bob-marley-the-wailers-rastaman-vibration-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/bob-marley-the-wailers-rastaman-vibration.jpg"
+  },
+  {
+    "title": "Boney M — Nightflight to Venus",
+    "artist": "Boney M",
+    "album": "Nightflight to Venus",
+    "part1": [
+      "Boney M"
+    ],
+    "part2": [
+      "Nightflight to Venus"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/boney-m-nightflight-to-venus-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/boney-m-nightflight-to-venus.jpg"
+  },
+  {
+    "title": "Booba — Nero Nemesis",
+    "artist": "Booba",
+    "album": "Nero Nemesis",
+    "part1": [
+      "Booba"
+    ],
+    "part2": [
+      "Nero Nemesis"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/booba-nero-nemesis-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/booba-nero-nemesis.jpg"
+  },
+  {
+    "title": "Booba — Ouest Side",
+    "artist": "Booba",
+    "album": "Ouest Side",
+    "part1": [
+      "Booba"
+    ],
+    "part2": [
+      "Ouest Side"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/booba-ouest-side-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/booba-ouest-side.jpg"
+  },
+  {
+    "title": "Booba — Temps mort",
+    "artist": "Booba",
+    "album": "Temps mort",
+    "part1": [
+      "Booba"
+    ],
+    "part2": [
+      "Temps mort"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/booba-temps-mort-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/booba-temps-mort.jpg"
+  },
+  {
+    "title": "Booba — Trône",
+    "artist": "Booba",
+    "album": "Trône",
+    "part1": [
+      "Booba"
+    ],
+    "part2": [
+      "Trône"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/booba-trone-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/booba-trone.jpg"
+  },
+  {
+    "title": "Britney Spears — Baby One More Time",
+    "artist": "Britney Spears",
+    "album": "Baby One More Time",
+    "part1": [
+      "Britney Spears"
+    ],
+    "part2": [
+      "Baby One More Time"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/britney-spears-baby-one-more-time-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/britney-spears-baby-one-more-time.jpg"
+  },
+  {
+    "title": "Bruce Springsteen — Born to Run",
+    "artist": "Bruce Springsteen",
+    "album": "Born to Run",
+    "part1": [
+      "Bruce Springsteen"
+    ],
+    "part2": [
+      "Born to Run"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/bruce-springsteen-born-to-run-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/bruce-springsteen-born-to-run.jpg"
+  },
+  {
+    "title": "Bruno Mars — 24K Magic",
+    "artist": "Bruno Mars",
+    "album": "24K Magic",
+    "part1": [
+      "Bruno Mars"
+    ],
+    "part2": [
+      "24K Magic"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/bruno-mars-24k-magic-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/bruno-mars-24k-magic.jpg"
+  },
+  {
+    "title": "Calvin Harris — 18 Months",
+    "artist": "Calvin Harris",
+    "album": "18 Months",
+    "part1": [
+      "Calvin Harris"
+    ],
+    "part2": [
+      "18 Months"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/calvin-harris-18-months-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/calvin-harris-18-months.jpg"
+  },
+  {
+    "title": "Cardi B — Invasion of Privacy",
+    "artist": "Cardi B",
+    "album": "Invasion of Privacy",
+    "part1": [
+      "Cardi B"
+    ],
+    "part2": [
+      "Invasion of Privacy"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/cardi-b-invasion-of-privacy-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/cardi-b-invasion-of-privacy.jpg"
+  },
+  {
+    "title": "Chantal Goya — Le soulier qui vole",
+    "artist": "Chantal Goya",
+    "album": "Le soulier qui vole",
+    "part1": [
+      "Chantal Goya"
+    ],
+    "part2": [
+      "Le soulier qui vole"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/chantal-goya-le-soulier-qui-vole-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/chantal-goya-le-soulier-qui-vole.jpg"
+  },
+  {
+    "title": "Christina Aguilera — Stripped",
+    "artist": "Christina Aguilera",
+    "album": "Stripped",
+    "part1": [
+      "Christina Aguilera"
+    ],
+    "part2": [
+      "Stripped"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/christina-aguilera-stripped-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/christina-aguilera-stripped.jpg"
+  },
+  {
+    "title": "Christine and the Queens — Chaleur humaine",
+    "artist": "Christine and the Queens",
+    "album": "Chaleur humaine",
+    "part1": [
+      "Christine and the Queens"
+    ],
+    "part2": [
+      "Chaleur humaine"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/christine-and-the-queens-chaleur-humaine-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/christine-and-the-queens-chaleur-humaine.jpg"
+  },
+  {
+    "title": "Christophe — Les mots bleus",
+    "artist": "Christophe",
+    "album": "Les mots bleus",
+    "part1": [
+      "Christophe"
+    ],
+    "part2": [
+      "Les mots bleus"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/christophe-les-mots-bleus-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/christophe-les-mots-bleus.jpg"
+  },
+  {
+    "title": "Christophe Maé — Mon paradis",
+    "artist": "Christophe Maé",
+    "album": "Mon paradis",
+    "part1": [
+      "Christophe Maé"
+    ],
+    "part2": [
+      "Mon paradis"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/christophe-mae-mon-paradis-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/christophe-mae-mon-paradis.jpg"
+  },
+  {
+    "title": "Clara Luciani — Sainte-Victoire",
+    "artist": "Clara Luciani",
+    "album": "Sainte-Victoire",
+    "part1": [
+      "Clara Luciani"
+    ],
+    "part2": [
+      "Sainte-Victoire"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/clara-luciani-sainte-victoire-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/clara-luciani-sainte-victoire.jpg"
+  },
+  {
+    "title": "Coldplay — Parachutes",
+    "artist": "Coldplay",
+    "album": "Parachutes",
+    "part1": [
+      "Coldplay"
+    ],
+    "part2": [
+      "Parachutes"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/coldplay-parachutes-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/coldplay-parachutes.jpg"
+  },
+  {
+    "title": "Creedence Clearwater Revival — Cosmo's Factory",
+    "artist": "Creedence Clearwater Revival",
+    "album": "Cosmo's Factory",
+    "part1": [
+      "Creedence Clearwater Revival"
+    ],
+    "part2": [
+      "Cosmo's Factory"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/creedence-clearwater-revival-cosmo-s-factory-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/creedence-clearwater-revival-cosmo-s-factory.jpg"
+  },
+  {
+    "title": "Cyndi Lauper — She's So Unusual",
+    "artist": "Cyndi Lauper",
+    "album": "She's So Unusual",
+    "part1": [
+      "Cyndi Lauper"
+    ],
+    "part2": [
+      "She's So Unusual"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/cyndi-lauper-she-s-so-unusual-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/cyndi-lauper-she-s-so-unusual.jpg"
+  },
+  {
+    "title": "Céline Dion — A New Day Has Come",
+    "artist": "Céline Dion",
+    "album": "A New Day Has Come",
+    "part1": [
+      "Céline Dion"
+    ],
+    "part2": [
+      "A New Day Has Come"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/celine-dion-a-new-day-has-come-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/celine-dion-a-new-day-has-come.jpg"
+  },
+  {
+    "title": "Céline Dion — Let's Talk About Love",
+    "artist": "Céline Dion",
+    "album": "Let's Talk About Love",
+    "part1": [
+      "Céline Dion"
+    ],
+    "part2": [
+      "Let's Talk About Love"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/celine-dion-let-s-talk-about-love-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/celine-dion-let-s-talk-about-love.jpg"
+  },
+  {
+    "title": "Céline Dion — The Colour of My Love",
+    "artist": "Céline Dion",
+    "album": "The Colour of My Love",
+    "part1": [
+      "Céline Dion"
+    ],
+    "part2": [
+      "The Colour of My Love"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/celine-dion-the-colour-of-my-love-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/celine-dion-the-colour-of-my-love.jpg"
+  },
+  {
+    "title": "Daft Punk — Random Access Memories",
+    "artist": "Daft Punk",
+    "album": "Random Access Memories",
+    "part1": [
+      "Daft Punk"
+    ],
+    "part2": [
+      "Random Access Memories"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/daft-punk-random-access-memories-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/daft-punk-random-access-memories.jpg"
+  },
+  {
+    "title": "Dalida — Olympia 81",
+    "artist": "Dalida",
+    "album": "Olympia 81",
+    "part1": [
+      "Dalida"
+    ],
+    "part2": [
+      "Olympia 81"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/dalida-olympia-81-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/dalida-olympia-81.jpg"
+  },
+  {
+    "title": "Dalida — Salma Ya Salama",
+    "artist": "Dalida",
+    "album": "Salma Ya Salama",
+    "part1": [
+      "Dalida"
+    ],
+    "part2": [
+      "Salma Ya Salama"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/dalida-salma-ya-salama-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/dalida-salma-ya-salama.jpg"
+  },
+  {
+    "title": "Damso — Ipséité",
+    "artist": "Damso",
+    "album": "Ipséité",
+    "part1": [
+      "Damso"
+    ],
+    "part2": [
+      "Ipséité"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/damso-ipseite-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/damso-ipseite.jpg"
+  },
+  {
+    "title": "Damso — Lithopédion",
+    "artist": "Damso",
+    "album": "Lithopédion",
+    "part1": [
+      "Damso"
+    ],
+    "part2": [
+      "Lithopédion"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/damso-lithopedion-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/damso-lithopedion.jpg"
+  },
+  {
+    "title": "Damso — QALF",
+    "artist": "Damso",
+    "album": "QALF",
+    "part1": [
+      "Damso"
+    ],
+    "part2": [
+      "QALF"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/damso-qalf-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/damso-qalf.jpg"
+  },
+  {
+    "title": "Danny Elfman — The Nightmare Before Christmas",
+    "artist": "Danny Elfman",
+    "album": "The Nightmare Before Christmas",
+    "part1": [
+      "Danny Elfman"
+    ],
+    "part2": [
+      "The Nightmare Before Christmas"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/danny-elfman-the-nightmare-before-christmas-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/danny-elfman-the-nightmare-before-christmas.jpg"
+  },
+  {
+    "title": "David Bowie — Aladdin Sane",
+    "artist": "David Bowie",
+    "album": "Aladdin Sane",
+    "part1": [
+      "David Bowie"
+    ],
+    "part2": [
+      "Aladdin Sane"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/david-bowie-aladdin-sane-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/david-bowie-aladdin-sane.jpg"
+  },
+  {
+    "title": "David Bowie — Heroes",
+    "artist": "David Bowie",
+    "album": "Heroes",
+    "part1": [
+      "David Bowie"
+    ],
+    "part2": [
+      "Heroes"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/david-bowie-heroes-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/david-bowie-heroes.jpg"
+  },
+  {
+    "title": "David Bowie — Hunky Dory",
+    "artist": "David Bowie",
+    "album": "Hunky Dory",
+    "part1": [
+      "David Bowie"
+    ],
+    "part2": [
+      "Hunky Dory"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/david-bowie-hunky-dory-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/david-bowie-hunky-dory.jpg"
+  },
+  {
+    "title": "David Guetta — One Love",
+    "artist": "David Guetta",
+    "album": "One Love",
+    "part1": [
+      "David Guetta"
+    ],
+    "part2": [
+      "One Love"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/david-guetta-one-love-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/david-guetta-one-love.jpg"
+  },
+  {
+    "title": "Deep Purple — Machine Head",
+    "artist": "Deep Purple",
+    "album": "Machine Head",
+    "part1": [
+      "Deep Purple"
+    ],
+    "part2": [
+      "Machine Head"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/deep-purple-machine-head-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/deep-purple-machine-head.jpg"
+  },
+  {
+    "title": "Depeche Mode — Violator",
+    "artist": "Depeche Mode",
+    "album": "Violator",
+    "part1": [
+      "Depeche Mode"
+    ],
+    "part2": [
+      "Violator"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/depeche-mode-violator-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/depeche-mode-violator.jpg"
+  },
+  {
+    "title": "Destiny's Child — The Writing's on the Wall",
+    "artist": "Destiny's Child",
+    "album": "The Writing's on the Wall",
+    "part1": [
+      "Destiny's Child"
+    ],
+    "part2": [
+      "The Writing's on the Wall"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/destiny-s-child-the-writing-s-on-the-wall-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/destiny-s-child-the-writing-s-on-the-wall.jpg"
+  },
+  {
+    "title": "Diam's — Brut de femme",
+    "artist": "Diam's",
+    "album": "Brut de femme",
+    "part1": [
+      "Diam's"
+    ],
+    "part2": [
+      "Brut de femme"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/diam-s-brut-de-femme-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/diam-s-brut-de-femme.jpg"
+  },
+  {
+    "title": "Diam's — Dans ma bulle",
+    "artist": "Diam's",
+    "album": "Dans ma bulle",
+    "part1": [
+      "Diam's"
+    ],
+    "part2": [
+      "Dans ma bulle"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/diam-s-dans-ma-bulle-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/diam-s-dans-ma-bulle.jpg"
+  },
+  {
+    "title": "Diam's — S.O.S",
+    "artist": "Diam's",
+    "album": "S.O.S",
+    "part1": [
+      "Diam's"
+    ],
+    "part2": [
+      "S.O.S"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/diam-s-s-o-s-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/diam-s-s-o-s.jpg"
+  },
+  {
+    "title": "Dinos — Stamina,",
+    "artist": "Dinos",
+    "album": "Stamina,",
+    "part1": [
+      "Dinos"
+    ],
+    "part2": [
+      "Stamina,"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/dinos-stamina-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/dinos-stamina.jpg"
+  },
+  {
+    "title": "Dionysos — Western sous la neige",
+    "artist": "Dionysos",
+    "album": "Western sous la neige",
+    "part1": [
+      "Dionysos"
+    ],
+    "part2": [
+      "Western sous la neige"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/dionysos-western-sous-la-neige-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/dionysos-western-sous-la-neige.jpg"
+  },
+  {
+    "title": "Dire Straits — Brothers in Arms",
+    "artist": "Dire Straits",
+    "album": "Brothers in Arms",
+    "part1": [
+      "Dire Straits"
+    ],
+    "part2": [
+      "Brothers in Arms"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/dire-straits-brothers-in-arms-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/dire-straits-brothers-in-arms.jpg"
+  },
+  {
+    "title": "Dire Straits — Making Movies",
+    "artist": "Dire Straits",
+    "album": "Making Movies",
+    "part1": [
+      "Dire Straits"
+    ],
+    "part2": [
+      "Making Movies"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/dire-straits-making-movies-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/dire-straits-making-movies.jpg"
+  },
+  {
+    "title": "Donna Summer — Bad Girls",
+    "artist": "Donna Summer",
+    "album": "Bad Girls",
+    "part1": [
+      "Donna Summer"
+    ],
+    "part2": [
+      "Bad Girls"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/donna-summer-bad-girls-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/donna-summer-bad-girls.jpg"
+  },
+  {
+    "title": "Dr. Dre — 2001",
+    "artist": "Dr. Dre",
+    "album": "2001",
+    "part1": [
+      "Dr. Dre"
+    ],
+    "part2": [
+      "2001"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/dr-dre-2001-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/dr-dre-2001.jpg"
+  },
+  {
+    "title": "Drake — Scorpion",
+    "artist": "Drake",
+    "album": "Scorpion",
+    "part1": [
+      "Drake"
+    ],
+    "part2": [
+      "Scorpion"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/drake-scorpion-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/drake-scorpion.jpg"
+  },
+  {
+    "title": "Drake — Take Care",
+    "artist": "Drake",
+    "album": "Take Care",
+    "part1": [
+      "Drake"
+    ],
+    "part2": [
+      "Take Care"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/drake-take-care-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/drake-take-care.jpg"
+  },
+  {
+    "title": "Drake — Views",
+    "artist": "Drake",
+    "album": "Views",
+    "part1": [
+      "Drake"
+    ],
+    "part2": [
+      "Views"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/drake-views-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/drake-views.jpg"
+  },
+  {
+    "title": "Dua Lipa — Future Nostalgia",
+    "artist": "Dua Lipa",
+    "album": "Future Nostalgia",
+    "part1": [
+      "Dua Lipa"
+    ],
+    "part2": [
+      "Future Nostalgia"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/dua-lipa-future-nostalgia-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/dua-lipa-future-nostalgia.jpg"
+  },
+  {
+    "title": "Earth, Wind & Fire — All 'n All",
+    "artist": "Earth, Wind & Fire",
+    "album": "All 'n All",
+    "part1": [
+      "Earth, Wind & Fire"
+    ],
+    "part2": [
+      "All 'n All"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/earth-wind-fire-all-n-all-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/earth-wind-fire-all-n-all.jpg"
+  },
+  {
+    "title": "Earth, Wind & Fire — I Am",
+    "artist": "Earth, Wind & Fire",
+    "album": "I Am",
+    "part1": [
+      "Earth, Wind & Fire"
+    ],
+    "part2": [
+      "I Am"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/earth-wind-fire-i-am-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/earth-wind-fire-i-am.jpg"
+  },
+  {
+    "title": "Eddy de Pretto — Cure",
+    "artist": "Eddy de Pretto",
+    "album": "Cure",
+    "part1": [
+      "Eddy de Pretto"
+    ],
+    "part2": [
+      "Cure"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/eddy-de-pretto-cure-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/eddy-de-pretto-cure.jpg"
+  },
+  {
+    "title": "Eddy Mitchell — Sur la route de Memphis",
+    "artist": "Eddy Mitchell",
+    "album": "Sur la route de Memphis",
+    "part1": [
+      "Eddy Mitchell"
+    ],
+    "part2": [
+      "Sur la route de Memphis"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/eddy-mitchell-sur-la-route-de-memphis-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/eddy-mitchell-sur-la-route-de-memphis.jpg"
+  },
+  {
+    "title": "Elton John — Goodbye Yellow Brick Road",
+    "artist": "Elton John",
+    "album": "Goodbye Yellow Brick Road",
+    "part1": [
+      "Elton John"
+    ],
+    "part2": [
+      "Goodbye Yellow Brick Road"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/elton-john-goodbye-yellow-brick-road-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/elton-john-goodbye-yellow-brick-road.jpg"
+  },
+  {
+    "title": "Eminem — Encore",
+    "artist": "Eminem",
+    "album": "Encore",
+    "part1": [
+      "Eminem"
+    ],
+    "part2": [
+      "Encore"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/eminem-encore-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/eminem-encore.jpg"
+  },
+  {
+    "title": "Eminem — Recovery",
+    "artist": "Eminem",
+    "album": "Recovery",
+    "part1": [
+      "Eminem"
+    ],
+    "part2": [
+      "Recovery"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/eminem-recovery-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/eminem-recovery.jpg"
+  },
+  {
+    "title": "Eminem — The Death of Slim Shady (Coup de Grâce)",
+    "artist": "Eminem",
+    "album": "The Death of Slim Shady (Coup de Grâce)",
+    "part1": [
+      "Eminem"
+    ],
+    "part2": [
+      "The Death of Slim Shady (Coup de Grâce)"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/eminem-the-death-of-slim-shady-coup-de-grace-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/eminem-the-death-of-slim-shady-coup-de-grace.jpg"
+  },
+  {
+    "title": "Eurythmics — Touch",
+    "artist": "Eurythmics",
+    "album": "Touch",
+    "part1": [
+      "Eurythmics"
+    ],
+    "part2": [
+      "Touch"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/eurythmics-touch-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/eurythmics-touch.jpg"
+  },
+  {
+    "title": "Evanescence — Fallen",
+    "artist": "Evanescence",
+    "album": "Fallen",
+    "part1": [
+      "Evanescence"
+    ],
+    "part2": [
+      "Fallen"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/evanescence-fallen-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/evanescence-fallen.jpg"
+  },
+  {
+    "title": "Fatal Bazooka — T'as vu",
+    "artist": "Fatal Bazooka",
+    "album": "T'as vu",
+    "part1": [
+      "Fatal Bazooka"
+    ],
+    "part2": [
+      "T'as vu"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/fatal-bazooka-t-as-vu-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/fatal-bazooka-t-as-vu.jpg"
+  },
+  {
+    "title": "Fatboy Slim — You've Come a Long Way, Baby",
+    "artist": "Fatboy Slim",
+    "album": "You've Come a Long Way, Baby",
+    "part1": [
+      "Fatboy Slim"
+    ],
+    "part2": [
+      "You've Come a Long Way, Baby"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/fatboy-slim-you-ve-come-a-long-way-baby-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/fatboy-slim-you-ve-come-a-long-way-baby.jpg"
+  },
+  {
+    "title": "Florent Pagny — Savoir aimer",
+    "artist": "Florent Pagny",
+    "album": "Savoir aimer",
+    "part1": [
+      "Florent Pagny"
+    ],
+    "part2": [
+      "Savoir aimer"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/florent-pagny-savoir-aimer-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/florent-pagny-savoir-aimer.jpg"
+  },
+  {
+    "title": "Fonky Family — Art de rue",
+    "artist": "Fonky Family",
+    "album": "Art de rue",
+    "part1": [
+      "Fonky Family"
+    ],
+    "part2": [
+      "Art de rue"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/fonky-family-art-de-rue-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/fonky-family-art-de-rue.jpg"
+  },
+  {
+    "title": "Francis Cabrel — Les chemins de traverse",
+    "artist": "Francis Cabrel",
+    "album": "Les chemins de traverse",
+    "part1": [
+      "Francis Cabrel"
+    ],
+    "part2": [
+      "Les chemins de traverse"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/francis-cabrel-les-chemins-de-traverse-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/francis-cabrel-les-chemins-de-traverse.jpg"
+  },
+  {
+    "title": "Francky Vincent — Fruit de la passion",
+    "artist": "Francky Vincent",
+    "album": "Fruit de la passion",
+    "part1": [
+      "Francky Vincent"
+    ],
+    "part2": [
+      "Fruit de la passion"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/francky-vincent-fruit-de-la-passion-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/francky-vincent-fruit-de-la-passion.jpg"
+  },
+  {
+    "title": "Frank Ocean — Blonde",
+    "artist": "Frank Ocean",
+    "album": "Blonde",
+    "part1": [
+      "Frank Ocean"
+    ],
+    "part2": [
+      "Blonde"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/frank-ocean-blonde-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/frank-ocean-blonde.jpg"
+  },
+  {
+    "title": "Franz Ferdinand — Franz Ferdinand",
+    "artist": "Franz Ferdinand",
+    "album": "Franz Ferdinand",
+    "part1": [
+      "Franz Ferdinand"
+    ],
+    "part2": [
+      "Franz Ferdinand"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/franz-ferdinand-franz-ferdinand-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/franz-ferdinand-franz-ferdinand.jpg"
+  },
+  {
+    "title": "Françoise Hardy — La question",
+    "artist": "Françoise Hardy",
+    "album": "La question",
+    "part1": [
+      "Françoise Hardy"
+    ],
+    "part2": [
+      "La question"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/francoise-hardy-la-question-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/francoise-hardy-la-question.jpg"
+  },
+  {
+    "title": "Freeze Corleone — LMF",
+    "artist": "Freeze Corleone",
+    "album": "LMF",
+    "part1": [
+      "Freeze Corleone"
+    ],
+    "part2": [
+      "LMF"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/freeze-corleone-lmf-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/freeze-corleone-lmf.jpg"
+  },
+  {
+    "title": "Funkadelic — Maggot Brain",
+    "artist": "Funkadelic",
+    "album": "Maggot Brain",
+    "part1": [
+      "Funkadelic"
+    ],
+    "part2": [
+      "Maggot Brain"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/funkadelic-maggot-brain-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/funkadelic-maggot-brain.jpg"
+  },
+  {
+    "title": "Garou — Seul",
+    "artist": "Garou",
+    "album": "Seul",
+    "part1": [
+      "Garou"
+    ],
+    "part2": [
+      "Seul"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/garou-seul-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/garou-seul.jpg"
+  },
+  {
+    "title": "Gazo — KMT",
+    "artist": "Gazo",
+    "album": "KMT",
+    "part1": [
+      "Gazo"
+    ],
+    "part2": [
+      "KMT"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/gazo-kmt-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/gazo-kmt.jpg"
+  },
+  {
+    "title": "George Michael — Faith",
+    "artist": "George Michael",
+    "album": "Faith",
+    "part1": [
+      "George Michael"
+    ],
+    "part2": [
+      "Faith"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/george-michael-faith-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/george-michael-faith.jpg"
+  },
+  {
+    "title": "Georgio — Héra",
+    "artist": "Georgio",
+    "album": "Héra",
+    "part1": [
+      "Georgio"
+    ],
+    "part2": [
+      "Héra"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/georgio-hera-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/georgio-hera.jpg"
+  },
+  {
+    "title": "Gims — Subliminal",
+    "artist": "Gims",
+    "album": "Subliminal",
+    "part1": [
+      "Gims"
+    ],
+    "part2": [
+      "Subliminal"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/gims-subliminal-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/gims-subliminal.jpg"
+  },
+  {
+    "title": "Gorillaz — Demon Days",
+    "artist": "Gorillaz",
+    "album": "Demon Days",
+    "part1": [
+      "Gorillaz"
+    ],
+    "part2": [
+      "Demon Days"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/gorillaz-demon-days-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/gorillaz-demon-days.jpg"
+  },
+  {
+    "title": "Hamza — Sincèrement",
+    "artist": "Hamza",
+    "album": "Sincèrement",
+    "part1": [
+      "Hamza"
+    ],
+    "part2": [
+      "Sincèrement"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/hamza-sincerement-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/hamza-sincerement.jpg"
+  },
+  {
+    "title": "Hélène Ségara — Cœur de verre",
+    "artist": "Hélène Ségara",
+    "album": "Cœur de verre",
+    "part1": [
+      "Hélène Ségara"
+    ],
+    "part2": [
+      "Cœur de verre"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/helene-segara-cur-de-verre-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/helene-segara-cur-de-verre.jpg"
+  },
+  {
+    "title": "IAM — Ombre est lumière",
+    "artist": "IAM",
+    "album": "Ombre est lumière",
+    "part1": [
+      "IAM"
+    ],
+    "part2": [
+      "Ombre est lumière"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/iam-ombre-est-lumiere-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/iam-ombre-est-lumiere.jpg"
+  },
+  {
+    "title": "Indochine — Le Péril jaune",
+    "artist": "Indochine",
+    "album": "Le Péril jaune",
+    "part1": [
+      "Indochine"
+    ],
+    "part2": [
+      "Le Péril jaune"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/indochine-le-peril-jaune-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/indochine-le-peril-jaune.jpg"
+  },
+  {
+    "title": "Indochine — Paradize",
+    "artist": "Indochine",
+    "album": "Paradize",
+    "part1": [
+      "Indochine"
+    ],
+    "part2": [
+      "Paradize"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/indochine-paradize-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/indochine-paradize.jpg"
+  },
+  {
+    "title": "Iron Maiden — The Number of the Beast",
+    "artist": "Iron Maiden",
+    "album": "The Number of the Beast",
+    "part1": [
+      "Iron Maiden"
+    ],
+    "part2": [
+      "The Number of the Beast"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/iron-maiden-the-number-of-the-beast-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/iron-maiden-the-number-of-the-beast.jpg"
+  },
+  {
+    "title": "Isabelle Boulay — Mieux qu'ici-bas",
+    "artist": "Isabelle Boulay",
+    "album": "Mieux qu'ici-bas",
+    "part1": [
+      "Isabelle Boulay"
+    ],
+    "part2": [
+      "Mieux qu'ici-bas"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/isabelle-boulay-mieux-qu-ici-bas-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/isabelle-boulay-mieux-qu-ici-bas.jpg"
+  },
+  {
+    "title": "J. Cole — 2014 Forest Hills Drive",
+    "artist": "J. Cole",
+    "album": "2014 Forest Hills Drive",
+    "part1": [
+      "J. Cole"
+    ],
+    "part2": [
+      "2014 Forest Hills Drive"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/j-cole-2014-forest-hills-drive-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/j-cole-2014-forest-hills-drive.jpg"
+  },
+  {
+    "title": "Jacques Brel — Ces gens-là",
+    "artist": "Jacques Brel",
+    "album": "Ces gens-là",
+    "part1": [
+      "Jacques Brel"
+    ],
+    "part2": [
+      "Ces gens-là"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/jacques-brel-ces-gens-la-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/jacques-brel-ces-gens-la.jpg"
+  },
+  {
+    "title": "Jain — Zanaka",
+    "artist": "Jain",
+    "album": "Zanaka",
+    "part1": [
+      "Jain"
+    ],
+    "part2": [
+      "Zanaka"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/jain-zanaka-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/jain-zanaka.jpg"
+  },
+  {
+    "title": "James Brown — Sex Machine",
+    "artist": "James Brown",
+    "album": "Sex Machine",
+    "part1": [
+      "James Brown"
+    ],
+    "part2": [
+      "Sex Machine"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/james-brown-sex-machine-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/james-brown-sex-machine.jpg"
+  },
+  {
+    "title": "Jamiroquai — Emergency on Planet Earth",
+    "artist": "Jamiroquai",
+    "album": "Emergency on Planet Earth",
+    "part1": [
+      "Jamiroquai"
+    ],
+    "part2": [
+      "Emergency on Planet Earth"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/jamiroquai-emergency-on-planet-earth-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/jamiroquai-emergency-on-planet-earth.jpg"
+  },
+  {
+    "title": "Jamiroquai — Travelling Without Moving",
+    "artist": "Jamiroquai",
+    "album": "Travelling Without Moving",
+    "part1": [
+      "Jamiroquai"
+    ],
+    "part2": [
+      "Travelling Without Moving"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/jamiroquai-travelling-without-moving-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/jamiroquai-travelling-without-moving.jpg"
+  },
+  {
+    "title": "Jay-Z — The Blueprint",
+    "artist": "Jay-Z",
+    "album": "The Blueprint",
+    "part1": [
+      "Jay-Z"
+    ],
+    "part2": [
+      "The Blueprint"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/jay-z-the-blueprint-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/jay-z-the-blueprint.jpg"
+  },
+  {
+    "title": "Jean-Jacques Goldman — En passant",
+    "artist": "Jean-Jacques Goldman",
+    "album": "En passant",
+    "part1": [
+      "Jean-Jacques Goldman"
+    ],
+    "part2": [
+      "En passant"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/jean-jacques-goldman-en-passant-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/jean-jacques-goldman-en-passant.jpg"
+  },
+  {
+    "title": "Jean-Jacques Goldman — Entre gris clair et gris foncé",
+    "artist": "Jean-Jacques Goldman",
+    "album": "Entre gris clair et gris foncé",
+    "part1": [
+      "Jean-Jacques Goldman"
+    ],
+    "part2": [
+      "Entre gris clair et gris foncé"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/jean-jacques-goldman-entre-gris-clair-et-gris-fonce-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/jean-jacques-goldman-entre-gris-clair-et-gris-fonce.jpg"
+  },
+  {
+    "title": "Jean-Jacques Goldman — Positif",
+    "artist": "Jean-Jacques Goldman",
+    "album": "Positif",
+    "part1": [
+      "Jean-Jacques Goldman"
+    ],
+    "part2": [
+      "Positif"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/jean-jacques-goldman-positif-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/jean-jacques-goldman-positif.jpg"
+  },
+  {
+    "title": "Jean-Louis Aubert — Bleu blanc vert",
+    "artist": "Jean-Louis Aubert",
+    "album": "Bleu blanc vert",
+    "part1": [
+      "Jean-Louis Aubert"
+    ],
+    "part2": [
+      "Bleu blanc vert"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/jean-louis-aubert-bleu-blanc-vert-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/jean-louis-aubert-bleu-blanc-vert.jpg"
+  },
+  {
+    "title": "Jean-Michel Jarre — Oxygène",
+    "artist": "Jean-Michel Jarre",
+    "album": "Oxygène",
+    "part1": [
+      "Jean-Michel Jarre"
+    ],
+    "part2": [
+      "Oxygène"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/jean-michel-jarre-oxygene-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/jean-michel-jarre-oxygene.jpg"
+  },
+  {
+    "title": "Jenifer — Jenifer",
+    "artist": "Jenifer",
+    "album": "Jenifer",
+    "part1": [
+      "Jenifer"
+    ],
+    "part2": [
+      "Jenifer"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/jenifer-jenifer-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/jenifer-jenifer.jpg"
+  },
+  {
+    "title": "Jimi Hendrix — Are You Experienced",
+    "artist": "Jimi Hendrix",
+    "album": "Are You Experienced",
+    "part1": [
+      "Jimi Hendrix"
+    ],
+    "part2": [
+      "Are You Experienced"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/jimi-hendrix-are-you-experienced-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/jimi-hendrix-are-you-experienced.jpg"
+  },
+  {
+    "title": "Jimmy Cliff — The Harder They Come",
+    "artist": "Jimmy Cliff",
+    "album": "The Harder They Come",
+    "part1": [
+      "Jimmy Cliff"
+    ],
+    "part2": [
+      "The Harder They Come"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/jimmy-cliff-the-harder-they-come-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/jimmy-cliff-the-harder-they-come.jpg"
+  },
+  {
+    "title": "Joe Dassin — Le Jardin du Luxembourg",
+    "artist": "Joe Dassin",
+    "album": "Le Jardin du Luxembourg",
+    "part1": [
+      "Joe Dassin"
+    ],
+    "part2": [
+      "Le Jardin du Luxembourg"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/joe-dassin-le-jardin-du-luxembourg-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/joe-dassin-le-jardin-du-luxembourg.jpg"
+  },
+  {
+    "title": "Johnny Hallyday — Rock'n'Roll Attitude",
+    "artist": "Johnny Hallyday",
+    "album": "Rock'n'Roll Attitude",
+    "part1": [
+      "Johnny Hallyday"
+    ],
+    "part2": [
+      "Rock'n'Roll Attitude"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/johnny-hallyday-rock-n-roll-attitude-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/johnny-hallyday-rock-n-roll-attitude.jpg"
+  },
+  {
+    "title": "Johnny Hallyday — Sang pour sang",
+    "artist": "Johnny Hallyday",
+    "album": "Sang pour sang",
+    "part1": [
+      "Johnny Hallyday"
+    ],
+    "part2": [
+      "Sang pour sang"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/johnny-hallyday-sang-pour-sang-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/johnny-hallyday-sang-pour-sang.jpg"
+  },
+  {
+    "title": "Jok'Air — Jok'Travolta",
+    "artist": "Jok'Air",
+    "album": "Jok'Travolta",
+    "part1": [
+      "Jok'Air"
+    ],
+    "part2": [
+      "Jok'Travolta"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/jok-air-jok-travolta-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/jok-air-jok-travolta.jpg"
+  },
+  {
+    "title": "Josman — J.O.$",
+    "artist": "Josman",
+    "album": "J.O.$",
+    "part1": [
+      "Josman"
+    ],
+    "part2": [
+      "J.O.$"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/josman-j-o-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/josman-j-o.jpg"
+  },
+  {
+    "title": "Joy Division — Unknown Pleasures",
+    "artist": "Joy Division",
+    "album": "Unknown Pleasures",
+    "part1": [
+      "Joy Division"
+    ],
+    "part2": [
+      "Unknown Pleasures"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/joy-division-unknown-pleasures-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/joy-division-unknown-pleasures.jpg"
+  },
+  {
+    "title": "Jul — Dans ma paranoïa",
+    "artist": "Jul",
+    "album": "Dans ma paranoïa",
+    "part1": [
+      "Jul"
+    ],
+    "part2": [
+      "Dans ma paranoïa"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/jul-dans-ma-paranoia-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/jul-dans-ma-paranoia.jpg"
+  },
+  {
+    "title": "Jul — L'ovni",
+    "artist": "Jul",
+    "album": "L'ovni",
+    "part1": [
+      "Jul"
+    ],
+    "part2": [
+      "L'ovni"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/jul-l-ovni-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/jul-l-ovni.jpg"
+  },
+  {
+    "title": "Jul — My World",
+    "artist": "Jul",
+    "album": "My World",
+    "part1": [
+      "Jul"
+    ],
+    "part2": [
+      "My World"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/jul-my-world-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/jul-my-world.jpg"
+  },
+  {
+    "title": "Julien Clerc — Femmes, je vous aime",
+    "artist": "Julien Clerc",
+    "album": "Femmes, je vous aime",
+    "part1": [
+      "Julien Clerc"
+    ],
+    "part2": [
+      "Femmes, je vous aime"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/julien-clerc-femmes-je-vous-aime-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/julien-clerc-femmes-je-vous-aime.jpg"
+  },
+  {
+    "title": "Julien Doré — Bichon",
+    "artist": "Julien Doré",
+    "album": "Bichon",
+    "part1": [
+      "Julien Doré"
+    ],
+    "part2": [
+      "Bichon"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/julien-dore-bichon-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/julien-dore-bichon.jpg"
+  },
+  {
+    "title": "Justin Timberlake — FutureSexLoveSounds",
+    "artist": "Justin Timberlake",
+    "album": "FutureSexLoveSounds",
+    "part1": [
+      "Justin Timberlake"
+    ],
+    "part2": [
+      "FutureSexLoveSounds"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/justin-timberlake-futuresexlovesounds-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/justin-timberlake-futuresexlovesounds.jpg"
+  },
+  {
+    "title": "K. Maro — La Good Life",
+    "artist": "K. Maro",
+    "album": "La Good Life",
+    "part1": [
+      "K. Maro"
+    ],
+    "part2": [
+      "La Good Life"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/k-maro-la-good-life-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/k-maro-la-good-life.jpg"
+  },
+  {
+    "title": "Kaaris — Or noir",
+    "artist": "Kaaris",
+    "album": "Or noir",
+    "part1": [
+      "Kaaris"
+    ],
+    "part2": [
+      "Or noir"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/kaaris-or-noir-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/kaaris-or-noir.jpg"
+  },
+  {
+    "title": "Kanye West — Graduation",
+    "artist": "Kanye West",
+    "album": "Graduation",
+    "part1": [
+      "Kanye West"
+    ],
+    "part2": [
+      "Graduation"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/kanye-west-graduation-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/kanye-west-graduation.jpg"
+  },
+  {
+    "title": "Kanye West — My Beautiful Dark Twisted Fantasy",
+    "artist": "Kanye West",
+    "album": "My Beautiful Dark Twisted Fantasy",
+    "part1": [
+      "Kanye West"
+    ],
+    "part2": [
+      "My Beautiful Dark Twisted Fantasy"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/kanye-west-my-beautiful-dark-twisted-fantasy-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/kanye-west-my-beautiful-dark-twisted-fantasy.jpg"
+  },
+  {
+    "title": "Kanye West — Yeezus",
+    "artist": "Kanye West",
+    "album": "Yeezus",
+    "part1": [
+      "Kanye West"
+    ],
+    "part2": [
+      "Yeezus"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/kanye-west-yeezus-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/kanye-west-yeezus.jpg"
+  },
+  {
+    "title": "Katy Perry — Teenage Dream",
+    "artist": "Katy Perry",
+    "album": "Teenage Dream",
+    "part1": [
+      "Katy Perry"
+    ],
+    "part2": [
+      "Teenage Dream"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/katy-perry-teenage-dream-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/katy-perry-teenage-dream.jpg"
+  },
+  {
+    "title": "Kavinsky — OutRun",
+    "artist": "Kavinsky",
+    "album": "OutRun",
+    "part1": [
+      "Kavinsky"
+    ],
+    "part2": [
+      "OutRun"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/kavinsky-outrun-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/kavinsky-outrun.jpg"
+  },
+  {
+    "title": "Keblack — Premier étage",
+    "artist": "Keblack",
+    "album": "Premier étage",
+    "part1": [
+      "Keblack"
+    ],
+    "part2": [
+      "Premier étage"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/keblack-premier-etage-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/keblack-premier-etage.jpg"
+  },
+  {
+    "title": "Kendji Girac — Kendji",
+    "artist": "Kendji Girac",
+    "album": "Kendji",
+    "part1": [
+      "Kendji Girac"
+    ],
+    "part2": [
+      "Kendji"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/kendji-girac-kendji-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/kendji-girac-kendji.jpg"
+  },
+  {
+    "title": "Kendrick Lamar — DAMN",
+    "artist": "Kendrick Lamar",
+    "album": "DAMN",
+    "part1": [
+      "Kendrick Lamar"
+    ],
+    "part2": [
+      "DAMN"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/kendrick-lamar-damn-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/kendrick-lamar-damn.jpg"
+  },
+  {
+    "title": "Kendrick Lamar — good kid, m.A.A.d city",
+    "artist": "Kendrick Lamar",
+    "album": "good kid, m.A.A.d city",
+    "part1": [
+      "Kendrick Lamar"
+    ],
+    "part2": [
+      "good kid, m.A.A.d city"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/kendrick-lamar-good-kid-m-a-a-d-city-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/kendrick-lamar-good-kid-m-a-a-d-city.jpg"
+  },
+  {
+    "title": "Kendrick Lamar — To Pimp a Butterfly",
+    "artist": "Kendrick Lamar",
+    "album": "To Pimp a Butterfly",
+    "part1": [
+      "Kendrick Lamar"
+    ],
+    "part2": [
+      "To Pimp a Butterfly"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/kendrick-lamar-to-pimp-a-butterfly-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/kendrick-lamar-to-pimp-a-butterfly.jpg"
+  },
+  {
+    "title": "Keny Arkana — Entre ciment et belle étoile",
+    "artist": "Keny Arkana",
+    "album": "Entre ciment et belle étoile",
+    "part1": [
+      "Keny Arkana"
+    ],
+    "part2": [
+      "Entre ciment et belle étoile"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/keny-arkana-entre-ciment-et-belle-etoile-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/keny-arkana-entre-ciment-et-belle-etoile.jpg"
+  },
+  {
+    "title": "Kery James — Réel",
+    "artist": "Kery James",
+    "album": "Réel",
+    "part1": [
+      "Kery James"
+    ],
+    "part2": [
+      "Réel"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/kery-james-reel-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/kery-james-reel.jpg"
+  },
+  {
+    "title": "Kid Cudi — Man on the Moon The End of Day",
+    "artist": "Kid Cudi",
+    "album": "Man on the Moon The End of Day",
+    "part1": [
+      "Kid Cudi"
+    ],
+    "part2": [
+      "Man on the Moon The End of Day"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/kid-cudi-man-on-the-moon-the-end-of-day-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/kid-cudi-man-on-the-moon-the-end-of-day.jpg"
+  },
+  {
+    "title": "Kool & The Gang — Celebrate!",
+    "artist": "Kool & The Gang",
+    "album": "Celebrate!",
+    "part1": [
+      "Kool & The Gang"
+    ],
+    "part2": [
+      "Celebrate!"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/kool-the-gang-celebrate-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/kool-the-gang-celebrate.jpg"
+  },
+  {
+    "title": "Korn — Follow the Leader",
+    "artist": "Korn",
+    "album": "Follow the Leader",
+    "part1": [
+      "Korn"
+    ],
+    "part2": [
+      "Follow the Leader"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/korn-follow-the-leader-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/korn-follow-the-leader.jpg"
+  },
+  {
+    "title": "Kyo — Le chemin",
+    "artist": "Kyo",
+    "album": "Le chemin",
+    "part1": [
+      "Kyo"
+    ],
+    "part2": [
+      "Le chemin"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/kyo-le-chemin-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/kyo-le-chemin.jpg"
+  },
+  {
+    "title": "L'Impératrice — Tako Tsubo",
+    "artist": "L'Impératrice",
+    "album": "Tako Tsubo",
+    "part1": [
+      "L'Impératrice"
+    ],
+    "part2": [
+      "Tako Tsubo"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/l-imperatrice-tako-tsubo-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/l-imperatrice-tako-tsubo.jpg"
+  },
+  {
+    "title": "La Fouine — Mes repères",
+    "artist": "La Fouine",
+    "album": "Mes repères",
+    "part1": [
+      "La Fouine"
+    ],
+    "part2": [
+      "Mes repères"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/la-fouine-mes-reperes-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/la-fouine-mes-reperes.jpg"
+  },
+  {
+    "title": "Lady Gaga — The Fame",
+    "artist": "Lady Gaga",
+    "album": "The Fame",
+    "part1": [
+      "Lady Gaga"
+    ],
+    "part2": [
+      "The Fame"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/lady-gaga-the-fame-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/lady-gaga-the-fame.jpg"
+  },
+  {
+    "title": "Lana Del Rey — Norman Fucking Rockwell!",
+    "artist": "Lana Del Rey",
+    "album": "Norman Fucking Rockwell!",
+    "part1": [
+      "Lana Del Rey"
+    ],
+    "part2": [
+      "Norman Fucking Rockwell!"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/lana-del-rey-norman-fucking-rockwell-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/lana-del-rey-norman-fucking-rockwell.jpg"
+  },
+  {
+    "title": "Lara Fabian — Pure",
+    "artist": "Lara Fabian",
+    "album": "Pure",
+    "part1": [
+      "Lara Fabian"
+    ],
+    "part2": [
+      "Pure"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/lara-fabian-pure-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/lara-fabian-pure.jpg"
+  },
+  {
+    "title": "Laurent Voulzy — Avril",
+    "artist": "Laurent Voulzy",
+    "album": "Avril",
+    "part1": [
+      "Laurent Voulzy"
+    ],
+    "part2": [
+      "Avril"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/laurent-voulzy-avril-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/laurent-voulzy-avril.jpg"
+  },
+  {
+    "title": "Laurent Voulzy — Rockollection",
+    "artist": "Laurent Voulzy",
+    "album": "Rockollection",
+    "part1": [
+      "Laurent Voulzy"
+    ],
+    "part2": [
+      "Rockollection"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/laurent-voulzy-rockollection-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/laurent-voulzy-rockollection.jpg"
+  },
+  {
+    "title": "Laylow — Trinity",
+    "artist": "Laylow",
+    "album": "Trinity",
+    "part1": [
+      "Laylow"
+    ],
+    "part2": [
+      "Trinity"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/laylow-trinity-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/laylow-trinity.jpg"
+  },
+  {
+    "title": "LCD Soundsystem — Sound of Silver",
+    "artist": "LCD Soundsystem",
+    "album": "Sound of Silver",
+    "part1": [
+      "LCD Soundsystem"
+    ],
+    "part2": [
+      "Sound of Silver"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/lcd-soundsystem-sound-of-silver-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/lcd-soundsystem-sound-of-silver.jpg"
+  },
+  {
+    "title": "Led Zeppelin — Led Zeppelin IV",
+    "artist": "Led Zeppelin",
+    "album": "Led Zeppelin IV",
+    "part1": [
+      "Led Zeppelin"
+    ],
+    "part2": [
+      "Led Zeppelin IV"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/led-zeppelin-led-zeppelin-iv-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/led-zeppelin-led-zeppelin-iv.jpg"
+  },
+  {
+    "title": "Led Zeppelin — Physical Graffiti",
+    "artist": "Led Zeppelin",
+    "album": "Physical Graffiti",
+    "part1": [
+      "Led Zeppelin"
+    ],
+    "part2": [
+      "Physical Graffiti"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/led-zeppelin-physical-graffiti-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/led-zeppelin-physical-graffiti.jpg"
+  },
+  {
+    "title": "Leonard Cohen — Songs of Leonard Cohen",
+    "artist": "Leonard Cohen",
+    "album": "Songs of Leonard Cohen",
+    "part1": [
+      "Leonard Cohen"
+    ],
+    "part2": [
+      "Songs of Leonard Cohen"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/leonard-cohen-songs-of-leonard-cohen-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/leonard-cohen-songs-of-leonard-cohen.jpg"
+  },
+  {
+    "title": "Les Cowboys Fringants — La Grand-Messe",
+    "artist": "Les Cowboys Fringants",
+    "album": "La Grand-Messe",
+    "part1": [
+      "Les Cowboys Fringants"
+    ],
+    "part2": [
+      "La Grand-Messe"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/les-cowboys-fringants-la-grand-messe-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/les-cowboys-fringants-la-grand-messe.jpg"
+  },
+  {
+    "title": "Les Fatals Picards — Pamplemousse mécanique",
+    "artist": "Les Fatals Picards",
+    "album": "Pamplemousse mécanique",
+    "part1": [
+      "Les Fatals Picards"
+    ],
+    "part2": [
+      "Pamplemousse mécanique"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/les-fatals-picards-pamplemousse-mecanique-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/les-fatals-picards-pamplemousse-mecanique.jpg"
+  },
+  {
+    "title": "Les Rita Mitsouko — Marc & Robert",
+    "artist": "Les Rita Mitsouko",
+    "album": "Marc & Robert",
+    "part1": [
+      "Les Rita Mitsouko"
+    ],
+    "part2": [
+      "Marc & Robert"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/les-rita-mitsouko-marc-robert-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/les-rita-mitsouko-marc-robert.jpg"
+  },
+  {
+    "title": "Les Rita Mitsouko — The No Comprendo",
+    "artist": "Les Rita Mitsouko",
+    "album": "The No Comprendo",
+    "part1": [
+      "Les Rita Mitsouko"
+    ],
+    "part2": [
+      "The No Comprendo"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/les-rita-mitsouko-the-no-comprendo-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/les-rita-mitsouko-the-no-comprendo.jpg"
+  },
+  {
+    "title": "Limp Bizkit — Chocolate Starfish and the Hot Dog Flavored Water",
+    "artist": "Limp Bizkit",
+    "album": "Chocolate Starfish and the Hot Dog Flavored Water",
+    "part1": [
+      "Limp Bizkit"
+    ],
+    "part2": [
+      "Chocolate Starfish and the Hot Dog Flavored Water"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/limp-bizkit-chocolate-starfish-and-the-hot-dog-flavored-water-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/limp-bizkit-chocolate-starfish-and-the-hot-dog-flavored-water.jpg"
+  },
+  {
+    "title": "Linkin Park — Meteora",
+    "artist": "Linkin Park",
+    "album": "Meteora",
+    "part1": [
+      "Linkin Park"
+    ],
+    "part2": [
+      "Meteora"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/linkin-park-meteora-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/linkin-park-meteora.jpg"
+  },
+  {
+    "title": "Lomepal — Jeannine",
+    "artist": "Lomepal",
+    "album": "Jeannine",
+    "part1": [
+      "Lomepal"
+    ],
+    "part2": [
+      "Jeannine"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/lomepal-jeannine-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/lomepal-jeannine.jpg"
+  },
+  {
+    "title": "Lorde — Melodrama",
+    "artist": "Lorde",
+    "album": "Melodrama",
+    "part1": [
+      "Lorde"
+    ],
+    "part2": [
+      "Melodrama"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/lorde-melodrama-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/lorde-melodrama.jpg"
+  },
+  {
+    "title": "Lorie — Près de toi",
+    "artist": "Lorie",
+    "album": "Près de toi",
+    "part1": [
+      "Lorie"
+    ],
+    "part2": [
+      "Près de toi"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/lorie-pres-de-toi-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/lorie-pres-de-toi.jpg"
+  },
+  {
+    "title": "Louane — Chambre 12",
+    "artist": "Louane",
+    "album": "Chambre 12",
+    "part1": [
+      "Louane"
+    ],
+    "part2": [
+      "Chambre 12"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/louane-chambre-12-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/louane-chambre-12.jpg"
+  },
+  {
+    "title": "Louise Attaque — Comme on a dit",
+    "artist": "Louise Attaque",
+    "album": "Comme on a dit",
+    "part1": [
+      "Louise Attaque"
+    ],
+    "part2": [
+      "Comme on a dit"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/louise-attaque-comme-on-a-dit-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/louise-attaque-comme-on-a-dit.jpg"
+  },
+  {
+    "title": "Louise Attaque — Louise Attaque",
+    "artist": "Louise Attaque",
+    "album": "Louise Attaque",
+    "part1": [
+      "Louise Attaque"
+    ],
+    "part2": [
+      "Louise Attaque"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/louise-attaque-louise-attaque-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/louise-attaque-louise-attaque.jpg"
+  },
+  {
+    "title": "Lunatic — Mauvais œil",
+    "artist": "Lunatic",
+    "album": "Mauvais œil",
+    "part1": [
+      "Lunatic"
+    ],
+    "part2": [
+      "Mauvais œil"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/lunatic-mauvais-il-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/lunatic-mauvais-il.jpg"
+  },
+  {
+    "title": "M. Pokora — Player",
+    "artist": "M. Pokora",
+    "album": "Player",
+    "part1": [
+      "M. Pokora"
+    ],
+    "part2": [
+      "Player"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/m-pokora-player-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/m-pokora-player.jpg"
+  },
+  {
+    "title": "Mac DeMarco — Salad Days",
+    "artist": "Mac DeMarco",
+    "album": "Salad Days",
+    "part1": [
+      "Mac DeMarco"
+    ],
+    "part2": [
+      "Salad Days"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/mac-demarco-salad-days-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/mac-demarco-salad-days.jpg"
+  },
+  {
+    "title": "Mac Miller — Swimming",
+    "artist": "Mac Miller",
+    "album": "Swimming",
+    "part1": [
+      "Mac Miller"
+    ],
+    "part2": [
+      "Swimming"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/mac-miller-swimming-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/mac-miller-swimming.jpg"
+  },
+  {
+    "title": "Madonna — Like a Virgin",
+    "artist": "Madonna",
+    "album": "Like a Virgin",
+    "part1": [
+      "Madonna"
+    ],
+    "part2": [
+      "Like a Virgin"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/madonna-like-a-virgin-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/madonna-like-a-virgin.jpg"
+  },
+  {
+    "title": "Magic System — Cessa kié la vérité",
+    "artist": "Magic System",
+    "album": "Cessa kié la vérité",
+    "part1": [
+      "Magic System"
+    ],
+    "part2": [
+      "Cessa kié la vérité"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/magic-system-cessa-kie-la-verite-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/magic-system-cessa-kie-la-verite.jpg"
+  },
+  {
+    "title": "Major Lazer — Peace Is the Mission",
+    "artist": "Major Lazer",
+    "album": "Peace Is the Mission",
+    "part1": [
+      "Major Lazer"
+    ],
+    "part2": [
+      "Peace Is the Mission"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/major-lazer-peace-is-the-mission-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/major-lazer-peace-is-the-mission.jpg"
+  },
+  {
+    "title": "Manau — Panique celtique",
+    "artist": "Manau",
+    "album": "Panique celtique",
+    "part1": [
+      "Manau"
+    ],
+    "part2": [
+      "Panique celtique"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/manau-panique-celtique-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/manau-panique-celtique.jpg"
+  },
+  {
+    "title": "Manu Chao — Clandestino",
+    "artist": "Manu Chao",
+    "album": "Clandestino",
+    "part1": [
+      "Manu Chao"
+    ],
+    "part2": [
+      "Clandestino"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/manu-chao-clandestino-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/manu-chao-clandestino.jpg"
+  },
+  {
+    "title": "Manu Chao — Próxima Estación Esperanza",
+    "artist": "Manu Chao",
+    "album": "Próxima Estación Esperanza",
+    "part1": [
+      "Manu Chao"
+    ],
+    "part2": [
+      "Próxima Estación Esperanza"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/manu-chao-proxima-estacion-esperanza-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/manu-chao-proxima-estacion-esperanza.jpg"
+  },
+  {
+    "title": "Mariah Carey — Daydream",
+    "artist": "Mariah Carey",
+    "album": "Daydream",
+    "part1": [
+      "Mariah Carey"
+    ],
+    "part2": [
+      "Daydream"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/mariah-carey-daydream-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/mariah-carey-daydream.jpg"
+  },
+  {
+    "title": "Maroon 5 — Songs About Jane",
+    "artist": "Maroon 5",
+    "album": "Songs About Jane",
+    "part1": [
+      "Maroon 5"
+    ],
+    "part2": [
+      "Songs About Jane"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/maroon-5-songs-about-jane-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/maroon-5-songs-about-jane.jpg"
+  },
+  {
+    "title": "Massive Attack — Mezzanine",
+    "artist": "Massive Attack",
+    "album": "Mezzanine",
+    "part1": [
+      "Massive Attack"
+    ],
+    "part2": [
+      "Mezzanine"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/massive-attack-mezzanine-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/massive-attack-mezzanine.jpg"
+  },
+  {
+    "title": "MC Solaar — Prose combat",
+    "artist": "MC Solaar",
+    "album": "Prose combat",
+    "part1": [
+      "MC Solaar"
+    ],
+    "part2": [
+      "Prose combat"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/mc-solaar-prose-combat-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/mc-solaar-prose-combat.jpg"
+  },
+  {
+    "title": "MC Solaar — Qui sème le vent récolte le tempo",
+    "artist": "MC Solaar",
+    "album": "Qui sème le vent récolte le tempo",
+    "part1": [
+      "MC Solaar"
+    ],
+    "part2": [
+      "Qui sème le vent récolte le tempo"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/mc-solaar-qui-seme-le-vent-recolte-le-tempo-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/mc-solaar-qui-seme-le-vent-recolte-le-tempo.jpg"
+  },
+  {
+    "title": "Megan Thee Stallion — Good News",
+    "artist": "Megan Thee Stallion",
+    "album": "Good News",
+    "part1": [
+      "Megan Thee Stallion"
+    ],
+    "part2": [
+      "Good News"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/megan-thee-stallion-good-news-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/megan-thee-stallion-good-news.jpg"
+  },
+  {
+    "title": "Michael Jackson — Bad",
+    "artist": "Michael Jackson",
+    "album": "Bad",
+    "part1": [
+      "Michael Jackson"
+    ],
+    "part2": [
+      "Bad"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/michael-jackson-bad-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/michael-jackson-bad.jpg"
+  },
+  {
+    "title": "Michael Jackson — Dangerous",
+    "artist": "Michael Jackson",
+    "album": "Dangerous",
+    "part1": [
+      "Michael Jackson"
+    ],
+    "part2": [
+      "Dangerous"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/michael-jackson-dangerous-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/michael-jackson-dangerous.jpg"
+  },
+  {
+    "title": "Michael Jackson — Thriller",
+    "artist": "Michael Jackson",
+    "album": "Thriller",
+    "part1": [
+      "Michael Jackson"
+    ],
+    "part2": [
+      "Thriller"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/michael-jackson-thriller-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/michael-jackson-thriller.jpg"
+  },
+  {
+    "title": "Michel Berger — Beauséjour",
+    "artist": "Michel Berger",
+    "album": "Beauséjour",
+    "part1": [
+      "Michel Berger"
+    ],
+    "part2": [
+      "Beauséjour"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/michel-berger-beausejour-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/michel-berger-beausejour.jpg"
+  },
+  {
+    "title": "Michel Berger — Différences",
+    "artist": "Michel Berger",
+    "album": "Différences",
+    "part1": [
+      "Michel Berger"
+    ],
+    "part2": [
+      "Différences"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/michel-berger-differences-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/michel-berger-differences.jpg"
+  },
+  {
+    "title": "Michel Delpech — Le chasseur",
+    "artist": "Michel Delpech",
+    "album": "Le chasseur",
+    "part1": [
+      "Michel Delpech"
+    ],
+    "part2": [
+      "Le chasseur"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/michel-delpech-le-chasseur-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/michel-delpech-le-chasseur.jpg"
+  },
+  {
+    "title": "Michel Polnareff — Love Me, Please Love Me",
+    "artist": "Michel Polnareff",
+    "album": "Love Me, Please Love Me",
+    "part1": [
+      "Michel Polnareff"
+    ],
+    "part2": [
+      "Love Me, Please Love Me"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/michel-polnareff-love-me-please-love-me-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/michel-polnareff-love-me-please-love-me.jpg"
+  },
+  {
+    "title": "Mickey 3D — Tu vas pas mourir de rire",
+    "artist": "Mickey 3D",
+    "album": "Tu vas pas mourir de rire",
+    "part1": [
+      "Mickey 3D"
+    ],
+    "part2": [
+      "Tu vas pas mourir de rire"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/mickey-3d-tu-vas-pas-mourir-de-rire-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/mickey-3d-tu-vas-pas-mourir-de-rire.jpg"
+  },
+  {
+    "title": "Miley Cyrus — Bangerz",
+    "artist": "Miley Cyrus",
+    "album": "Bangerz",
+    "part1": [
+      "Miley Cyrus"
+    ],
+    "part2": [
+      "Bangerz"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/miley-cyrus-bangerz-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/miley-cyrus-bangerz.jpg"
+  },
+  {
+    "title": "Moby — Play",
+    "artist": "Moby",
+    "album": "Play",
+    "part1": [
+      "Moby"
+    ],
+    "part2": [
+      "Play"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/moby-play-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/moby-play.jpg"
+  },
+  {
+    "title": "Muse — Black Holes and Revelations",
+    "artist": "Muse",
+    "album": "Black Holes and Revelations",
+    "part1": [
+      "Muse"
+    ],
+    "part2": [
+      "Black Holes and Revelations"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/muse-black-holes-and-revelations-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/muse-black-holes-and-revelations.jpg"
+  },
+  {
+    "title": "Mylène Farmer — Ainsi soit je",
+    "artist": "Mylène Farmer",
+    "album": "Ainsi soit je",
+    "part1": [
+      "Mylène Farmer"
+    ],
+    "part2": [
+      "Ainsi soit je"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/mylene-farmer-ainsi-soit-je-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/mylene-farmer-ainsi-soit-je.jpg"
+  },
+  {
+    "title": "Mylène Farmer — L'Autre",
+    "artist": "Mylène Farmer",
+    "album": "L'Autre",
+    "part1": [
+      "Mylène Farmer"
+    ],
+    "part2": [
+      "L'Autre"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/mylene-farmer-l-autre-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/mylene-farmer-l-autre.jpg"
+  },
+  {
+    "title": "Nas — Illmatic",
+    "artist": "Nas",
+    "album": "Illmatic",
+    "part1": [
+      "Nas"
+    ],
+    "part2": [
+      "Illmatic"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/nas-illmatic-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/nas-illmatic.jpg"
+  },
+  {
+    "title": "Nekfeu — Cyborg",
+    "artist": "Nekfeu",
+    "album": "Cyborg",
+    "part1": [
+      "Nekfeu"
+    ],
+    "part2": [
+      "Cyborg"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/nekfeu-cyborg-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/nekfeu-cyborg.jpg"
+  },
+  {
+    "title": "Nekfeu — Feu",
+    "artist": "Nekfeu",
+    "album": "Feu",
+    "part1": [
+      "Nekfeu"
+    ],
+    "part2": [
+      "Feu"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/nekfeu-feu-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/nekfeu-feu.jpg"
+  },
+  {
+    "title": "Nekfeu — Les étoiles vagabondes",
+    "artist": "Nekfeu",
+    "album": "Les étoiles vagabondes",
+    "part1": [
+      "Nekfeu"
+    ],
+    "part2": [
+      "Les étoiles vagabondes"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/nekfeu-les-etoiles-vagabondes-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/nekfeu-les-etoiles-vagabondes.jpg"
+  },
+  {
+    "title": "New Order — Power, Corruption & Lies",
+    "artist": "New Order",
+    "album": "Power, Corruption & Lies",
+    "part1": [
+      "New Order"
+    ],
+    "part2": [
+      "Power, Corruption & Lies"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/new-order-power-corruption-lies-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/new-order-power-corruption-lies.jpg"
+  },
+  {
+    "title": "Nicki Minaj — Pink Friday",
+    "artist": "Nicki Minaj",
+    "album": "Pink Friday",
+    "part1": [
+      "Nicki Minaj"
+    ],
+    "part2": [
+      "Pink Friday"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/nicki-minaj-pink-friday-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/nicki-minaj-pink-friday.jpg"
+  },
+  {
+    "title": "Nina Simone — I Put a Spell on You",
+    "artist": "Nina Simone",
+    "album": "I Put a Spell on You",
+    "part1": [
+      "Nina Simone"
+    ],
+    "part2": [
+      "I Put a Spell on You"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/nina-simone-i-put-a-spell-on-you-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/nina-simone-i-put-a-spell-on-you.jpg"
+  },
+  {
+    "title": "Ninho — Comme prévu",
+    "artist": "Ninho",
+    "album": "Comme prévu",
+    "part1": [
+      "Ninho"
+    ],
+    "part2": [
+      "Comme prévu"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/ninho-comme-prevu-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/ninho-comme-prevu.jpg"
+  },
+  {
+    "title": "Ninho — Jefe",
+    "artist": "Ninho",
+    "album": "Jefe",
+    "part1": [
+      "Ninho"
+    ],
+    "part2": [
+      "Jefe"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/ninho-jefe-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/ninho-jefe.jpg"
+  },
+  {
+    "title": "Nirvana — In Utero",
+    "artist": "Nirvana",
+    "album": "In Utero",
+    "part1": [
+      "Nirvana"
+    ],
+    "part2": [
+      "In Utero"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/nirvana-in-utero-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/nirvana-in-utero.jpg"
+  },
+  {
+    "title": "Nirvana — Nevermind",
+    "artist": "Nirvana",
+    "album": "Nevermind",
+    "part1": [
+      "Nirvana"
+    ],
+    "part2": [
+      "Nevermind"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/nirvana-nevermind-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/nirvana-nevermind.jpg"
+  },
+  {
+    "title": "Niska — Commando",
+    "artist": "Niska",
+    "album": "Commando",
+    "part1": [
+      "Niska"
+    ],
+    "part2": [
+      "Commando"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/niska-commando-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/niska-commando.jpg"
+  },
+  {
+    "title": "Niska — Zifukoro",
+    "artist": "Niska",
+    "album": "Zifukoro",
+    "part1": [
+      "Niska"
+    ],
+    "part2": [
+      "Zifukoro"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/niska-zifukoro-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/niska-zifukoro.jpg"
+  },
+  {
+    "title": "Nolwenn Leroy — Bretonne",
+    "artist": "Nolwenn Leroy",
+    "album": "Bretonne",
+    "part1": [
+      "Nolwenn Leroy"
+    ],
+    "part2": [
+      "Bretonne"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/nolwenn-leroy-bretonne-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/nolwenn-leroy-bretonne.jpg"
+  },
+  {
+    "title": "Oasis — (What's the Story) Morning Glory",
+    "artist": "Oasis",
+    "album": "(What's the Story) Morning Glory",
+    "part1": [
+      "Oasis"
+    ],
+    "part2": [
+      "(What's the Story) Morning Glory"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/oasis-what-s-the-story-morning-glory-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/oasis-what-s-the-story-morning-glory.jpg"
+  },
+  {
+    "title": "Oliver Tree — Alone in a Crowd",
+    "artist": "Oliver Tree",
+    "album": "Alone in a Crowd",
+    "part1": [
+      "Oliver Tree"
+    ],
+    "part2": [
+      "Alone in a Crowd"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/oliver-tree-alone-in-a-crowd-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/oliver-tree-alone-in-a-crowd.jpg"
+  },
+  {
+    "title": "Oliver Tree — Ugly Is Beautiful",
+    "artist": "Oliver Tree",
+    "album": "Ugly Is Beautiful",
+    "part1": [
+      "Oliver Tree"
+    ],
+    "part2": [
+      "Ugly Is Beautiful"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/oliver-tree-ugly-is-beautiful-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/oliver-tree-ugly-is-beautiful.jpg"
+  },
+  {
+    "title": "Orelsan — La fête est finie",
+    "artist": "Orelsan",
+    "album": "La fête est finie",
+    "part1": [
+      "Orelsan"
+    ],
+    "part2": [
+      "La fête est finie"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/orelsan-la-fete-est-finie-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/orelsan-la-fete-est-finie.jpg"
+  },
+  {
+    "title": "Orelsan — Le chant des sirènes",
+    "artist": "Orelsan",
+    "album": "Le chant des sirènes",
+    "part1": [
+      "Orelsan"
+    ],
+    "part2": [
+      "Le chant des sirènes"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/orelsan-le-chant-des-sirenes-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/orelsan-le-chant-des-sirenes.jpg"
+  },
+  {
+    "title": "Orelsan — Perdu d'avance",
+    "artist": "Orelsan",
+    "album": "Perdu d'avance",
+    "part1": [
+      "Orelsan"
+    ],
+    "part2": [
+      "Perdu d'avance"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/orelsan-perdu-d-avance-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/orelsan-perdu-d-avance.jpg"
+  },
+  {
+    "title": "OutKast — Stankonia",
+    "artist": "OutKast",
+    "album": "Stankonia",
+    "part1": [
+      "OutKast"
+    ],
+    "part2": [
+      "Stankonia"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/outkast-stankonia-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/outkast-stankonia.jpg"
+  },
+  {
+    "title": "Oxmo Puccino — Opéra Puccino",
+    "artist": "Oxmo Puccino",
+    "album": "Opéra Puccino",
+    "part1": [
+      "Oxmo Puccino"
+    ],
+    "part2": [
+      "Opéra Puccino"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/oxmo-puccino-opera-puccino-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/oxmo-puccino-opera-puccino.jpg"
+  },
+  {
+    "title": "Panic! at the Disco — A Fever You Can't Sweat Out",
+    "artist": "Panic! at the Disco",
+    "album": "A Fever You Can't Sweat Out",
+    "part1": [
+      "Panic! at the Disco"
+    ],
+    "part2": [
+      "A Fever You Can't Sweat Out"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/panic-at-the-disco-a-fever-you-can-t-sweat-out-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/panic-at-the-disco-a-fever-you-can-t-sweat-out.jpg"
+  },
+  {
+    "title": "Paradis — Recto Verso",
+    "artist": "Paradis",
+    "album": "Recto Verso",
+    "part1": [
+      "Paradis"
+    ],
+    "part2": [
+      "Recto Verso"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/paradis-recto-verso-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/paradis-recto-verso.jpg"
+  },
+  {
+    "title": "Pascal Obispo — Superflu",
+    "artist": "Pascal Obispo",
+    "album": "Superflu",
+    "part1": [
+      "Pascal Obispo"
+    ],
+    "part2": [
+      "Superflu"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/pascal-obispo-superflu-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/pascal-obispo-superflu.jpg"
+  },
+  {
+    "title": "Passi — Les tentations",
+    "artist": "Passi",
+    "album": "Les tentations",
+    "part1": [
+      "Passi"
+    ],
+    "part2": [
+      "Les tentations"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/passi-les-tentations-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/passi-les-tentations.jpg"
+  },
+  {
+    "title": "Patrick Fiori — Prends-moi",
+    "artist": "Patrick Fiori",
+    "album": "Prends-moi",
+    "part1": [
+      "Patrick Fiori"
+    ],
+    "part2": [
+      "Prends-moi"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/patrick-fiori-prends-moi-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/patrick-fiori-prends-moi.jpg"
+  },
+  {
+    "title": "Phil Collins — No Jacket Required",
+    "artist": "Phil Collins",
+    "album": "No Jacket Required",
+    "part1": [
+      "Phil Collins"
+    ],
+    "part2": [
+      "No Jacket Required"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/phil-collins-no-jacket-required-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/phil-collins-no-jacket-required.jpg"
+  },
+  {
+    "title": "Phoenix — Wolfgang Amadeus Phoenix",
+    "artist": "Phoenix",
+    "album": "Wolfgang Amadeus Phoenix",
+    "part1": [
+      "Phoenix"
+    ],
+    "part2": [
+      "Wolfgang Amadeus Phoenix"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/phoenix-wolfgang-amadeus-phoenix-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/phoenix-wolfgang-amadeus-phoenix.jpg"
+  },
+  {
+    "title": "Pink Floyd — Animals",
+    "artist": "Pink Floyd",
+    "album": "Animals",
+    "part1": [
+      "Pink Floyd"
+    ],
+    "part2": [
+      "Animals"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/pink-floyd-animals-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/pink-floyd-animals.jpg"
+  },
+  {
+    "title": "Pink Floyd — Meddle",
+    "artist": "Pink Floyd",
+    "album": "Meddle",
+    "part1": [
+      "Pink Floyd"
+    ],
+    "part2": [
+      "Meddle"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/pink-floyd-meddle-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/pink-floyd-meddle.jpg"
+  },
+  {
+    "title": "Pink Floyd — The Dark Side of the Moon",
+    "artist": "Pink Floyd",
+    "album": "The Dark Side of the Moon",
+    "part1": [
+      "Pink Floyd"
+    ],
+    "part2": [
+      "The Dark Side of the Moon"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/pink-floyd-the-dark-side-of-the-moon-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/pink-floyd-the-dark-side-of-the-moon.jpg"
+  },
+  {
+    "title": "PLK — Enna",
+    "artist": "PLK",
+    "album": "Enna",
+    "part1": [
+      "PLK"
+    ],
+    "part2": [
+      "Enna"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/plk-enna-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/plk-enna.jpg"
+  },
+  {
+    "title": "PNL — Dans la légende",
+    "artist": "PNL",
+    "album": "Dans la légende",
+    "part1": [
+      "PNL"
+    ],
+    "part2": [
+      "Dans la légende"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/pnl-dans-la-legende-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/pnl-dans-la-legende.jpg"
+  },
+  {
+    "title": "PNL — Deux frères",
+    "artist": "PNL",
+    "album": "Deux frères",
+    "part1": [
+      "PNL"
+    ],
+    "part2": [
+      "Deux frères"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/pnl-deux-freres-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/pnl-deux-freres.jpg"
+  },
+  {
+    "title": "PNL — Le monde Chico",
+    "artist": "PNL",
+    "album": "Le monde Chico",
+    "part1": [
+      "PNL"
+    ],
+    "part2": [
+      "Le monde Chico"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/pnl-le-monde-chico-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/pnl-le-monde-chico.jpg"
+  },
+  {
+    "title": "PNL — Que la famille",
+    "artist": "PNL",
+    "album": "Que la famille",
+    "part1": [
+      "PNL"
+    ],
+    "part2": [
+      "Que la famille"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/pnl-que-la-famille-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/pnl-que-la-famille.jpg"
+  },
+  {
+    "title": "Pomme — Les failles",
+    "artist": "Pomme",
+    "album": "Les failles",
+    "part1": [
+      "Pomme"
+    ],
+    "part2": [
+      "Les failles"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/pomme-les-failles-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/pomme-les-failles.jpg"
+  },
+  {
+    "title": "Prince — Purple Rain",
+    "artist": "Prince",
+    "album": "Purple Rain",
+    "part1": [
+      "Prince"
+    ],
+    "part2": [
+      "Purple Rain"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/prince-purple-rain-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/prince-purple-rain.jpg"
+  },
+  {
+    "title": "Queen — A Night at the Opera",
+    "artist": "Queen",
+    "album": "A Night at the Opera",
+    "part1": [
+      "Queen"
+    ],
+    "part2": [
+      "A Night at the Opera"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/queen-a-night-at-the-opera-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/queen-a-night-at-the-opera.jpg"
+  },
+  {
+    "title": "Queen — Innuendo",
+    "artist": "Queen",
+    "album": "Innuendo",
+    "part1": [
+      "Queen"
+    ],
+    "part2": [
+      "Innuendo"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/queen-innuendo-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/queen-innuendo.jpg"
+  },
+  {
+    "title": "Queen — News of the World",
+    "artist": "Queen",
+    "album": "News of the World",
+    "part1": [
+      "Queen"
+    ],
+    "part2": [
+      "News of the World"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/queen-news-of-the-world-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/queen-news-of-the-world.jpg"
+  },
+  {
+    "title": "Queen — The Game",
+    "artist": "Queen",
+    "album": "The Game",
+    "part1": [
+      "Queen"
+    ],
+    "part2": [
+      "The Game"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/queen-the-game-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/queen-the-game.jpg"
+  },
+  {
+    "title": "Radiohead — Kid A",
+    "artist": "Radiohead",
+    "album": "Kid A",
+    "part1": [
+      "Radiohead"
+    ],
+    "part2": [
+      "Kid A"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/radiohead-kid-a-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/radiohead-kid-a.jpg"
+  },
+  {
+    "title": "Radiohead — OK Computer",
+    "artist": "Radiohead",
+    "album": "OK Computer",
+    "part1": [
+      "Radiohead"
+    ],
+    "part2": [
+      "OK Computer"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/radiohead-ok-computer-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/radiohead-ok-computer.jpg"
+  },
+  {
+    "title": "Rage Against the Machine — Rage Against the Machine",
+    "artist": "Rage Against the Machine",
+    "album": "Rage Against the Machine",
+    "part1": [
+      "Rage Against the Machine"
+    ],
+    "part2": [
+      "Rage Against the Machine"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/rage-against-the-machine-rage-against-the-machine-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/rage-against-the-machine-rage-against-the-machine.jpg"
+  },
+  {
+    "title": "Red Hot Chili Peppers — By the Way",
+    "artist": "Red Hot Chili Peppers",
+    "album": "By the Way",
+    "part1": [
+      "Red Hot Chili Peppers"
+    ],
+    "part2": [
+      "By the Way"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/red-hot-chili-peppers-by-the-way-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/red-hot-chili-peppers-by-the-way.jpg"
+  },
+  {
+    "title": "Red Hot Chili Peppers — Californication",
+    "artist": "Red Hot Chili Peppers",
+    "album": "Californication",
+    "part1": [
+      "Red Hot Chili Peppers"
+    ],
+    "part2": [
+      "Californication"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/red-hot-chili-peppers-californication-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/red-hot-chili-peppers-californication.jpg"
+  },
+  {
+    "title": "Renaud — Marche à l'ombre",
+    "artist": "Renaud",
+    "album": "Marche à l'ombre",
+    "part1": [
+      "Renaud"
+    ],
+    "part2": [
+      "Marche à l'ombre"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/renaud-marche-a-l-ombre-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/renaud-marche-a-l-ombre.jpg"
+  },
+  {
+    "title": "Rihanna — ANTI",
+    "artist": "Rihanna",
+    "album": "ANTI",
+    "part1": [
+      "Rihanna"
+    ],
+    "part2": [
+      "ANTI"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/rihanna-anti-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/rihanna-anti.jpg"
+  },
+  {
+    "title": "Rohff — La cuenta",
+    "artist": "Rohff",
+    "album": "La cuenta",
+    "part1": [
+      "Rohff"
+    ],
+    "part2": [
+      "La cuenta"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/rohff-la-cuenta-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/rohff-la-cuenta.jpg"
+  },
+  {
+    "title": "Rohff — La fierté des nôtres",
+    "artist": "Rohff",
+    "album": "La fierté des nôtres",
+    "part1": [
+      "Rohff"
+    ],
+    "part2": [
+      "La fierté des nôtres"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/rohff-la-fierte-des-notres-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/rohff-la-fierte-des-notres.jpg"
+  },
+  {
+    "title": "Rosalía — El Mal Querer",
+    "artist": "Rosalía",
+    "album": "El Mal Querer",
+    "part1": [
+      "Rosalía"
+    ],
+    "part2": [
+      "El Mal Querer"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/rosalia-el-mal-querer-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/rosalia-el-mal-querer.jpg"
+  },
+  {
+    "title": "Sade — Diamond Life",
+    "artist": "Sade",
+    "album": "Diamond Life",
+    "part1": [
+      "Sade"
+    ],
+    "part2": [
+      "Diamond Life"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/sade-diamond-life-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/sade-diamond-life.jpg"
+  },
+  {
+    "title": "Santana — Abraxas",
+    "artist": "Santana",
+    "album": "Abraxas",
+    "part1": [
+      "Santana"
+    ],
+    "part2": [
+      "Abraxas"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/santana-abraxas-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/santana-abraxas.jpg"
+  },
+  {
+    "title": "SCH — A7",
+    "artist": "SCH",
+    "album": "A7",
+    "part1": [
+      "SCH"
+    ],
+    "part2": [
+      "A7"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/sch-a7-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/sch-a7.jpg"
+  },
+  {
+    "title": "SCH — Deo Favente",
+    "artist": "SCH",
+    "album": "Deo Favente",
+    "part1": [
+      "SCH"
+    ],
+    "part2": [
+      "Deo Favente"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/sch-deo-favente-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/sch-deo-favente.jpg"
+  },
+  {
+    "title": "SCH — JVLIVS",
+    "artist": "SCH",
+    "album": "JVLIVS",
+    "part1": [
+      "SCH"
+    ],
+    "part2": [
+      "JVLIVS"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/sch-jvlivs-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/sch-jvlivs.jpg"
+  },
+  {
+    "title": "Scorpions — Love at First Sting",
+    "artist": "Scorpions",
+    "album": "Love at First Sting",
+    "part1": [
+      "Scorpions"
+    ],
+    "part2": [
+      "Love at First Sting"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/scorpions-love-at-first-sting-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/scorpions-love-at-first-sting.jpg"
+  },
+  {
+    "title": "SDM — OCHO",
+    "artist": "SDM",
+    "album": "OCHO",
+    "part1": [
+      "SDM"
+    ],
+    "part2": [
+      "OCHO"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/sdm-ocho-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/sdm-ocho.jpg"
+  },
+  {
+    "title": "Seal — Seal",
+    "artist": "Seal",
+    "album": "Seal",
+    "part1": [
+      "Seal"
+    ],
+    "part2": [
+      "Seal"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/seal-seal-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/seal-seal.jpg"
+  },
+  {
+    "title": "Sean Paul — Dutty Rock",
+    "artist": "Sean Paul",
+    "album": "Dutty Rock",
+    "part1": [
+      "Sean Paul"
+    ],
+    "part2": [
+      "Dutty Rock"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/sean-paul-dutty-rock-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/sean-paul-dutty-rock.jpg"
+  },
+  {
+    "title": "Serge Gainsbourg — Aux armes et cætera",
+    "artist": "Serge Gainsbourg",
+    "album": "Aux armes et cætera",
+    "part1": [
+      "Serge Gainsbourg"
+    ],
+    "part2": [
+      "Aux armes et cætera"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/serge-gainsbourg-aux-armes-et-ctera-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/serge-gainsbourg-aux-armes-et-ctera.jpg"
+  },
+  {
+    "title": "Serge Gainsbourg — Love on the Beat",
+    "artist": "Serge Gainsbourg",
+    "album": "Love on the Beat",
+    "part1": [
+      "Serge Gainsbourg"
+    ],
+    "part2": [
+      "Love on the Beat"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/serge-gainsbourg-love-on-the-beat-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/serge-gainsbourg-love-on-the-beat.jpg"
+  },
+  {
+    "title": "Serge Gainsbourg — Rock Around the Bunker",
+    "artist": "Serge Gainsbourg",
+    "album": "Rock Around the Bunker",
+    "part1": [
+      "Serge Gainsbourg"
+    ],
+    "part2": [
+      "Rock Around the Bunker"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/serge-gainsbourg-rock-around-the-bunker-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/serge-gainsbourg-rock-around-the-bunker.jpg"
+  },
+  {
+    "title": "Serge Gainsbourg — You're Under Arrest",
+    "artist": "Serge Gainsbourg",
+    "album": "You're Under Arrest",
+    "part1": [
+      "Serge Gainsbourg"
+    ],
+    "part2": [
+      "You're Under Arrest"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/serge-gainsbourg-you-re-under-arrest-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/serge-gainsbourg-you-re-under-arrest.jpg"
+  },
+  {
+    "title": "Sexion d'Assaut — L'Apogée",
+    "artist": "Sexion d'Assaut",
+    "album": "L'Apogée",
+    "part1": [
+      "Sexion d'Assaut"
+    ],
+    "part2": [
+      "L'Apogée"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/sexion-d-assaut-l-apogee-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/sexion-d-assaut-l-apogee.jpg"
+  },
+  {
+    "title": "Shakira — Laundry Service",
+    "artist": "Shakira",
+    "album": "Laundry Service",
+    "part1": [
+      "Shakira"
+    ],
+    "part2": [
+      "Laundry Service"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/shakira-laundry-service-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/shakira-laundry-service.jpg"
+  },
+  {
+    "title": "Shakira — Oral Fixation, Vol. 2",
+    "artist": "Shakira",
+    "album": "Oral Fixation, Vol. 2",
+    "part1": [
+      "Shakira"
+    ],
+    "part2": [
+      "Oral Fixation, Vol. 2"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/shakira-oral-fixation-vol-2-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/shakira-oral-fixation-vol-2.jpg"
+  },
+  {
+    "title": "Sinik — Sang froid",
+    "artist": "Sinik",
+    "album": "Sang froid",
+    "part1": [
+      "Sinik"
+    ],
+    "part2": [
+      "Sang froid"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/sinik-sang-froid-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/sinik-sang-froid.jpg"
+  },
+  {
+    "title": "Slipknot — Iowa",
+    "artist": "Slipknot",
+    "album": "Iowa",
+    "part1": [
+      "Slipknot"
+    ],
+    "part2": [
+      "Iowa"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/slipknot-iowa-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/slipknot-iowa.jpg"
+  },
+  {
+    "title": "Sniper — Gravé dans la roche",
+    "artist": "Sniper",
+    "album": "Gravé dans la roche",
+    "part1": [
+      "Sniper"
+    ],
+    "part2": [
+      "Gravé dans la roche"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/sniper-grave-dans-la-roche-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/sniper-grave-dans-la-roche.jpg"
+  },
+  {
+    "title": "Soolking — Vintage",
+    "artist": "Soolking",
+    "album": "Vintage",
+    "part1": [
+      "Soolking"
+    ],
+    "part2": [
+      "Vintage"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/soolking-vintage-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/soolking-vintage.jpg"
+  },
+  {
+    "title": "Soprano — La colombe",
+    "artist": "Soprano",
+    "album": "La colombe",
+    "part1": [
+      "Soprano"
+    ],
+    "part2": [
+      "La colombe"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/soprano-la-colombe-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/soprano-la-colombe.jpg"
+  },
+  {
+    "title": "Stevie Wonder — Innervisions",
+    "artist": "Stevie Wonder",
+    "album": "Innervisions",
+    "part1": [
+      "Stevie Wonder"
+    ],
+    "part2": [
+      "Innervisions"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/stevie-wonder-innervisions-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/stevie-wonder-innervisions.jpg"
+  },
+  {
+    "title": "Stevie Wonder — Songs in the Key of Life",
+    "artist": "Stevie Wonder",
+    "album": "Songs in the Key of Life",
+    "part1": [
+      "Stevie Wonder"
+    ],
+    "part2": [
+      "Songs in the Key of Life"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/stevie-wonder-songs-in-the-key-of-life-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/stevie-wonder-songs-in-the-key-of-life.jpg"
+  },
+  {
+    "title": "Sting — Ten Summoner's Tales",
+    "artist": "Sting",
+    "album": "Ten Summoner's Tales",
+    "part1": [
+      "Sting"
+    ],
+    "part2": [
+      "Ten Summoner's Tales"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/sting-ten-summoner-s-tales-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/sting-ten-summoner-s-tales.jpg"
+  },
+  {
+    "title": "Stromae — Racine carrée",
+    "artist": "Stromae",
+    "album": "Racine carrée",
+    "part1": [
+      "Stromae"
+    ],
+    "part2": [
+      "Racine carrée"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/stromae-racine-carree-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/stromae-racine-carree.jpg"
+  },
+  {
+    "title": "Stupeflip — Stup Religion",
+    "artist": "Stupeflip",
+    "album": "Stup Religion",
+    "part1": [
+      "Stupeflip"
+    ],
+    "part2": [
+      "Stup Religion"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/stupeflip-stup-religion-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/stupeflip-stup-religion.jpg"
+  },
+  {
+    "title": "Supertramp — Breakfast in America",
+    "artist": "Supertramp",
+    "album": "Breakfast in America",
+    "part1": [
+      "Supertramp"
+    ],
+    "part2": [
+      "Breakfast in America"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/supertramp-breakfast-in-america-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/supertramp-breakfast-in-america.jpg"
+  },
+  {
+    "title": "Suprême NTM — Suprême NTM",
+    "artist": "Suprême NTM",
+    "album": "Suprême NTM",
+    "part1": [
+      "Suprême NTM"
+    ],
+    "part2": [
+      "Suprême NTM"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/supreme-ntm-supreme-ntm-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/supreme-ntm-supreme-ntm.jpg"
+  },
+  {
+    "title": "SZA — SOS",
+    "artist": "SZA",
+    "album": "SOS",
+    "part1": [
+      "SZA"
+    ],
+    "part2": [
+      "SOS"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/sza-sos-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/sza-sos.jpg"
+  },
+  {
+    "title": "Tame Impala — Currents",
+    "artist": "Tame Impala",
+    "album": "Currents",
+    "part1": [
+      "Tame Impala"
+    ],
+    "part2": [
+      "Currents"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/tame-impala-currents-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/tame-impala-currents.jpg"
+  },
+  {
+    "title": "Tame Impala — Lonerism",
+    "artist": "Tame Impala",
+    "album": "Lonerism",
+    "part1": [
+      "Tame Impala"
+    ],
+    "part2": [
+      "Lonerism"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/tame-impala-lonerism-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/tame-impala-lonerism.jpg"
+  },
+  {
+    "title": "Taylor Swift — Folklore",
+    "artist": "Taylor Swift",
+    "album": "Folklore",
+    "part1": [
+      "Taylor Swift"
+    ],
+    "part2": [
+      "Folklore"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/taylor-swift-folklore-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/taylor-swift-folklore.jpg"
+  },
+  {
+    "title": "The Beatles — Abbey Road",
+    "artist": "The Beatles",
+    "album": "Abbey Road",
+    "part1": [
+      "The Beatles"
+    ],
+    "part2": [
+      "Abbey Road"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/the-beatles-abbey-road-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/the-beatles-abbey-road.jpg"
+  },
+  {
+    "title": "The Beatles — Rubber Soul",
+    "artist": "The Beatles",
+    "album": "Rubber Soul",
+    "part1": [
+      "The Beatles"
+    ],
+    "part2": [
+      "Rubber Soul"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/the-beatles-rubber-soul-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/the-beatles-rubber-soul.jpg"
+  },
+  {
+    "title": "The Beatles — Sgt. Pepper's Lonely Hearts Club Band",
+    "artist": "The Beatles",
+    "album": "Sgt. Pepper's Lonely Hearts Club Band",
+    "part1": [
+      "The Beatles"
+    ],
+    "part2": [
+      "Sgt. Pepper's Lonely Hearts Club Band"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/the-beatles-sgt-pepper-s-lonely-hearts-club-band-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/the-beatles-sgt-pepper-s-lonely-hearts-club-band.jpg"
+  },
+  {
+    "title": "The Chemical Brothers — Surrender",
+    "artist": "The Chemical Brothers",
+    "album": "Surrender",
+    "part1": [
+      "The Chemical Brothers"
+    ],
+    "part2": [
+      "Surrender"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/the-chemical-brothers-surrender-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/the-chemical-brothers-surrender.jpg"
+  },
+  {
+    "title": "The Clash — London Calling",
+    "artist": "The Clash",
+    "album": "London Calling",
+    "part1": [
+      "The Clash"
+    ],
+    "part2": [
+      "London Calling"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/the-clash-london-calling-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/the-clash-london-calling.jpg"
+  },
+  {
+    "title": "The Cure — Disintegration",
+    "artist": "The Cure",
+    "album": "Disintegration",
+    "part1": [
+      "The Cure"
+    ],
+    "part2": [
+      "Disintegration"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/the-cure-disintegration-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/the-cure-disintegration.jpg"
+  },
+  {
+    "title": "The Doors — The Doors",
+    "artist": "The Doors",
+    "album": "The Doors",
+    "part1": [
+      "The Doors"
+    ],
+    "part2": [
+      "The Doors"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/the-doors-the-doors-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/the-doors-the-doors.jpg"
+  },
+  {
+    "title": "The Notorious B.I.G — Ready to Die",
+    "artist": "The Notorious B.I.G",
+    "album": "Ready to Die",
+    "part1": [
+      "The Notorious B.I.G"
+    ],
+    "part2": [
+      "Ready to Die"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/the-notorious-b-i-g-ready-to-die-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/the-notorious-b-i-g-ready-to-die.jpg"
+  },
+  {
+    "title": "The Rolling Stones — Let It Bleed",
+    "artist": "The Rolling Stones",
+    "album": "Let It Bleed",
+    "part1": [
+      "The Rolling Stones"
+    ],
+    "part2": [
+      "Let It Bleed"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/the-rolling-stones-let-it-bleed-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/the-rolling-stones-let-it-bleed.jpg"
+  },
+  {
+    "title": "The Weeknd — After Hours",
+    "artist": "The Weeknd",
+    "album": "After Hours",
+    "part1": [
+      "The Weeknd"
+    ],
+    "part2": [
+      "After Hours"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/the-weeknd-after-hours-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/the-weeknd-after-hours.jpg"
+  },
+  {
+    "title": "The Weeknd — Starboy",
+    "artist": "The Weeknd",
+    "album": "Starboy",
+    "part1": [
+      "The Weeknd"
+    ],
+    "part2": [
+      "Starboy"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/the-weeknd-starboy-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/the-weeknd-starboy.jpg"
+  },
+  {
+    "title": "The White Stripes — Elephant",
+    "artist": "The White Stripes",
+    "album": "Elephant",
+    "part1": [
+      "The White Stripes"
+    ],
+    "part2": [
+      "Elephant"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/the-white-stripes-elephant-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/the-white-stripes-elephant.jpg"
+  },
+  {
+    "title": "Tiakola — Mélo",
+    "artist": "Tiakola",
+    "album": "Mélo",
+    "part1": [
+      "Tiakola"
+    ],
+    "part2": [
+      "Mélo"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/tiakola-melo-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/tiakola-melo.jpg"
+  },
+  {
+    "title": "Travis Scott — Astroworld",
+    "artist": "Travis Scott",
+    "album": "Astroworld",
+    "part1": [
+      "Travis Scott"
+    ],
+    "part2": [
+      "Astroworld"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/travis-scott-astroworld-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/travis-scott-astroworld.jpg"
+  },
+  {
+    "title": "Tribal King — Welcome",
+    "artist": "Tribal King",
+    "album": "Welcome",
+    "part1": [
+      "Tribal King"
+    ],
+    "part2": [
+      "Welcome"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/tribal-king-welcome-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/tribal-king-welcome.jpg"
+  },
+  {
+    "title": "Tyler, the Creator — Flower Boy",
+    "artist": "Tyler, the Creator",
+    "album": "Flower Boy",
+    "part1": [
+      "Tyler, the Creator"
+    ],
+    "part2": [
+      "Flower Boy"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/tyler-the-creator-flower-boy-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/tyler-the-creator-flower-boy.jpg"
+  },
+  {
+    "title": "Tyler, The Creator — IGOR",
+    "artist": "Tyler, The Creator",
+    "album": "IGOR",
+    "part1": [
+      "Tyler, The Creator"
+    ],
+    "part2": [
+      "IGOR"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/tyler-the-creator-igor-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/tyler-the-creator-igor.jpg"
+  },
+  {
+    "title": "UB40 — Labour of Love",
+    "artist": "UB40",
+    "album": "Labour of Love",
+    "part1": [
+      "UB40"
+    ],
+    "part2": [
+      "Labour of Love"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/ub40-labour-of-love-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/ub40-labour-of-love.jpg"
+  },
+  {
+    "title": "Underworld — Beaucoup Fish",
+    "artist": "Underworld",
+    "album": "Beaucoup Fish",
+    "part1": [
+      "Underworld"
+    ],
+    "part2": [
+      "Beaucoup Fish"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/underworld-beaucoup-fish-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/underworld-beaucoup-fish.jpg"
+  },
+  {
+    "title": "Vianney — Idées blanches",
+    "artist": "Vianney",
+    "album": "Idées blanches",
+    "part1": [
+      "Vianney"
+    ],
+    "part2": [
+      "Idées blanches"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/vianney-idees-blanches-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/vianney-idees-blanches.jpg"
+  },
+  {
+    "title": "Véronique Sanson — Amoureuse",
+    "artist": "Véronique Sanson",
+    "album": "Amoureuse",
+    "part1": [
+      "Véronique Sanson"
+    ],
+    "part2": [
+      "Amoureuse"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/veronique-sanson-amoureuse-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/veronique-sanson-amoureuse.jpg"
+  },
+  {
+    "title": "Werenoi — Carré",
+    "artist": "Werenoi",
+    "album": "Carré",
+    "part1": [
+      "Werenoi"
+    ],
+    "part2": [
+      "Carré"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/werenoi-carre-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/werenoi-carre.jpg"
+  },
+  {
+    "title": "Youssoupha — Noir D",
+    "artist": "Youssoupha",
+    "album": "Noir D",
+    "part1": [
+      "Youssoupha"
+    ],
+    "part2": [
+      "Noir D"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/youssoupha-noir-d-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/youssoupha-noir-d.jpg"
+  },
+  {
+    "title": "Zaz — Zaz",
+    "artist": "Zaz",
+    "album": "Zaz",
+    "part1": [
+      "Zaz"
+    ],
+    "part2": [
+      "Zaz"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/zaz-zaz-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/zaz-zaz.jpg"
+  },
+  {
+    "title": "Zazie — Zen",
+    "artist": "Zazie",
+    "album": "Zen",
+    "part1": [
+      "Zazie"
+    ],
+    "part2": [
+      "Zen"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/zazie-zen-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/zazie-zen.jpg"
+  },
+  {
+    "title": "Ziak — Akimbo",
+    "artist": "Ziak",
+    "album": "Akimbo",
+    "part1": [
+      "Ziak"
+    ],
+    "part2": [
+      "Akimbo"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/ziak-akimbo-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/ziak-akimbo.jpg"
+  },
+  {
+    "title": "Zouk Machine — Maldòn",
+    "artist": "Zouk Machine",
+    "album": "Maldòn",
+    "part1": [
+      "Zouk Machine"
+    ],
+    "part2": [
+      "Maldòn"
+    ],
+    "reject1": [],
+    "reject2": [],
+    "cleanSrc": "album-images/ALBUMS_NETTOYES/zouk-machine-maldon-clean.jpg",
+    "fullSrc": "album-images/ORIGINAUX/zouk-machine-maldon.jpg"
+  }
+];
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+let queue,currentIdx,totalScore,roundScores,revealPct=0,revealInterval=null,currentPts=100,answered=false;
+let revealStartedAt=0;
+const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=25;
+let albumStage=1, stagePoints=[0,0], stageMissed=[false,false];
+const SESSION_SIZE = 10;
+
+function showScorePopup(text, variant, sublabel){
+  const el=document.getElementById('scorePopup');
+  el.classList.remove('show');
+  el.style.animationDuration='';
+  void el.offsetWidth;
+  el.innerHTML = sublabel ? (text+'<div class="score-popup-sub">'+sublabel+'</div>') : text;
+  if(variant==='streak'){
+    el.style.color='#ff6a3d';
+    el.style.textShadow='0 0 30px rgba(255,106,61,0.8), 0 3px 10px rgba(0,0,0,0.9)';
+    el.style.fontSize='clamp(4.5rem, 22vw, 11rem)';
+  } else if(variant==='streak-heaven'){
+    el.style.color='#fffbe8';
+    el.style.textShadow='0 0 40px rgba(255,245,200,0.95), 0 0 90px rgba(255,215,120,0.65)';
+    el.style.fontSize='clamp(4.5rem, 22vw, 11rem)';
+    el.style.animationDuration='3.8s';
+  } else {
+    el.style.color='';
+    el.style.textShadow='';
+    el.style.fontSize='';
+  }
+  el.classList.add('show');
+}
+
+// Série de bonnes réponses consécutives
+let streak = 0;
+const STREAK_BONUSES = {3:220, 6:440, 10:2000};
+
+// ── Indicateur de série, collé au cadre de l'affiche ──
+function updateStreakIndicator(){
+  const el=document.getElementById('streakMini');
+  const countEl=document.getElementById('streakMiniCount');
+  if(streak>0){
+    countEl.textContent=streak;
+    el.style.display='flex';
+    el.classList.add('show');
+    el.classList.remove('pulse');
+    void el.offsetWidth;
+    el.classList.add('pulse');
+  } else {
+    el.classList.remove('show');
+    setTimeout(()=>{ if(streak===0) el.style.display='none'; }, 300);
+  }
+}
+
+// ── Sons de palier de série ──
+function playGong(){
+  const t=AC.currentTime;
+  const master=AC.createGain(); master.gain.value=0.35; master.connect(effectsMaster);
+  [112,175,233,311,389].forEach((f,i)=>{
+    const osc=AC.createOscillator(); osc.type='sine'; osc.frequency.value=f*(1+Math.random()*0.01);
+    const g=AC.createGain();
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(0.5/(i+1), t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, t+2.4-i*0.15);
+    osc.connect(g); g.connect(master);
+    osc.start(t); osc.stop(t+2.5);
+  });
+  const nBuf=AC.createBuffer(1,Math.floor(AC.sampleRate*0.08),AC.sampleRate);
+  const nd=nBuf.getChannelData(0);
+  for(let i=0;i<nd.length;i++) nd[i]=(Math.random()*2-1)*Math.pow(1-i/nd.length,2);
+  const noise=AC.createBufferSource(); noise.buffer=nBuf;
+  const bp=AC.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=900; bp.Q.value=0.8;
+  const ng=AC.createGain(); ng.gain.value=0.4;
+  noise.connect(bp); bp.connect(ng); ng.connect(master);
+  noise.start(t);
+}
+function playStreakSynth(){
+  const t=AC.currentTime;
+  const osc=AC.createOscillator(); osc.type='sawtooth'; osc.frequency.setValueAtTime(392,t);
+  const filter=AC.createBiquadFilter(); filter.type='lowpass'; filter.frequency.setValueAtTime(300,t);
+  filter.frequency.linearRampToValueAtTime(2200,t+0.15);
+  filter.frequency.exponentialRampToValueAtTime(400,t+0.8);
+  const g=AC.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.3,t+0.03); g.gain.exponentialRampToValueAtTime(0.001,t+0.9);
+  osc.connect(filter); filter.connect(g); g.connect(effectsMaster);
+  osc.start(t); osc.stop(t+0.95);
+}
+function playChoir(){
+  const t=AC.currentTime;
+  const master=AC.createGain(); master.gain.value=0; master.connect(effectsMaster);
+  master.gain.setValueAtTime(0,t);
+  master.gain.linearRampToValueAtTime(0.18,t+0.8);
+  master.gain.setValueAtTime(0.18,t+2.6);
+  master.gain.linearRampToValueAtTime(0,t+4.2);
+  [523.25,659.25,783.99,987.77].forEach((f,i)=>{
+    const osc=AC.createOscillator(); osc.type='triangle'; osc.frequency.setValueAtTime(f,t);
+    const lfo=AC.createOscillator(); lfo.frequency.value=4+i*0.3;
+    const lfoGain=AC.createGain(); lfoGain.gain.value=2.5;
+    lfo.connect(lfoGain); lfoGain.connect(osc.frequency);
+    lfo.start(t); lfo.stop(t+4.4);
+    const g=AC.createGain(); g.gain.value=0.5/(i+1);
+    osc.connect(g); g.connect(master);
+    osc.start(t); osc.stop(t+4.4);
+  });
+}
+
+// ── Effets visuels sobres de célébration ──
+function spawnGlow(container, color, delay){
+  const el=document.createElement('div');
+  el.className='streak-glow';
+  el.style.setProperty('--glow-color', color);
+  el.style.animationDelay=(delay||0)+'s';
+  container.appendChild(el);
+  setTimeout(()=>el.remove(), ((delay||0)+1.1)*1000);
+}
+function spawnRing(container, color, delay){
+  const el=document.createElement('div');
+  el.className='streak-ring';
+  el.style.setProperty('--ring-color', color);
+  el.style.animationDelay=(delay||0)+'s';
+  container.appendChild(el);
+  setTimeout(()=>el.remove(), ((delay||0)+1)*1000);
+}
+function spawnHeavenWash(container){
+  const el=document.createElement('div');
+  el.className='streak-heaven-wash';
+  container.appendChild(el);
+  setTimeout(()=>el.remove(), 4000);
+}
+
+function triggerStreakCelebration(tier, bonus){
+  const fx=document.getElementById('streakFX');
+  if(tier===3){
+    showScorePopup('+'+bonus,'streak','3/3');
+    playGong();
+    spawnGlow(fx,'rgba(255,106,61,0.35)',0);
+  } else if(tier===6){
+    showScorePopup('+'+bonus,'streak','6/6');
+    playStreakSynth();
+    spawnGlow(fx,'rgba(255,106,61,0.4)',0);
+    spawnRing(fx,'#ff6a3d',0.05);
+  } else if(tier===10){
+    showScorePopup('+'+bonus,'streak-heaven','10/10');
+    playChoir();
+    spawnHeavenWash(fx);
+  }
+}
+
+function handleStreakSuccess(){
+  streak++;
+  const streakAtThisAnswer = streak; // figé immédiatement, insensible aux réponses suivantes
+  updateStreakIndicator();
+  const bonus = STREAK_BONUSES[streakAtThisAnswer];
+  if(bonus){
+    totalScore+=bonus;
+    document.getElementById('headerScore').textContent=totalScore;
+    setTimeout(()=>{ triggerStreakCelebration(streakAtThisAnswer, bonus); }, 650);
+  }
+}
+function handleStreakBreak(){ streak=0; updateStreakIndicator(); }
+
+// File persistante : chaque film passe avant d'être proposé une deuxième fois.
+const FILM_QUEUE_KEY = 'albumRevealQueueV1';
+let globalQueue = [];
+try {
+  const saved = JSON.parse(localStorage.getItem(FILM_QUEUE_KEY));
+  if(Array.isArray(saved) && saved.every(i => Number.isInteger(i) && i >= 0 && i < FILMS.length)
+     && new Set(saved).size === saved.length){
+    globalQueue = saved;
+  }
+} catch(e) { /* Navigation privée ou stockage indisponible : file en mémoire. */ }
+
+function getNextSession(){
+  const session = [];
+  while(session.length < SESSION_SIZE){
+    if(globalQueue.length === 0){
+      globalQueue = shuffle(FILMS.map((_,i)=>i));
+      // À la frontière de deux cycles, éviter un doublon dans la même partie.
+      if(session.length){
+        const already = new Set(session);
+        globalQueue = globalQueue.filter(i=>!already.has(i)).concat(globalQueue.filter(i=>already.has(i)));
+      }
+    }
+    const needed = SESSION_SIZE - session.length;
+    session.push(...globalQueue.splice(0,needed));
+  }
+  try { localStorage.setItem(FILM_QUEUE_KEY,JSON.stringify(globalQueue)); } catch(e) {}
+  return session.map(i=>FILMS[i]);
+}
+
+function initProgressSegments(){
+  const wrap=document.getElementById('progressBarWrap');
+  wrap.innerHTML='';
+  for(let i=0;i<SESSION_SIZE;i++){
+    const seg=document.createElement('div');
+    seg.className='progress-seg';
+    seg.id='progressSeg'+i;
+    wrap.appendChild(seg);
+  }
+}
+function markProgressSegment(index, correct){
+  const seg=document.getElementById('progressSeg'+index);
+  if(seg) seg.classList.add(correct?'pg-correct':'pg-missed');
+}
+
+function startGame(){
+  // Le champ de code secret n'est pas un mot de passe de connexion pendant le jeu.
+  const gameSecretField = document.getElementById('leaderboardSecret');
+  gameSecretField.type = 'text';
+  gameSecretField.disabled = true;
+  document.body.classList.remove('start-scroll');
+  document.getElementById('screenStart').classList.remove('active');
+  document.getElementById('gameArea').style.display='flex';
+  queue = getNextSession();
+  currentIdx=0; totalScore=0; roundScores=[]; streak=0; leaderboardScoreSubmitted=false; updateStreakIndicator();
+  initProgressSegments();
+  resetGameAudio();
+  document.getElementById('gameAudioControls').style.display='flex';
+  startForest();
+  loadFilm();
+}
+
+function loadFilm(){
+  albumStage=1; stagePoints=[0,0]; stageMissed=[false,false];
+  loadAlbumStage();
+}
+function loadAlbumStage(){
+  clearInterval(revealInterval); revealInterval=null;
+  answered=false; revealPct=0; revealStartedAt=0; currentPts=MAX_PTS;
+  const album=queue[currentIdx];
+  const imgC=document.getElementById('posterImgClean');
+  const imgF=document.getElementById('posterImgFull');
+  imgC.onload=null; imgC.onerror=null; imgF.onload=null; imgF.onerror=null;
+  imgC.className='poster-img hide'; imgF.className='poster-img hide';
+  document.getElementById('filmTitle').style.display='none';
+  document.getElementById('filmTitle').textContent='';
+  const container=document.getElementById('posterContainer');
+  container.className='poster-container';
+  const canvas=document.getElementById('revealCanvas');
+  canvas.width=container.offsetWidth; canvas.height=container.offsetHeight;
+  const ctx=canvas.getContext('2d'); ctx.fillStyle='#000'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  const inp=document.getElementById('answerInput');
+  inp.value=''; inp.className=''; inp.disabled=false;
+  inp.placeholder=albumStage===1?'Nom de l’artiste…':'Titre de l’album…';
+  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('skipBtn').disabled=false;
+  document.getElementById('validateAnswerBtn').disabled=false;
+  document.getElementById('roundLabel').textContent=`ALBUM ${currentIdx+1} / ${queue.length} — ${albumStage===1?'ARTISTE':'TITRE'}`;
+  const src=albumStage===1?album.cleanSrc:album.fullSrc;
+  const target=albumStage===1?imgC:imgF;
+  target.src=src;
+  let started=false;
+  function onReady(){
+    if(started || answered) return; started=true;
+    target.className='poster-img ready';
+    drawMask(0); startReveal(); inp.focus();
+  }
+  target.onload=onReady;
+  target.onerror=()=>{
+    if(started || answered) return;
+    started=true;
+    document.getElementById('feedback').textContent='IMAGE INTROUVABLE — PASSER';
+    document.getElementById('feedback').className='feedback ko';
+    document.getElementById('skipBtn').disabled=false;
+    drawMask(0);
+  };
+  if(target.complete && target.naturalWidth>0) onReady();
+}
+function drawMask(pct){
+  const canvas=document.getElementById('revealCanvas');
+  const container=document.getElementById('posterContainer');
+  canvas.width=container.offsetWidth; canvas.height=container.offsetHeight;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#000'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  const cx=canvas.width/2, cy=canvas.height/2;
+  const frac=0.08+(1-0.08)*(pct/100);
+  ctx.clearRect(cx-canvas.width*frac/2, cy-canvas.height*frac/2, canvas.width*frac, canvas.height*frac);
+  const pi=Math.round(pct);
+  document.getElementById('revealPct').textContent=pi+'% révélé';
+  document.getElementById('timerFill').style.width=pct+'%';
+  document.getElementById('timerLabel').textContent=pi+'%';
+  document.getElementById('timerFill').classList.toggle('urgent',pct>70);
+  currentPts=Math.max(0,Math.round(MAX_PTS*(1-pct/100)));
+  const badge=document.getElementById('ptsBadge');
+  badge.textContent=currentPts+' pts';
+  badge.className='pts-badge'+(currentPts<30?' low':'');
+}
+
+// Le temps est mesuré sur une horloge réelle : suspendre JavaScript ne suspend pas le score.
+function syncRevealWithClock(){
+  if(answered || !revealStartedAt) return false;
+  const elapsed=Math.max(0,Date.now()-revealStartedAt);
+  revealPct=Math.min(100,(elapsed/TICK_MS)*REVEAL_STEP);
+  drawMask(revealPct);
+  document.getElementById('headerScore').textContent=totalScore;
+  if(revealPct>=100){
+    finishExpiredFilm();
+    return true;
+  }
+  return false;
+}
+
+function finishExpiredFilm(){
+  if(answered) return;
+  clearInterval(revealInterval); answered=true;
+  stageMissed[albumStage-1]=true;
+  playWrong();
+  revealStageAnswer();
+  setTimeout(advanceAlbumStage,1500);
+}
+function startReveal(){
+  if(revealInterval) clearInterval(revealInterval);
+  revealStartedAt=Date.now();
+  revealInterval=setInterval(()=>{
+    if(!answered) syncRevealWithClock();
+  },TICK_MS);
+}
+
+function revealStageAnswer(){
+  const canvas=document.getElementById('revealCanvas');
+  canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+  const album=queue[currentIdx];
+  const answer=albumStage===1?album.artist:album.album;
+  const label=document.getElementById('filmTitle');
+  label.textContent=albumStage===1?'ARTISTE : '+answer:'ALBUM : '+answer;
+  label.style.display='block';
+  document.getElementById('answerInput').disabled=true;
+  document.getElementById('skipBtn').disabled=true;
+  document.getElementById('validateAnswerBtn').disabled=true;
+}
+function advanceAlbumStage(){
+  if(albumStage===1){ albumStage=2; loadAlbumStage(); }
+  else {
+    const success=stagePoints[0]>0 && stagePoints[1]>0;
+    if(success) handleStreakSuccess(); else handleStreakBreak();
+    markProgressSegment(currentIdx,success);
+    roundScores.push({title:queue[currentIdx].title,pts:stagePoints[0]+stagePoints[1],missed:!success});
+    nextFilm();
+  }
+}
+function validateCurrentAnswer(){
+  const inp=document.getElementById('answerInput');
+  if(inp.disabled || answered) return;
+  inp.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+}
+function isAlbumAnswerValid(input, accepted, rejected){
+  const n=canonicalNumbers(input);
+  if(!n) return false;
+  if(rejected.some(x=>canonicalNumbers(x)===n)) return false;
+  if(accepted.some(x=>canonicalNumbers(x)===n)) return 'exact';
+  for(const alias of accepted){
+    const b=canonicalNumbers(alias);
+    if(!b) continue;
+    const numsA=n.match(/\b\d+\b/g)||[], numsB=b.match(/\b\d+\b/g)||[];
+    if(numsA.join(',')!==numsB.join(',')) continue;
+    if(levenshtein(n,b)<= (b.length<=5?1:b.length<=10?2:3)) return 'fuzzy';
+  }
+  return false;
+}
+document.getElementById('answerInput').addEventListener('keydown',function(e){
+  if(e.key!=='Enter' || answered || this.disabled) return;
+  if(syncRevealWithClock()) return;
+  AC.resume();
+  const album=queue[currentIdx];
+  const accepted=albumStage===1?album.part1:album.part2;
+  const rejected=albumStage===1?album.reject1:album.reject2;
+  const match=isAlbumAnswerValid(this.value,accepted,rejected);
+  if(match) triggerCorrect(album,this,match==='fuzzy'); else triggerWrong(this);
+});
+function triggerCorrect(album,inp,wasFuzzy){
+  if(syncRevealWithClock()) return;
+  clearInterval(revealInterval); answered=true;
+  inp.className='correct'; inp.disabled=true;
+  playCorrect();
+  const pc=document.getElementById('posterContainer');
+  pc.classList.add('flash-correct','correct-flash');
+  const earned=currentPts;
+  stagePoints[albumStage-1]=earned;
+  totalScore+=earned;
+  document.getElementById('headerScore').textContent=totalScore;
+  revealStageAnswer();
+  showScorePopup('+'+earned+' pts');
+  setTimeout(()=>{pc.classList.remove('correct-flash');advanceAlbumStage();},1500);
+}
+function triggerWrong(inp){
+  playWrong(); inp.className='wrong'; inp.select();
+  const pc=document.getElementById('posterContainer');
+  pc.classList.add('flash-wrong','shaking');
+  pc.addEventListener('animationend',()=>pc.classList.remove('shaking','flash-wrong'),{once:true});
+  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').className='feedback ko';
+  setTimeout(()=>{inp.className='';},600);
+}
+
+function skipFilm(){
+  if(answered) return;
+  if(syncRevealWithClock()) return;
+  clearInterval(revealInterval); answered=true;
+  stageMissed[albumStage-1]=true;
+  playWrong(); revealStageAnswer();
+  setTimeout(advanceAlbumStage,1200);
+}
+function nextFilm(){ currentIdx++; if(currentIdx>=queue.length) endGame(); else loadFilm(); }
+
+function endGame(){
+  clearInterval(revealInterval);
+  document.getElementById('gameArea').style.display='none';
+  document.body.classList.add('score-visible');
+  document.getElementById('screenEnd').classList.add('active');
+  window.scrollTo(0,0);
+  const max=queue.length*MAX_PTS*2, pct=Math.round((totalScore/max)*100);
+  document.getElementById('endTitle').textContent=totalScore+' pts';
+  document.getElementById('endSub').textContent=
+    pct>=80?' ':
+    pct>=50?' ':'';
+  // Classement désactivé jusqu’à prise en charge de album par le serveur.
+  const lbName=document.getElementById('leaderboardName');
+  const lbSecret=document.getElementById('leaderboardSecret');
+  // Restaurer le masquage du code secret avant d'afficher le classement.
+  lbSecret.type = 'password';
+  const lbBtn=document.getElementById('leaderboardSubmitBtn');
+  const lbStatus=document.getElementById('leaderboardStatus');
+  if(lbName){ lbName.disabled=false; lbName.value=''; }
+  if(lbSecret){ lbSecret.disabled=false; lbSecret.value=''; }
+  if(lbBtn) lbBtn.disabled=false;
+  if(lbStatus) lbStatus.textContent='';
+  document.getElementById('breakdown').innerHTML=roundScores.map(r=>`
+    <div class="breakdown-row ${r.pts>0?'scored':'missed'}">
+      <span>${r.title}${r.fuzzy?' <span style="color:#f5a623;font-size:0.7em">~</span>':''}</span>
+      <span class="pts">${r.pts>0?'+'+r.pts:r.skipped?'PASSÉ':'MANQUÉ'}</span>
+    </div>`).join('');
+}
+
+function restartGame(){
+  const gameSecretField = document.getElementById('leaderboardSecret');
+  gameSecretField.type = 'text';
+  gameSecretField.disabled = true;
+  document.body.classList.remove('score-visible');
+  document.getElementById('screenEnd').classList.remove('active');
+  document.getElementById('headerScore').textContent='0';
+  document.getElementById('gameArea').style.display='flex';
+  queue = getNextSession();
+  currentIdx=0; totalScore=0; roundScores=[]; streak=0; leaderboardScoreSubmitted=false; updateStreakIndicator();
+  initProgressSegments();
+  resetGameAudio();
+  document.getElementById('gameAudioControls').style.display='flex';
+  startForest();
+  loadFilm();
+}
+
+// ── Son forêt ─────────────────────────────────────────────────────
+const FOREST_SRC = 'foret.mp3';
+const FOREST_DURATION = 20 * 60;
+const FOREST_SAFE_END = FOREST_DURATION - 5 * 60;
+let forestAudio = null;
+let forestMuted = true;
+
+function initForest(){
+  if(!forestAudio){
+    forestAudio = new Audio(FOREST_SRC);
+    forestAudio.loop = false;
+    forestAudio.volume = 0.05;
+  }
+}
+function startForest(){
+  initForest();
+  forestAudio.currentTime = Math.random() * FOREST_SAFE_END;
+  forestAudio.muted = forestMuted;
+  forestAudio.play().catch(()=>{});
+}
+function toggleForest(){
+  initForest();
+  forestMuted = !forestMuted;
+  forestAudio.muted = forestMuted;
+  const btn = document.getElementById('forestBtn');
+  document.getElementById('forestSlash').style.display = forestMuted ? 'block' : 'none';
+  btn.style.color = 'var(--gold)';
+  btn.style.opacity = '1';
+  btn.title = forestMuted ? 'Activer les oiseaux' : 'Couper les oiseaux';
+  btn.setAttribute('aria-label', btn.title);
+}
+
+// Musique personnelle : premier clic démarre, puis sourdine sans pause.
+const MUSIC_SRC = '/musique1.mp3';
+const musicAudio = new Audio(MUSIC_SRC);
+musicAudio.loop = true;
+musicAudio.preload = 'auto';
+musicAudio.volume = 0.12;
+musicAudio.muted = true;
+let musicStarted = false;
+function updateMusicButton(){
+  const btn=document.getElementById('musicBtn');
+  btn.style.color='var(--gold)';
+  btn.style.opacity='1';
+  document.getElementById('musicSlash').style.display=musicAudio.muted?'block':'none';
+  btn.title=musicAudio.muted?'Activer la musique':'Couper la musique';
+  btn.setAttribute('aria-label',btn.title);
+  document.getElementById('musicVolume').style.display=musicAudio.muted?'none':'inline-block';
+}
+function setMusicVolume(value){
+  musicAudio.volume=Number(value)/100;
+}
+function toggleMusic(){
+  // Même principe que les oiseaux : lecture déclenchée directement par le clic.
+  if(!musicStarted){
+    musicAudio.currentTime = 0;
+    musicStarted = true;
+  }
+  musicAudio.muted = !musicAudio.muted;
+  // Ne jamais mettre en pause quand on coupe le son : la piste continue en silence.
+  const playback = musicAudio.play();
+  if(playback && typeof playback.catch === 'function') {
+    playback.catch(err => console.error('Lecture musique impossible :', MUSIC_SRC, err));
+  }
+  updateMusicButton();
+}
+function resetGameAudio(){
+  musicAudio.pause();
+  musicAudio.currentTime=0;
+  musicAudio.muted=true;
+  musicStarted=false;
+  updateMusicButton();
+  forestMuted=true;
+  if(forestAudio){forestAudio.pause();forestAudio.muted=true;forestAudio.currentTime=0;}
+  const btn=document.getElementById('forestBtn');
+  document.getElementById('forestSlash').style.display='block';
+  btn.style.color='var(--gold)';btn.style.opacity='1';
+  btn.title='Activer les oiseaux';
+  btn.setAttribute('aria-label', btn.title);
+  effectsMuted=false;
+  effectsMaster.gain.setValueAtTime(1, AC.currentTime);
+  document.getElementById('effectsSlash').style.display='none';
+  document.getElementById('wave1').style.display='';
+  document.getElementById('wave2').style.display='';
+  const effectsBtn=document.getElementById('effectsBtn');
+  effectsBtn.style.color='var(--gold)';effectsBtn.style.opacity='1';
+  effectsBtn.title='Couper les effets sonores';effectsBtn.setAttribute('aria-label',effectsBtn.title);
+  btn.title='Couper les oiseaux';btn.setAttribute('aria-label',btn.title);
+}
+
+function goHome(){ document.body.classList.remove('score-visible'); window.location.href='index.html'; }
+</script>
+</body>
+</html>

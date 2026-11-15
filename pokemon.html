@@ -527,7 +527,7 @@ function renderLeaderboard(targetId, scores){
   const target = document.getElementById(targetId);
   if(!target) return;
   if(!Array.isArray(scores) || scores.length===0){
-    target.innerHTML='<div class="leaderboard-empty">CLASSEMENT '+(selectedGeneration===0?'TOUTES LES GÉNÉRATIONS':selectedGeneration+'ÈME GÉNÉRATION')+' — EN PRÉPARATION</div>';
+    target.innerHTML='<div class="leaderboard-empty">AUCUN SCORE POUR LE MOMENT</div>';
     return;
   }
   target.innerHTML=scores.map((row,index)=>`
@@ -561,7 +561,7 @@ async function loadLeaderboard(){
 
 async function submitLeaderboardScore(){
   if(!LEADERBOARD_API){
-    document.getElementById('leaderboardStatus').textContent='CLASSEMENT POKÉMON EN PRÉPARATION — AUCUN SCORE ENVOYÉ';
+    document.getElementById('leaderboardStatus').textContent='CLASSEMENT INDISPONIBLE';
     return;
   }
   if(leaderboardScoreSubmitted) return;

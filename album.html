@@ -611,7 +611,8 @@ async function submitLeaderboardScore(){
   }
 }
 
-// Classement album non activé côté serveur.
+// Classement Album Reveal : chargement dès l’accueil.
+loadLeaderboard();
 
 // Entrée dans le pseudo ou le code secret = clic sur VALIDER
 ['leaderboardName', 'leaderboardSecret'].forEach(id => {
@@ -6316,7 +6317,8 @@ function endGame(){
   document.getElementById('endSub').textContent=
     pct>=80?' ':
     pct>=50?' ':'';
-  // Classement désactivé jusqu’à prise en charge de album par le serveur.
+  // Actualiser le classement à la fin de chaque partie.
+  loadLeaderboard();
   const lbName=document.getElementById('leaderboardName');
   const lbSecret=document.getElementById('leaderboardSecret');
   // Restaurer le masquage du code secret avant d'afficher le classement.

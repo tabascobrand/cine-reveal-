@@ -29,7 +29,7 @@
     width: 100%; padding: 18px 32px; display: flex;
     align-items: center; justify-content: space-between; border-bottom: 1px solid #1e1e2e;
   }
-  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 2px; color: var(--gold); }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 4px; color: var(--gold); }
   .logo span { color: var(--white); }
   .score-display { display: flex; flex-direction: column; align-items: flex-end; }
   .score-label { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gray); }
@@ -196,9 +196,7 @@
     min-height: 18px; color: var(--gray); font-size: 0.7rem; letter-spacing: 1px; text-align: center;
   }
 
-  /* Le classement est désactivé pendant les tests privés. */
-  .leaderboard-submit { display:none; }
-  /* ── Mise en page deux colonnes de l'écran de fin (résultats / classement) ── */
+    /* ── Mise en page deux colonnes de l'écran de fin (résultats / classement) ── */
   .end-columns {
     display: flex; gap: 36px; width: 100%; max-width: 1000px;
     align-items: flex-start;
@@ -352,7 +350,7 @@
 <body class="start-scroll">
 <header>
   <div style="display:flex;align-items:center;gap:14px">
-    <a class="logo" href="../index.html" style="cursor:pointer;text-decoration:none;">LOGO<span>REVEAL</span></a>
+    <a class="logo" href="https://reveal.page/" style="cursor:pointer;text-decoration:none;">LOGO<span>REVEAL</span></a>
     <span id="gameAudioControls" style="display:none;align-items:center;gap:14px">
     <button id="effectsBtn" onclick="toggleEffects()" title="Couper les effets sonores" aria-label="Couper les effets sonores" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:color 0.2s;position:relative;top:-3px;">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -393,7 +391,7 @@
   <button class="btn-primary" onclick="startGame()">JOUER</button>
   <div id="catalogNotice" class="screen-sub" role="status"></div>
   <div class="leaderboard-preview">
-    <div class="leaderboard-title">CLASSEMENT — BIENTÔT</div>
+    <div class="leaderboard-title">CLASSEMENT MONDIAL</div>
     <div id="leaderboardStart"><div class="leaderboard-empty">Chargement…</div></div>
   </div>
 </div>
@@ -441,7 +439,7 @@
     </div>
     <div class="end-col end-col-leaderboard">
       <div class="leaderboard-preview">
-        <div class="leaderboard-title">CLASSEMENT — BIENTÔT</div>
+        <div class="leaderboard-title">CLASSEMENT MONDIAL</div>
         <div class="leaderboard-submit">
           <input id="leaderboardName" type="text" maxlength="19" placeholder="TON PSEUDO" autocomplete="off" spellcheck="false">
           <div class="leaderboard-secret-wrap">
@@ -485,7 +483,7 @@ document.addEventListener('mousedown', event => {
   event.preventDefault();
 }, true);
 
-const LEADERBOARD_API = null; // Test privé : aucun accès au classement, aucune écriture en base.
+const LEADERBOARD_API = '/api/leaderboard'; // Classement mondial Logo Reveal.
 let leaderboardScoreSubmitted = false;
 
 function escapeLeaderboardHTML(value){
@@ -519,7 +517,7 @@ async function loadLeaderboard(){
     return;
   }
   try{
-    const res=await fetch(LEADERBOARD_API+'?game=video',{cache:'no-store'});
+    const res=await fetch(LEADERBOARD_API+'?game=logo',{cache:'no-store'});
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data=await res.json();
     renderLeaderboard('leaderboardStart',data.scores);
@@ -535,7 +533,7 @@ async function loadLeaderboard(){
 
 async function submitLeaderboardScore(){
   if(!LEADERBOARD_API){
-    document.getElementById('leaderboardStatus').textContent='CLASSEMENT JEUX VIDÉO EN PRÉPARATION — AUCUN SCORE ENVOYÉ';
+    document.getElementById('leaderboardStatus').textContent='CLASSEMENT LOGO INDISPONIBLE — AUCUN SCORE ENVOYÉ';
     return;
   }
   if(leaderboardScoreSubmitted) return;
@@ -566,7 +564,7 @@ async function submitLeaderboardScore(){
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        game:'video',
+        game:'logo',
         player_name:playerName,
         score:totalScore,
         secret:secret

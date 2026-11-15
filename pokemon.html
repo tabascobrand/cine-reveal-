@@ -511,7 +511,7 @@ document.addEventListener('mousedown', event => {
 }, true);
 
 let selectedGeneration = 0;
-const LEADERBOARD_API = null; // Test uniquement : aucun score transmis à la production.
+const LEADERBOARD_API = '/api/leaderboard';
 let leaderboardScoreSubmitted = false;
 
 function escapeLeaderboardHTML(value){
@@ -527,7 +527,7 @@ function renderLeaderboard(targetId, scores){
   const target = document.getElementById(targetId);
   if(!target) return;
   if(!Array.isArray(scores) || scores.length===0){
-    target.innerHTML='<div class="leaderboard-empty">CLASSEMENT '+(selectedGeneration===0?'TOUTES LES GÉNÉRATIONS':selectedGeneration+'ÈME GÉNÉRATION')+' — EN PRÉPARATION</div>';
+    target.innerHTML='<div class="leaderboard-empty">AUCUN SCORE POUR LE MOMENT</div>';
     return;
   }
   target.innerHTML=scores.map((row,index)=>`
@@ -545,7 +545,7 @@ async function loadLeaderboard(){
     return;
   }
   try{
-    const res=await fetch(LEADERBOARD_API+'?game=cine',{cache:'no-store'});
+    const res=await fetch(LEADERBOARD_API+'?game=pokemon',{cache:'no-store'});
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data=await res.json();
     renderLeaderboard('leaderboardStart',data.scores);
@@ -561,7 +561,7 @@ async function loadLeaderboard(){
 
 async function submitLeaderboardScore(){
   if(!LEADERBOARD_API){
-    document.getElementById('leaderboardStatus').textContent='CLASSEMENT POKÉMON EN PRÉPARATION — AUCUN SCORE ENVOYÉ';
+    document.getElementById('leaderboardStatus').textContent='CLASSEMENT INDISPONIBLE';
     return;
   }
   if(leaderboardScoreSubmitted) return;
@@ -592,7 +592,7 @@ async function submitLeaderboardScore(){
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        game:'video',
+        game:'pokemon',
         player_name:playerName,
         score:totalScore,
         secret:secret
@@ -864,7 +864,7 @@ function chooseGeneration(gen){
   document.getElementById('screenStart').classList.add('active');
   document.getElementById('selectedGenLabel').textContent=gen===0?'TOUTES LES GÉNÉRATIONS':gen+'ÈME GÉNÉRATION';
   document.getElementById('catalogNotice').textContent='';
-  renderLeaderboard('leaderboardStart',[]);
+  loadLeaderboard();
 }
 function backToGenerations(){
   if(revealInterval)clearInterval(revealInterval);

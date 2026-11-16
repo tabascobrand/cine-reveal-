@@ -5908,7 +5908,7 @@ function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Mat
 
 let queue,currentIdx,totalScore,roundScores,revealPct=0,revealInterval=null,currentPts=100,answered=false;
 let revealStartedAt=0;
-const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=25;
+const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=100,PART_BONUS=50;
 let stagePoints=[0,0], stageMissed=[false,false], roundFinished=false, roundTimer=null;
 const SESSION_SIZE = 10;
 
@@ -6187,7 +6187,7 @@ function drawMask(pct){
   document.getElementById('timerFill').classList.toggle('urgent',pct>70);
   currentPts=Math.max(0,Math.round(MAX_PTS*(1-pct/100)));
   const badge=document.getElementById('ptsBadge');
-  badge.textContent=(stagePoints[0]>0?'✓ ARTISTE  ':'')+(stagePoints[1]>0?'✓ ALBUM  ':'')+currentPts+' pts';
+  badge.textContent=(stagePoints[0]>0?'✓ ARTISTE +50  ':'')+(stagePoints[1]>0?'✓ ALBUM +50  ':'')+currentPts+' pts';
   badge.className='pts-badge'+(currentPts<30?' low':'');
 }
 
@@ -6240,7 +6240,8 @@ function finishAlbum(success){
   pc.classList.add(success?'flash-correct':'flash-wrong');
   if(success) handleStreakSuccess(); else { handleStreakBreak(); playWrong(); }
   markProgressSegment(currentIdx,success);
-  roundScores.push({title:queue[currentIdx].title,pts:stagePoints[0]+stagePoints[1],missed:!success});
+  if(success){totalScore+=currentPts;document.getElementById('headerScore').textContent=totalScore;showScorePopup('+'+currentPts+' pts');}
+  roundScores.push({title:queue[currentIdx].title,pts:stagePoints[0]+stagePoints[1]+(success?currentPts:0),missed:!success});
   revealAlbumAnswer();
   roundTimer=setTimeout(nextFilm,1600);
 }
@@ -6276,7 +6277,7 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
 });
 function triggerCorrect(album,inp,matches){
   if(syncRevealWithClock()) return;
-  const earned=currentPts;
+  const earned=PART_BONUS;
   matches.forEach(i=>{stagePoints[i]=earned;totalScore+=earned;});
   document.getElementById('headerScore').textContent=totalScore;
   playCorrect();
@@ -6319,7 +6320,7 @@ function endGame(){
   document.body.classList.add('score-visible');
   document.getElementById('screenEnd').classList.add('active');
   window.scrollTo(0,0);
-  const max=queue.length*MAX_PTS*2, pct=Math.round((totalScore/max)*100);
+  const max=queue.length*(MAX_PTS+PART_BONUS*2), pct=Math.round((totalScore/max)*100);
   document.getElementById('endTitle').textContent=totalScore+' pts';
   document.getElementById('endSub').textContent=
     pct>=80?' ':

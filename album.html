@@ -57,9 +57,9 @@
     font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold);
   }
   .poster-container {
-    position: relative; width: min(100%, 900px, calc(100dvh - 225px)); aspect-ratio: 1/1;
+    position: relative; width: min(100%, 900px, calc(100dvh - 305px)); aspect-ratio: 1/1;
     flex-shrink: 1; min-height: 0;
-    max-height: calc(100vh - 225px); max-height: calc(100dvh - 225px);
+    max-height: calc(100vh - 305px); max-height: calc(100dvh - 305px);
     margin: 0 auto;
     background: #000; overflow: hidden; border: 2px solid #1e1e2e; transition: border-color 0.15s;
   }
@@ -319,6 +319,7 @@
   .site-footer a { color: #777788; text-decoration: none; pointer-events: auto; }
   .site-footer a:hover { color: var(--white); }
   .site-footer-thirdparty { font-size: 0.48rem; color: #444455; }
+  body.game-playing .site-footer { display: none; }
 
 
 /* Barre de volume musique : rail jaune, curseur noir constant. */
@@ -6115,6 +6116,7 @@ function startGame(){
   gameSecretField.type = 'text';
   gameSecretField.disabled = true;
   document.body.classList.remove('start-scroll');
+  document.body.classList.add('game-playing');
   document.getElementById('screenStart').classList.remove('active');
   document.getElementById('gameArea').style.display='flex';
   queue = getNextSession();
@@ -6190,7 +6192,7 @@ function drawMask(pct){
   document.getElementById('timerFill').classList.toggle('urgent',pct>70);
   currentPts=Math.max(0,Math.round(MAX_PTS*(1-pct/100)));
   const badge=document.getElementById('ptsBadge');
-  badge.textContent=(stagePoints[0]>0?'✓ ARTISTE +50  ':'')+(stagePoints[1]>0?'✓ ALBUM +50  ':'')+currentPts+' pts';
+  badge.textContent=stagePoints[0]>0 && stagePoints[1]>0 ? '✓ ARTISTE +50 · ✓ TITRE +50' : stagePoints[0]>0 ? '✓ ARTISTE +50' : stagePoints[1]>0 ? '✓ TITRE +50' : currentPts+' pts';
   badge.className='pts-badge'+(currentPts<30?' low':'');
 }
 
@@ -6400,6 +6402,7 @@ function nextFilm(){ currentIdx++; if(currentIdx>=queue.length) endGame(); else 
 function endGame(){
   clearInterval(revealInterval); clearTimeout(roundTimer);
   document.getElementById('gameArea').style.display='none';
+  document.body.classList.remove('game-playing');
   document.body.classList.add('score-visible');
   document.getElementById('screenEnd').classList.add('active');
   window.scrollTo(0,0);
@@ -6432,6 +6435,7 @@ function restartGame(){
   gameSecretField.type = 'text';
   gameSecretField.disabled = true;
   document.body.classList.remove('score-visible');
+  document.body.classList.add('game-playing');
   document.getElementById('screenEnd').classList.remove('active');
   document.getElementById('headerScore').textContent='0';
   document.getElementById('gameArea').style.display='flex';

@@ -38,6 +38,7 @@
   .progress-seg { flex: 1; height: 100%; background: var(--dim); border-radius: 1px; transition: background 0.3s ease; }
   .progress-seg.pg-correct { background: #4caf6e; }
   .progress-seg.pg-missed { background: #e2564f; }
+  .progress-seg.pg-partial { background: #f5a623; }
   .game-area {
     width: 100%; max-width: 1360px; padding: 10px 16px 10px;
     display: flex; flex-direction: column; align-items: center; gap: 9px;
@@ -216,6 +217,8 @@
   }
   .breakdown-row.scored { border-left-color: #4caf6e; }
   .breakdown-row.missed { border-left-color: #e2564f; }
+  .breakdown-row.half-scored { border-left-color: #f5a623; }
+  .breakdown-row.half-scored .pts { color: #f5a623; }
   .breakdown-row .pts { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--gold); }
   @keyframes shake {
     0%,100%{ transform:translateX(0); } 15%{ transform:translateX(-7px); }
@@ -434,12 +437,12 @@
     <div class="timer-row"><span>RÉVÉLATION</span><span id="timerLabel">0%</span></div>
     <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
   </div>
+  <div class="feedback" id="feedback"></div>
   <div class="input-wrap">
   <input type="search" id="answerInput" name="film-search-query" placeholder="Artiste… (Entrée pour valider)" autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true">
     <button class="btn-validate" id="validateAnswerBtn" type="button" onclick="validateCurrentAnswer()">VALIDER</button>
     <button class="btn-skip" id="skipBtn" onclick="skipFilm()">PASSER</button>
   </div>
-  <div class="feedback" id="feedback"></div>
 </div>
 
 <div class="screen" id="screenEnd">
@@ -6101,9 +6104,9 @@ function initProgressSegments(){
     wrap.appendChild(seg);
   }
 }
-function markProgressSegment(index, correct){
+function markProgressSegment(index, status){
   const seg=document.getElementById('progressSeg'+index);
-  if(seg) seg.classList.add(correct?'pg-correct':'pg-missed');
+  if(seg) seg.classList.add(status==='correct'?'pg-correct':status==='partial'?'pg-partial':'pg-missed');
 }
 
 function startGame(){
@@ -6239,9 +6242,10 @@ function finishAlbum(success){
   pc.classList.remove('flash-wrong');
   pc.classList.add(success?'flash-correct':'flash-wrong');
   if(success) handleStreakSuccess(); else { handleStreakBreak(); playWrong(); }
-  markProgressSegment(currentIdx,success);
+  const partial=!success && stagePoints.some(pts=>pts>0);
+  markProgressSegment(currentIdx,success?'correct':partial?'partial':'missed');
   if(success){totalScore+=currentPts;document.getElementById('headerScore').textContent=totalScore;showScorePopup('+'+currentPts+' pts');}
-  roundScores.push({title:queue[currentIdx].title,pts:stagePoints[0]+stagePoints[1]+(success?currentPts:0),missed:!success});
+  roundScores.push({title:queue[currentIdx].title,pts:stagePoints[0]+stagePoints[1]+(success?currentPts:0),status:success?'correct':partial?'partial':'missed'});
   revealAlbumAnswer();
   roundTimer=setTimeout(nextFilm,1600);
 }
@@ -6291,7 +6295,7 @@ function triggerCorrect(album,inp,matches){
     pc.classList.remove('flash-wrong','flash-correct');
     pc.style.borderColor='var(--gold)';
     document.getElementById('feedback').textContent=stagePoints[0]>0?'ARTISTE TROUVÉ ! TROUVE LE TITRE.':'TITRE TROUVÉ ! TROUVE L’ARTISTE.';
-    document.getElementById('feedback').className='feedback ok';
+    document.getElementById('feedback').className='feedback fuzzy';
     inp.placeholder=stagePoints[0]>0?'Titre de l’album…':'Nom de l’artiste…';
     drawMask(revealPct);
     inp.focus();
@@ -6338,7 +6342,7 @@ function endGame(){
   if(lbBtn) lbBtn.disabled=false;
   if(lbStatus) lbStatus.textContent='';
   document.getElementById('breakdown').innerHTML=roundScores.map(r=>`
-    <div class="breakdown-row ${r.pts>0?'scored':'missed'}">
+    <div class="breakdown-row ${r.status==='correct'?'scored':r.status==='partial'?'half-scored':'missed'}">
       <span>${r.title}${r.fuzzy?' <span style="color:#f5a623;font-size:0.7em">~</span>':''}</span>
       <span class="pts">${r.pts>0?'+'+r.pts:r.skipped?'PASSÉ':'MANQUÉ'}</span>
     </div>`).join('');

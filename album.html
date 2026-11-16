@@ -79,6 +79,7 @@
   }
   .pts-badge.low { color: var(--red); border-color: var(--red); }
   .part-badge { position:absolute; top:12px; left:12px; background:rgba(0,0,0,.75); border:1px solid var(--gold); color:var(--gold); font-family:"Bebas Neue",sans-serif; font-size:1.4rem; padding:4px 12px; letter-spacing:2px; display:none; }
+  .part-badge.complete { color: #3ecf6f; border-color: #3ecf6f; }
   #ptsBadge { left:auto; right:12px; }
   .timer-wrap { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 6px; }
   .timer-row { display: flex; justify-content: space-between; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); }
@@ -6200,6 +6201,8 @@ function drawMask(pct){
   const partBadge=document.getElementById('partBadge');
   partBadge.textContent=stagePoints[0]>0 && stagePoints[1]>0 ? '✓ ARTISTE +50 · ✓ TITRE +50' : stagePoints[0]>0 ? '✓ ARTISTE +50' : stagePoints[1]>0 ? '✓ TITRE +50' : '';
   partBadge.style.display=partBadge.textContent?'block':'none';
+  // Deux réponses trouvées : le texte ET la bordure du badge passent au vert.
+  partBadge.classList.toggle('complete',stagePoints[0]>0 && stagePoints[1]>0);
   badge.className='pts-badge'+(currentPts<30?' low':'');
 }
 

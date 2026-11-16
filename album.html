@@ -57,9 +57,9 @@
     font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold);
   }
   .poster-container {
-    position: relative; width: min(100%, 900px, calc(100dvh - 305px)); aspect-ratio: 1/1;
+    position: relative; width: min(100%, 900px, calc(100dvh - 355px)); aspect-ratio: 1/1;
     flex-shrink: 1; min-height: 0;
-    max-height: calc(100vh - 305px); max-height: calc(100dvh - 305px);
+    max-height: calc(100vh - 355px); max-height: calc(100dvh - 355px);
     margin: 0 auto;
     background: #000; overflow: hidden; border: 2px solid #1e1e2e; transition: border-color 0.15s;
   }
@@ -319,7 +319,8 @@
   .site-footer a { color: #777788; text-decoration: none; pointer-events: auto; }
   .site-footer a:hover { color: var(--white); }
   .site-footer-thirdparty { font-size: 0.48rem; color: #444455; }
-  body.game-playing .site-footer { display: none; }
+  /* Le copyright reste visible pendant le jeu, sans chevauchement. */
+  body.game-playing .site-footer { display: block; }
 
 
 /* Barre de volume musique : rail jaune, curseur noir constant. */
@@ -6243,6 +6244,7 @@ function finishAlbum(success){
   const pc=document.getElementById('posterContainer');
   pc.classList.remove('flash-wrong');
   pc.classList.add(success?'flash-correct':'flash-wrong');
+  pc.style.borderColor=success?'#3ecf6f':'var(--red)';
   if(success) handleStreakSuccess(); else { handleStreakBreak(); playWrong(); }
   const partial=!success && stagePoints.some(pts=>pts>0);
   markProgressSegment(currentIdx,success?'correct':partial?'partial':'missed');
@@ -6375,7 +6377,7 @@ function triggerCorrect(album,inp,matches){
   }else{
     pc.classList.remove('flash-wrong','flash-correct');
     pc.style.borderColor='var(--gold)';
-    document.getElementById('feedback').textContent=stagePoints[0]>0?'ARTISTE TROUVÉ ! TROUVE LE TITRE.':'TITRE TROUVÉ ! TROUVE L’ARTISTE.';
+    document.getElementById('feedback').textContent='';
     document.getElementById('feedback').className='feedback fuzzy';
     inp.placeholder=stagePoints[0]>0?'Titre de l’album…':'Nom de l’artiste…';
     drawMask(revealPct);

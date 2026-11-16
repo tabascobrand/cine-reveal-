@@ -364,7 +364,7 @@
 <body class="start-scroll">
 <header>
   <div style="display:flex;align-items:center;gap:14px">
-    <a class="logo" href="index.html" style="cursor:pointer;text-decoration:none;">ALBUM<span>REVEAL</span></a>
+    <a class="logo" href="https://reveal.page/" style="cursor:pointer;text-decoration:none;">ALBUM<span>REVEAL</span></a>
     <span id="gameAudioControls" style="display:none;align-items:center;gap:14px">
     <button id="effectsBtn" onclick="toggleEffects()" title="Couper les effets sonores" aria-label="Couper les effets sonores" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:color 0.2s;position:relative;top:-3px;">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -5909,7 +5909,7 @@ function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Mat
 let queue,currentIdx,totalScore,roundScores,revealPct=0,revealInterval=null,currentPts=100,answered=false;
 let revealStartedAt=0;
 const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=25;
-let albumStage=1, stagePoints=[0,0], stageMissed=[false,false];
+let stagePoints=[0,0], stageMissed=[false,false], roundFinished=false, roundTimer=null;
 const SESSION_SIZE = 10;
 
 function showScorePopup(text, variant, sublabel){
@@ -6124,12 +6124,13 @@ function startGame(){
 }
 
 function loadFilm(){
-  albumStage=1; stagePoints=[0,0]; stageMissed=[false,false];
+  stagePoints=[0,0]; stageMissed=[false,false]; roundFinished=false;
   loadAlbumStage();
 }
 function loadAlbumStage(){
   clearInterval(revealInterval); revealInterval=null;
   answered=false; revealPct=0; revealStartedAt=0; currentPts=MAX_PTS;
+  clearTimeout(roundTimer); roundTimer=null;
   const album=queue[currentIdx];
   const imgC=document.getElementById('posterImgClean');
   const imgF=document.getElementById('posterImgFull');
@@ -6138,21 +6139,21 @@ function loadAlbumStage(){
   document.getElementById('filmTitle').style.display='none';
   document.getElementById('filmTitle').textContent='';
   const container=document.getElementById('posterContainer');
-  container.className='poster-container';
+  container.className='poster-container'; container.style.borderColor='';
   const canvas=document.getElementById('revealCanvas');
   canvas.width=container.offsetWidth; canvas.height=container.offsetHeight;
   const ctx=canvas.getContext('2d'); ctx.fillStyle='#000'; ctx.fillRect(0,0,canvas.width,canvas.height);
   const inp=document.getElementById('answerInput');
   inp.value=''; inp.className=''; inp.disabled=false;
-  inp.placeholder=albumStage===1?'Nom de l’artiste…':'Titre de l’album…';
+  inp.placeholder='Artiste ou titre de l’album…';
   document.getElementById('feedback').textContent='';
   document.getElementById('feedback').className='feedback';
   document.getElementById('skipBtn').disabled=false;
   document.getElementById('validateAnswerBtn').disabled=false;
-  document.getElementById('roundLabel').textContent=`ALBUM ${currentIdx+1} / ${queue.length} — ${albumStage===1?'ARTISTE':'TITRE'}`;
-  const src=albumStage===1?album.cleanSrc:album.fullSrc;
-  const target=albumStage===1?imgC:imgF;
-  target.src=src;
+  document.getElementById('roundLabel').textContent=`ALBUM ${currentIdx+1} / ${queue.length}`;
+  const target=imgC;
+  imgF.src=album.fullSrc;
+  target.src=album.cleanSrc;
   let started=false;
   function onReady(){
     if(started || answered) return; started=true;
@@ -6186,7 +6187,7 @@ function drawMask(pct){
   document.getElementById('timerFill').classList.toggle('urgent',pct>70);
   currentPts=Math.max(0,Math.round(MAX_PTS*(1-pct/100)));
   const badge=document.getElementById('ptsBadge');
-  badge.textContent=currentPts+' pts';
+  badge.textContent=(stagePoints[0]>0?'✓ ARTISTE  ':'')+(stagePoints[1]>0?'✓ ALBUM  ':'')+currentPts+' pts';
   badge.className='pts-badge'+(currentPts<30?' low':'');
 }
 
@@ -6205,12 +6206,8 @@ function syncRevealWithClock(){
 }
 
 function finishExpiredFilm(){
-  if(answered) return;
-  clearInterval(revealInterval); answered=true;
-  stageMissed[albumStage-1]=true;
-  playWrong();
-  revealStageAnswer();
-  setTimeout(advanceAlbumStage,1500);
+  if(roundFinished) return;
+  finishAlbum(false);
 }
 function startReveal(){
   if(revealInterval) clearInterval(revealInterval);
@@ -6219,28 +6216,33 @@ function startReveal(){
     if(!answered) syncRevealWithClock();
   },TICK_MS);
 }
-
-function revealStageAnswer(){
+function revealAlbumAnswer(){
   const canvas=document.getElementById('revealCanvas');
   canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
   const album=queue[currentIdx];
-  const answer=albumStage===1?album.artist:album.album;
+  const imgC=document.getElementById('posterImgClean');
+  const imgF=document.getElementById('posterImgFull');
+  imgC.className='poster-img hide';
+  imgF.className=imgF.complete && imgF.naturalWidth>0?'poster-img ready':'poster-img hide';
   const label=document.getElementById('filmTitle');
-  label.textContent=albumStage===1?'ARTISTE : '+answer:'ALBUM : '+answer;
+  label.textContent=album.artist+' — '+album.album;
   label.style.display='block';
   document.getElementById('answerInput').disabled=true;
   document.getElementById('skipBtn').disabled=true;
   document.getElementById('validateAnswerBtn').disabled=true;
 }
-function advanceAlbumStage(){
-  if(albumStage===1){ albumStage=2; loadAlbumStage(); }
-  else {
-    const success=stagePoints[0]>0 && stagePoints[1]>0;
-    if(success) handleStreakSuccess(); else handleStreakBreak();
-    markProgressSegment(currentIdx,success);
-    roundScores.push({title:queue[currentIdx].title,pts:stagePoints[0]+stagePoints[1],missed:!success});
-    nextFilm();
-  }
+function finishAlbum(success){
+  if(roundFinished) return;
+  roundFinished=true; answered=true;
+  clearInterval(revealInterval); revealInterval=null;
+  const pc=document.getElementById('posterContainer');
+  pc.classList.remove('flash-wrong');
+  pc.classList.add(success?'flash-correct':'flash-wrong');
+  if(success) handleStreakSuccess(); else { handleStreakBreak(); playWrong(); }
+  markProgressSegment(currentIdx,success);
+  roundScores.push({title:queue[currentIdx].title,pts:stagePoints[0]+stagePoints[1],missed:!success});
+  revealAlbumAnswer();
+  roundTimer=setTimeout(nextFilm,1600);
 }
 function validateCurrentAnswer(){
   const inp=document.getElementById('answerInput');
@@ -6263,28 +6265,36 @@ function isAlbumAnswerValid(input, accepted, rejected){
 }
 document.getElementById('answerInput').addEventListener('keydown',function(e){
   if(e.key!=='Enter' || answered || this.disabled) return;
+  e.preventDefault();
   if(syncRevealWithClock()) return;
   AC.resume();
   const album=queue[currentIdx];
-  const accepted=albumStage===1?album.part1:album.part2;
-  const rejected=albumStage===1?album.reject1:album.reject2;
-  const match=isAlbumAnswerValid(this.value,accepted,rejected);
-  if(match) triggerCorrect(album,this,match==='fuzzy'); else triggerWrong(this);
+  const matches=[];
+  if(stagePoints[0]===0 && !stageMissed[0] && isAlbumAnswerValid(this.value,album.part1,album.reject1)) matches.push(0);
+  if(stagePoints[1]===0 && !stageMissed[1] && isAlbumAnswerValid(this.value,album.part2,album.reject2)) matches.push(1);
+  if(matches.length){ triggerCorrect(album,this,matches); } else triggerWrong(this);
 });
-function triggerCorrect(album,inp,wasFuzzy){
+function triggerCorrect(album,inp,matches){
   if(syncRevealWithClock()) return;
-  clearInterval(revealInterval); answered=true;
-  inp.className='correct'; inp.disabled=true;
-  playCorrect();
-  const pc=document.getElementById('posterContainer');
-  pc.classList.add('flash-correct','correct-flash');
   const earned=currentPts;
-  stagePoints[albumStage-1]=earned;
-  totalScore+=earned;
+  matches.forEach(i=>{stagePoints[i]=earned;totalScore+=earned;});
   document.getElementById('headerScore').textContent=totalScore;
-  revealStageAnswer();
-  showScorePopup('+'+earned+' pts');
-  setTimeout(()=>{pc.classList.remove('correct-flash');advanceAlbumStage();},1500);
+  playCorrect();
+  showScorePopup('+'+(earned*matches.length)+' pts');
+  inp.value=''; inp.className='correct';
+  setTimeout(()=>{if(!roundFinished) inp.className='';},550);
+  const pc=document.getElementById('posterContainer');
+  if(stagePoints[0]>0 && stagePoints[1]>0){
+    finishAlbum(true);
+  }else{
+    pc.classList.remove('flash-wrong','flash-correct');
+    pc.style.borderColor='var(--gold)';
+    document.getElementById('feedback').textContent=stagePoints[0]>0?'ARTISTE TROUVÉ ! TROUVE LE TITRE.':'TITRE TROUVÉ ! TROUVE L’ARTISTE.';
+    document.getElementById('feedback').className='feedback ok';
+    inp.placeholder=stagePoints[0]>0?'Titre de l’album…':'Nom de l’artiste…';
+    drawMask(revealPct);
+    inp.focus();
+  }
 }
 function triggerWrong(inp){
   playWrong(); inp.className='wrong'; inp.select();
@@ -6297,17 +6307,14 @@ function triggerWrong(inp){
 }
 
 function skipFilm(){
-  if(answered) return;
+  if(roundFinished) return;
   if(syncRevealWithClock()) return;
-  clearInterval(revealInterval); answered=true;
-  stageMissed[albumStage-1]=true;
-  playWrong(); revealStageAnswer();
-  setTimeout(advanceAlbumStage,1200);
+  finishAlbum(false);
 }
 function nextFilm(){ currentIdx++; if(currentIdx>=queue.length) endGame(); else loadFilm(); }
 
 function endGame(){
-  clearInterval(revealInterval);
+  clearInterval(revealInterval); clearTimeout(roundTimer);
   document.getElementById('gameArea').style.display='none';
   document.body.classList.add('score-visible');
   document.getElementById('screenEnd').classList.add('active');

@@ -968,24 +968,24 @@
     "reject": []
   },
   {
-    "title": "Nidoran F",
+    "title": "Nidoran Femelle",
     "english": "nidoran-f",
     "generation": 1,
     "image": "images-pokemon/gen1/nidoran-f-artwork-640.webp",
     "accept": [
-      "nidoran f",
-      "nidoranf"
+      "nidoran femelle",
+      "nidoran"
     ],
     "reject": []
   },
   {
-    "title": "Nidoran M",
+    "title": "Nidoran Mâle",
     "english": "nidoran-m",
     "generation": 1,
     "image": "images-pokemon/gen1/nidoran-m-artwork-640.webp",
     "accept": [
-      "nidoran m",
-      "nidoranm"
+      "nidoran mâle",
+      "nidoran"
     ],
     "reject": []
   },

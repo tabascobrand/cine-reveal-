@@ -78,6 +78,8 @@
     font-size: 1.4rem; padding: 4px 12px; letter-spacing: 2px; transition: color 0.3s;
   }
   .pts-badge.low { color: var(--red); border-color: var(--red); }
+  .part-badge { position:absolute; top:12px; left:12px; background:rgba(0,0,0,.75); border:1px solid var(--gold); color:var(--gold); font-family:"Bebas Neue",sans-serif; font-size:1.4rem; padding:4px 12px; letter-spacing:2px; display:none; }
+  #ptsBadge { left:auto; right:12px; }
   .timer-wrap { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 6px; }
   .timer-row { display: flex; justify-content: space-between; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); }
   .timer-bar { width: 100%; height: 4px; background: var(--dim); border-radius: 2px; overflow: hidden; }
@@ -434,6 +436,7 @@
     <div class="streak-mini" id="streakMini">
       <span class="streak-mini-count" id="streakMiniCount">0</span><span class="streak-mini-max">/10</span>
     </div>
+    <div class="part-badge" id="partBadge"></div>
     <div class="pts-badge" id="ptsBadge">100 pts</div>
   </div>
   <div class="timer-wrap">
@@ -6193,7 +6196,10 @@ function drawMask(pct){
   document.getElementById('timerFill').classList.toggle('urgent',pct>70);
   currentPts=Math.max(0,Math.round(MAX_PTS*(1-pct/100)));
   const badge=document.getElementById('ptsBadge');
-  badge.textContent=stagePoints[0]>0 && stagePoints[1]>0 ? '✓ ARTISTE +50 · ✓ TITRE +50' : stagePoints[0]>0 ? '✓ ARTISTE +50' : stagePoints[1]>0 ? '✓ TITRE +50' : currentPts+' pts';
+  badge.textContent=currentPts+' pts';
+  const partBadge=document.getElementById('partBadge');
+  partBadge.textContent=stagePoints[0]>0 && stagePoints[1]>0 ? '✓ ARTISTE +50 · ✓ TITRE +50' : stagePoints[0]>0 ? '✓ ARTISTE +50' : stagePoints[1]>0 ? '✓ TITRE +50' : '';
+  partBadge.style.display=partBadge.textContent?'block':'none';
   badge.className='pts-badge'+(currentPts<30?' low':'');
 }
 
@@ -6245,6 +6251,7 @@ function finishAlbum(success){
   pc.classList.remove('flash-wrong');
   pc.classList.add(success?'flash-correct':'flash-wrong');
   pc.style.borderColor=success?'#3ecf6f':'var(--red)';
+  drawMask(revealPct);
   if(success) handleStreakSuccess(); else { handleStreakBreak(); playWrong(); }
   const partial=!success && stagePoints.some(pts=>pts>0);
   markProgressSegment(currentIdx,success?'correct':partial?'partial':'missed');

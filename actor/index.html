@@ -423,7 +423,7 @@
     <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
   </div>
   <div class="input-wrap">
-  <input type="search" id="answerInput" name="flag-search-query" placeholder="Nom de l’acteur ou de l’actrice… (Entrée pour valider)" autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true">
+  <input type="search" id="answerInput" name="flag-search-query" placeholder="Prénom et nom de l’acteur ou de l’actrice… (Entrée pour valider)" autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true">
     <button class="btn-validate" id="validateAnswerBtn" type="button" onclick="validateCurrentAnswer()">VALIDER</button>
     <button class="btn-skip" id="skipBtn" onclick="skipFilm()">PASSER</button>
   </div>
@@ -524,7 +524,7 @@ async function loadLeaderboard(){
     renderLeaderboard('leaderboardStart',data.scores);
     renderLeaderboard('leaderboardEnd',data.scores);
   }catch(err){
-    const msg='<div class="leaderboard-empty">CLASSEMENT INDISPONIBLE</div>';
+    const msg='<div class="leaderboard-empty">CLASSEMENT INDISPONIBLE — '+escapeLeaderboardHTML(err.message||'Erreur réseau')+'</div>';
     const a=document.getElementById('leaderboardStart');
     const b=document.getElementById('leaderboardEnd');
     if(a) a.innerHTML=msg;
@@ -604,7 +604,7 @@ async function submitLeaderboardScore(){
 
   }catch(err){
     if(btn) btn.disabled=false;
-    if(status){ status.textContent='ERREUR — RÉESSAIE'; status.style.color='#e2564f'; }
+    if(status){ status.textContent='ERREUR CLASSEMENT : '+(err.message||'RÉESSAIE'); status.style.color='#e2564f'; }
   }
 }
 
@@ -762,35 +762,39 @@ function isFuzzyMatch(input,target){
   const maxDist=b.length<5?0:b.length<8?1:b.length<14?1:2;
   return levenshtein(a,b)<=maxDist ? 'fuzzy' : false;
 }
-// Empêche de confondre deux acteurs et de valider un prénom seul,
-// même lorsque la réponse est proche d'un nom de famille.
+// Réponse : prénom ET nom obligatoires pour les noms composés.
+// Les artistes connus sous un seul nom (Zendaya, Bourvil...) restent acceptés.
+// Tolérance très limitée : au plus une faute par mot long, deux au total.
 function actorAnswerMatch(input,film){
   const answer=normalize(input);
   if(!answer) return false;
-  const accepted=(film.accept||[]).map(normalize);
-  const rejected=(film.reject||[]).map(normalize);
-  if(rejected.includes(answer)) return false;
-  const exact=accepted.includes(answer);
-  // Si le même alias correspond à plusieurs acteurs, exiger le nom complet.
-  const owners=FILMS.filter(other=>other.accept.some(alias=>normalize(alias)===answer));
-  if(exact) return owners.length>1 ? answer===normalize(film.title) : true;
-  if(answer.length<4) return false;
-  // Un prénom exact d'un acteur du catalogue ne doit pas devenir une faute tolérée.
-  if(FILMS.some(other=>other.reject.some(alias=>normalize(alias)===answer))) return false;
-  const candidates=[];
-  for(const other of FILMS){
-    for(const alias of other.accept){
-      const kind=isFuzzyMatch(answer,alias);
-      if(kind) candidates.push({other,alias:normalize(alias),kind,dist:levenshtein(answer,normalize(alias))});
-    }
+  const expected=normalize(film.title);
+  const inputWords=answer.split(' '), expectedWords=expected.split(' ');
+  if(inputWords.length!==expectedWords.length) return false;
+  if(answer===expected) return 'exact';
+  let totalDistance=0;
+  for(let i=0;i<expectedWords.length;i++){
+    const a=inputWords[i], b=expectedWords[i];
+    const distance=levenshtein(a,b);
+    // Les mots courts (de, van, al...) doivent être exacts.
+    if(distance>(b.length>=5?1:0)) return false;
+    totalDistance+=distance;
+    if(totalDistance>2) return false;
   }
-  if(!candidates.length) return false;
-  const minDist=Math.min(...candidates.map(x=>x.dist));
-  const closest=candidates.filter(x=>x.dist===minDist);
-  // Une réponse approchante ambiguë est refusée, pas attribuée au hasard.
-  if(closest.some(x=>x.other!==film)) return false;
-  if(rejected.some(alias=>isFuzzyMatch(answer,alias))) return false;
-  return 'fuzzy';
+  // Une réponse proche de deux personnes différentes est refusée.
+  const ambiguous=FILMS.some(other=>other!==film && (()=>{
+    const words=normalize(other.title).split(' ');
+    if(words.length!==inputWords.length) return false;
+    let distance=0;
+    for(let i=0;i<words.length;i++){
+      const d=levenshtein(inputWords[i],words[i]);
+      if(d>(words[i].length>=5?1:0)) return false;
+      distance+=d;
+      if(distance>2) return false;
+    }
+    return true;
+  })());
+  return ambiguous?false:'fuzzy';
 }
 
 // Actor Reveal : portraits JPG du catalogue actor.json.
@@ -1175,20 +1179,11 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
   const match=actorAnswerMatch(this.value,film);
   matched=Boolean(match);
   wasFuzzy=match==='fuzzy';
-  if(matched) triggerCorrect(film,this,wasFuzzy,hasFullNameBonus(this.value,film));
+  if(matched) triggerCorrect(film,this,wasFuzzy);
   else triggerWrong(this);
 });
 
-// Bonus de 30 points si le joueur donne le nom complet (prénom + nom).
-// Une petite faute est tolérée, mais pas un prénom seul ni un patronyme seul.
-function hasFullNameBonus(input,film){
-  const full=normalize(film.title);
-  const entered=normalize(input);
-  if(full.split(' ').length<2 || entered.split(' ').length<2) return false;
-  return Boolean(isFuzzyMatch(entered,full));
-}
-
-function triggerCorrect(film,inp,wasFuzzy,fullNameBonus=false){
+function triggerCorrect(film,inp,wasFuzzy){
   if(syncRevealWithClock()) return;
   clearInterval(revealInterval); answered=true;
   inp.className='correct'; inp.disabled=true;
@@ -1198,12 +1193,11 @@ function triggerCorrect(film,inp,wasFuzzy,fullNameBonus=false){
   showFullPoster();
   document.getElementById('filmTitle').textContent=film.title;
   document.getElementById('filmTitle').style.display='block';
-  const bonus=fullNameBonus?30:0;
-  const earned=currentPts+bonus; totalScore+=earned;
-  showScorePopup('+'+earned+' pts',null,bonus?'+30 NOM COMPLET':'');
+  const earned=currentPts; totalScore+=earned;
+  showScorePopup('+'+earned+' pts');
   handleStreakSuccess();
   markProgressSegment(currentIdx, true);
-  roundScores.push({title:film.title,pts:earned,fuzzy:wasFuzzy,fullNameBonus});
+  roundScores.push({title:film.title,pts:earned,fuzzy:wasFuzzy});
   const fb=document.getElementById('feedback');
   fb.textContent='';
   fb.className='feedback '+(wasFuzzy?'fuzzy':'ok');
@@ -1268,7 +1262,7 @@ function endGame(){
   if(lbStatus) lbStatus.textContent='';
   document.getElementById('breakdown').innerHTML=roundScores.map(r=>`
     <div class="breakdown-row ${r.pts>0?'scored':'missed'}">
-      <span>${r.title}${r.fullNameBonus?' <span style="color:var(--gold);font-size:0.7em">(+30 prénom)</span>':''}${r.fuzzy?' <span style="color:#f5a623;font-size:0.7em">~</span>':''}</span>
+      <span>${r.title}${r.fuzzy?' <span style="color:#f5a623;font-size:0.7em">~</span>':''}</span>
       <span class="pts">${r.pts>0?'+'+r.pts:r.skipped?'PASSÉ':'MANQUÉ'}</span>
     </div>`).join('');
 }

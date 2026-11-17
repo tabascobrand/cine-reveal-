@@ -46,8 +46,8 @@
   }
 
   .cards {
-    display: flex; flex-direction: column; gap: 24px;
-    width: 100%; max-width: 360px;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px;
+    width: 100%; max-width: 744px;
   }
 
   .card {
@@ -174,13 +174,8 @@
 
       // Ajuste la taille du titre pour qu'il fasse pile la même largeur que les boutons
       function fitTitleWidth(){
-        const targetWidth = wrap.clientWidth;
-        titleEl.style.fontSize = '60px';
-        const measure = document.createElement('canvas').getContext('2d');
-         measure.font = '60px Bebas Neue';
-         const measuredWidth = measure.measureText(titleEl.textContent).width + 60 * 0.13 * titleEl.textContent.length;
-        const scale = targetWidth / measuredWidth;
-        titleEl.style.fontSize = (60 * scale) + 'px';
+        // Le titre garde sa taille d'origine, indépendamment des deux colonnes.
+        titleEl.style.fontSize = '4rem';
       }
 
       function sizeCanvas(){

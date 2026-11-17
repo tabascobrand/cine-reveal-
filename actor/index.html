@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" href="/favicon.ico.actor.png">
+<link rel="icon" href="/favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ACTOR REVEAL — Devine l’acteur ou l’actrice</title>
 <style>
@@ -56,9 +56,10 @@
     font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold);
   }
   .poster-container {
-    position: relative; width: 100%; max-width: 1240px; aspect-ratio: 4/3;
+    position: relative; width: min(800px, calc(100% - 2px), calc((100dvh - 225px) * 2 / 3));
+    aspect-ratio: 2 / 3;
     flex-shrink: 1; min-height: 0;
-    max-height: calc(100vh - 205px); max-height: calc(100dvh - 205px);
+    max-height: calc(100vh - 225px); max-height: calc(100dvh - 225px);
     margin: 0 auto;
     background: #000; overflow: hidden; border: 2px solid #1e1e2e; transition: border-color 0.15s;
   }
@@ -337,7 +338,7 @@
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 5L19 19M19 5L5 19' stroke='black' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 5L19 19M19 5L5 19' stroke='black' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
   }
-  @media (max-width:650px) {.poster-container{width:100%;max-width:100%;}.game-area{gap:12px;}}
+  @media (max-width:650px) {.poster-container{max-width:100%;}.game-area{gap:12px;}}
 
   /* Accueil : espacement uniforme entre les éléments (24 px). */
   #screenStart { gap: 24px; }
@@ -1174,11 +1175,20 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
   const match=actorAnswerMatch(this.value,film);
   matched=Boolean(match);
   wasFuzzy=match==='fuzzy';
-  if(matched) triggerCorrect(film,this,wasFuzzy);
+  if(matched) triggerCorrect(film,this,wasFuzzy,hasFullNameBonus(this.value,film));
   else triggerWrong(this);
 });
 
-function triggerCorrect(film,inp,wasFuzzy){
+// Bonus de 30 points si le joueur donne le nom complet (prénom + nom).
+// Une petite faute est tolérée, mais pas un prénom seul ni un patronyme seul.
+function hasFullNameBonus(input,film){
+  const full=normalize(film.title);
+  const entered=normalize(input);
+  if(full.split(' ').length<2 || entered.split(' ').length<2) return false;
+  return Boolean(isFuzzyMatch(entered,full));
+}
+
+function triggerCorrect(film,inp,wasFuzzy,fullNameBonus=false){
   if(syncRevealWithClock()) return;
   clearInterval(revealInterval); answered=true;
   inp.className='correct'; inp.disabled=true;
@@ -1188,11 +1198,12 @@ function triggerCorrect(film,inp,wasFuzzy){
   showFullPoster();
   document.getElementById('filmTitle').textContent=film.title;
   document.getElementById('filmTitle').style.display='block';
-  const earned=currentPts; totalScore+=earned;
-  showScorePopup('+'+earned+' pts');
+  const bonus=fullNameBonus?30:0;
+  const earned=currentPts+bonus; totalScore+=earned;
+  showScorePopup('+'+earned+' pts',null,bonus?'+30 NOM COMPLET':'');
   handleStreakSuccess();
   markProgressSegment(currentIdx, true);
-  roundScores.push({title:film.title,pts:earned,fuzzy:wasFuzzy});
+  roundScores.push({title:film.title,pts:earned,fuzzy:wasFuzzy,fullNameBonus});
   const fb=document.getElementById('feedback');
   fb.textContent='';
   fb.className='feedback '+(wasFuzzy?'fuzzy':'ok');
@@ -1257,7 +1268,7 @@ function endGame(){
   if(lbStatus) lbStatus.textContent='';
   document.getElementById('breakdown').innerHTML=roundScores.map(r=>`
     <div class="breakdown-row ${r.pts>0?'scored':'missed'}">
-      <span>${r.title}${r.fuzzy?' <span style="color:#f5a623;font-size:0.7em">~</span>':''}</span>
+      <span>${r.title}${r.fullNameBonus?' <span style="color:var(--gold);font-size:0.7em">(+30 prénom)</span>':''}${r.fuzzy?' <span style="color:#f5a623;font-size:0.7em">~</span>':''}</span>
       <span class="pts">${r.pts>0?'+'+r.pts:r.skipped?'PASSÉ':'MANQUÉ'}</span>
     </div>`).join('');
 }

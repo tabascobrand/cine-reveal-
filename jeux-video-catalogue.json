@@ -258,13 +258,13 @@
 },
 {
   "title": "The Legend of Zelda: Link's Awakening",
-  "accept": ["zelda links awakening switch", "links awakening switch", "zelda links awakening remake", "links awakening remake", "zelda links awakening 2019"],
+  "accept": ["zelda links awakening", "links awakening", "zelda links awakening remake", "links awakening remake", "zelda links awakening 2019"],
   "reject": ["zelda links awakening gameboy", "links awakening dx", "zelda a link to the past", "zelda echoes of wisdom"],
   "image": "images-jeux-video/zeldaalinksawakening.png"
 },
 {
   "title": "The Legend of Zelda: Link's Awakening",
-  "accept": ["zelda links awakening gameboy", "links awakening gameboy", "links awakening gb", "links awakening dx", "zelda links awakening 1993"],
+  "accept": ["zelda links awakening", "links awakening gameboy", "links awakening gb", "links awakening dx", "zelda links awakening 1993"],
   "reject": ["zelda links awakening switch", "links awakening remake", "zelda a link to the past"],
   "image": "images-jeux-video/zeldaalinksawakeninggb.png"
 },

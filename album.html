@@ -38,8 +38,9 @@
   .progress-seg { flex: 1; height: 100%; background: var(--dim); border-radius: 1px; transition: background 0.3s ease; }
   .progress-seg.pg-correct { background: #4caf6e; }
   .progress-seg.pg-missed { background: #e2564f; }
+  .progress-seg.pg-partial { background: #f5a623; }
   .game-area {
-    width: 100%; max-width: 1360px; padding: 10px 16px 10px;
+    width: 100%; max-width: 1360px; padding: 10px 16px 43px;
     display: flex; flex-direction: column; align-items: center; gap: 9px;
     flex: 1; overflow: hidden;
   }
@@ -56,9 +57,9 @@
     font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold);
   }
   .poster-container {
-    position: relative; width: min(100%, 900px, calc(100dvh - 205px)); aspect-ratio: 1/1;
+    position: relative; width: 100%; max-width: min(78vh, 820px); aspect-ratio: 1/1;
     flex-shrink: 1; min-height: 0;
-    max-height: calc(100vh - 205px); max-height: calc(100dvh - 205px);
+    max-height: calc(100vh - 245px); max-height: calc(100dvh - 245px);
     margin: 0 auto;
     background: #000; overflow: hidden; border: 2px solid #1e1e2e; transition: border-color 0.15s;
   }
@@ -71,12 +72,15 @@
   .poster-img.ready { visibility: visible; }
   .reveal-mask { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
   .pts-badge {
-    position: absolute; top: 12px; right: 12px;
+    position: absolute; top: 12px; left: 12px;
     background: rgba(0,0,0,0.75); border: 1px solid var(--gold);
     color: var(--gold); font-family: 'Bebas Neue', sans-serif;
     font-size: 1.4rem; padding: 4px 12px; letter-spacing: 2px; transition: color 0.3s;
   }
   .pts-badge.low { color: var(--red); border-color: var(--red); }
+  .part-badge { position:absolute; top:12px; left:12px; background:rgba(0,0,0,.75); border:1px solid var(--gold); color:var(--gold); font-family:"Bebas Neue",sans-serif; font-size:1.4rem; padding:4px 12px; letter-spacing:2px; display:none; }
+  .part-badge.complete { color: #3ecf6f; border-color: #3ecf6f; }
+  #ptsBadge { left:auto; right:12px; }
   .timer-wrap { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 6px; }
   .timer-row { display: flex; justify-content: space-between; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); }
   .timer-bar { width: 100%; height: 4px; background: var(--dim); border-radius: 2px; overflow: hidden; }
@@ -110,7 +114,7 @@
     padding: 0 16px; cursor: pointer; transition: all 0.2s; border-radius: 2px;
   }
   .btn-skip:hover { border-color: var(--white); color: var(--white); }
-  .feedback { font-size: 0.8rem; letter-spacing: 1px; height: 20px; color: var(--gray); }
+  .feedback { width:100%; max-width:900px; font-size:0.8rem; letter-spacing:1px; min-height:18px; line-height:18px; text-align:center; color:var(--gray); }
   .feedback.ok    { color: #3ecf6f; }
   .feedback.ko    { color: var(--red); }
   .feedback.fuzzy { color: #f5a623; }
@@ -216,6 +220,8 @@
   }
   .breakdown-row.scored { border-left-color: #4caf6e; }
   .breakdown-row.missed { border-left-color: #e2564f; }
+  .breakdown-row.half-scored { border-left-color: #f5a623; }
+  .breakdown-row.half-scored .pts { color: #f5a623; }
   .breakdown-row .pts { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--gold); }
   @keyframes shake {
     0%,100%{ transform:translateX(0); } 15%{ transform:translateX(-7px); }
@@ -316,6 +322,8 @@
   .site-footer a { color: #777788; text-decoration: none; pointer-events: auto; }
   .site-footer a:hover { color: var(--white); }
   .site-footer-thirdparty { font-size: 0.48rem; color: #444455; }
+  /* Le copyright reste visible pendant le jeu, sans chevauchement. */
+  body.game-playing .site-footer { display: block; }
 
 
 /* Barre de volume musique : rail jaune, curseur noir constant. */
@@ -364,7 +372,7 @@
 <body class="start-scroll">
 <header>
   <div style="display:flex;align-items:center;gap:14px">
-    <a class="logo" href="index.html" style="cursor:pointer;text-decoration:none;">ALBUM<span>REVEAL</span></a>
+    <a class="logo" href="https://reveal.page/" style="cursor:pointer;text-decoration:none;">ALBUM<span>REVEAL</span></a>
     <span id="gameAudioControls" style="display:none;align-items:center;gap:14px">
     <button id="effectsBtn" onclick="toggleEffects()" title="Couper les effets sonores" aria-label="Couper les effets sonores" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:color 0.2s;position:relative;top:-3px;">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -414,6 +422,7 @@
     <span id="roundLabel">ALBUM 1 / 10</span>
     <span id="revealPct">0% révélé</span>
   </div>
+  <div class="feedback" id="feedback"></div>
   <div class="poster-container" id="posterContainer">
     <img class="poster-img hide" id="posterImgFull"  src="" alt="pochette originale" draggable="false">
     <img class="poster-img hide" id="posterImgClean" src="" alt="pochette nettoyée" draggable="false">
@@ -428,6 +437,7 @@
     <div class="streak-mini" id="streakMini">
       <span class="streak-mini-count" id="streakMiniCount">0</span><span class="streak-mini-max">/10</span>
     </div>
+    <div class="part-badge" id="partBadge"></div>
     <div class="pts-badge" id="ptsBadge">100 pts</div>
   </div>
   <div class="timer-wrap">
@@ -439,7 +449,6 @@
     <button class="btn-validate" id="validateAnswerBtn" type="button" onclick="validateCurrentAnswer()">VALIDER</button>
     <button class="btn-skip" id="skipBtn" onclick="skipFilm()">PASSER</button>
   </div>
-  <div class="feedback" id="feedback"></div>
 </div>
 
 <div class="screen" id="screenEnd">
@@ -5908,8 +5917,8 @@ function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Mat
 
 let queue,currentIdx,totalScore,roundScores,revealPct=0,revealInterval=null,currentPts=100,answered=false;
 let revealStartedAt=0;
-const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=25;
-let albumStage=1, stagePoints=[0,0], stageMissed=[false,false];
+const REVEAL_STEP=0.4,TICK_MS=120,MAX_PTS=100,PART_BONUS=50;
+let stagePoints=[0,0], stageMissed=[false,false], roundFinished=false, roundTimer=null;
 const SESSION_SIZE = 10;
 
 function showScorePopup(text, variant, sublabel){
@@ -6101,9 +6110,9 @@ function initProgressSegments(){
     wrap.appendChild(seg);
   }
 }
-function markProgressSegment(index, correct){
+function markProgressSegment(index, status){
   const seg=document.getElementById('progressSeg'+index);
-  if(seg) seg.classList.add(correct?'pg-correct':'pg-missed');
+  if(seg) seg.classList.add(status==='correct'?'pg-correct':status==='partial'?'pg-partial':'pg-missed');
 }
 
 function startGame(){
@@ -6112,6 +6121,7 @@ function startGame(){
   gameSecretField.type = 'text';
   gameSecretField.disabled = true;
   document.body.classList.remove('start-scroll');
+  document.body.classList.add('game-playing');
   document.getElementById('screenStart').classList.remove('active');
   document.getElementById('gameArea').style.display='flex';
   queue = getNextSession();
@@ -6124,12 +6134,13 @@ function startGame(){
 }
 
 function loadFilm(){
-  albumStage=1; stagePoints=[0,0]; stageMissed=[false,false];
+  stagePoints=[0,0]; stageMissed=[false,false]; roundFinished=false;
   loadAlbumStage();
 }
 function loadAlbumStage(){
   clearInterval(revealInterval); revealInterval=null;
   answered=false; revealPct=0; revealStartedAt=0; currentPts=MAX_PTS;
+  clearTimeout(roundTimer); roundTimer=null;
   const album=queue[currentIdx];
   const imgC=document.getElementById('posterImgClean');
   const imgF=document.getElementById('posterImgFull');
@@ -6138,21 +6149,21 @@ function loadAlbumStage(){
   document.getElementById('filmTitle').style.display='none';
   document.getElementById('filmTitle').textContent='';
   const container=document.getElementById('posterContainer');
-  container.className='poster-container';
+  container.className='poster-container'; container.style.borderColor='';
   const canvas=document.getElementById('revealCanvas');
   canvas.width=container.offsetWidth; canvas.height=container.offsetHeight;
   const ctx=canvas.getContext('2d'); ctx.fillStyle='#000'; ctx.fillRect(0,0,canvas.width,canvas.height);
   const inp=document.getElementById('answerInput');
   inp.value=''; inp.className=''; inp.disabled=false;
-  inp.placeholder=albumStage===1?'Nom de l’artiste…':'Titre de l’album…';
+  inp.placeholder='Artiste ou titre de l’album…';
   document.getElementById('feedback').textContent='';
   document.getElementById('feedback').className='feedback';
   document.getElementById('skipBtn').disabled=false;
   document.getElementById('validateAnswerBtn').disabled=false;
-  document.getElementById('roundLabel').textContent=`ALBUM ${currentIdx+1} / ${queue.length} — ${albumStage===1?'ARTISTE':'TITRE'}`;
-  const src=albumStage===1?album.cleanSrc:album.fullSrc;
-  const target=albumStage===1?imgC:imgF;
-  target.src=src;
+  document.getElementById('roundLabel').textContent=`ALBUM ${currentIdx+1} / ${queue.length}`;
+  const target=imgC;
+  imgF.src=album.fullSrc;
+  target.src=album.cleanSrc;
   let started=false;
   function onReady(){
     if(started || answered) return; started=true;
@@ -6187,6 +6198,11 @@ function drawMask(pct){
   currentPts=Math.max(0,Math.round(MAX_PTS*(1-pct/100)));
   const badge=document.getElementById('ptsBadge');
   badge.textContent=currentPts+' pts';
+  const partBadge=document.getElementById('partBadge');
+  partBadge.textContent=stagePoints[0]>0 && stagePoints[1]>0 ? '✓ ARTISTE +50 · ✓ TITRE +50' : stagePoints[0]>0 ? '✓ ARTISTE +50' : stagePoints[1]>0 ? '✓ TITRE +50' : '';
+  partBadge.style.display=partBadge.textContent?'block':'none';
+  // Deux réponses trouvées : le texte ET la bordure du badge passent au vert.
+  partBadge.classList.toggle('complete',stagePoints[0]>0 && stagePoints[1]>0);
   badge.className='pts-badge'+(currentPts<30?' low':'');
 }
 
@@ -6205,12 +6221,8 @@ function syncRevealWithClock(){
 }
 
 function finishExpiredFilm(){
-  if(answered) return;
-  clearInterval(revealInterval); answered=true;
-  stageMissed[albumStage-1]=true;
-  playWrong();
-  revealStageAnswer();
-  setTimeout(advanceAlbumStage,1500);
+  if(roundFinished) return;
+  finishAlbum(false);
 }
 function startReveal(){
   if(revealInterval) clearInterval(revealInterval);
@@ -6219,41 +6231,129 @@ function startReveal(){
     if(!answered) syncRevealWithClock();
   },TICK_MS);
 }
-
-function revealStageAnswer(){
+function revealAlbumAnswer(){
   const canvas=document.getElementById('revealCanvas');
   canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
   const album=queue[currentIdx];
-  const answer=albumStage===1?album.artist:album.album;
+  const imgC=document.getElementById('posterImgClean');
+  const imgF=document.getElementById('posterImgFull');
+  imgC.className='poster-img hide';
+  imgF.className=imgF.complete && imgF.naturalWidth>0?'poster-img ready':'poster-img hide';
   const label=document.getElementById('filmTitle');
-  label.textContent=albumStage===1?'ARTISTE : '+answer:'ALBUM : '+answer;
+  label.textContent=album.artist+' — '+album.album;
   label.style.display='block';
   document.getElementById('answerInput').disabled=true;
   document.getElementById('skipBtn').disabled=true;
   document.getElementById('validateAnswerBtn').disabled=true;
 }
-function advanceAlbumStage(){
-  if(albumStage===1){ albumStage=2; loadAlbumStage(); }
-  else {
-    const success=stagePoints[0]>0 && stagePoints[1]>0;
-    if(success) handleStreakSuccess(); else handleStreakBreak();
-    markProgressSegment(currentIdx,success);
-    roundScores.push({title:queue[currentIdx].title,pts:stagePoints[0]+stagePoints[1],missed:!success});
-    nextFilm();
-  }
+function finishAlbum(success){
+  if(roundFinished) return;
+  roundFinished=true; answered=true;
+  clearInterval(revealInterval); revealInterval=null;
+  const pc=document.getElementById('posterContainer');
+  pc.classList.remove('flash-wrong');
+  pc.classList.add(success?'flash-correct':'flash-wrong');
+  pc.style.borderColor=success?'#3ecf6f':'var(--red)';
+  drawMask(revealPct);
+  if(success) handleStreakSuccess(); else { handleStreakBreak(); playWrong(); }
+  const partial=!success && stagePoints.some(pts=>pts>0);
+  markProgressSegment(currentIdx,success?'correct':partial?'partial':'missed');
+  if(success){totalScore+=currentPts;document.getElementById('headerScore').textContent=totalScore;showScorePopup('+'+currentPts+' pts');}
+  roundScores.push({title:queue[currentIdx].title,pts:stagePoints[0]+stagePoints[1]+(success?currentPts:0),status:success?'correct':partial?'partial':'missed'});
+  revealAlbumAnswer();
+  roundTimer=setTimeout(nextFilm,1600);
 }
 function validateCurrentAnswer(){
   const inp=document.getElementById('answerInput');
   if(inp.disabled || answered) return;
   inp.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
 }
-function isAlbumAnswerValid(input, accepted, rejected){
-  const n=canonicalNumbers(input);
+// Tolérance commune à toutes les pochettes : ponctuation, espaces, accents,
+// & / et / and, chiffres écrits en lettres, variantes de noms connues.
+// Les alias ne s'appliquent qu'aux réponses artistes, jamais aux titres.
+const ARTIST_ALIASES = {
+  '2pac':['tupac','tupac shakur','2pac shakur','2 pac','makaveli'],
+  'bigflo oli':['bigflo et oli','bigflo and oli','bigflo 1 oli','bigflo oli'],
+  'acdc':['ac dc','a c d c'],
+  'asap rocky':['a$ap rocky','a sap rocky','asap rocky','rocky'],
+  'jay z':['jayz','jay z','jigga'],
+  'the notorious big':['notorious big','notorious b i g','biggie','biggie smalls','christopher wallace'],
+  'the weeknd':['weeknd'],
+  'p nk':['pink','p!nk'],
+  'dr dre':['doctor dre','dr dre','dre'],
+  'snoop dogg':['snoop dog','snoop dogg'],
+  'm pokora':['matt pokora','mat pokora','m pokora'],
+  'gims':['maitre gims','maître gims'],
+  'supreme ntm':['ntm','supreme ntm','suprême ntm'],
+  'fonky family':['ff','la fonky family'],
+  'iam':['i am','iam'],
+  'pnl':['p n l','pnl'],
+  'sch':['s c h','sch'],
+  'sdm':['s d m','sdm'],
+  'plk':['p l k','plk'],
+  'sza':['s z a','sza'],
+  'ub40':['ub 40','u b 40'],
+  'blink 182':['blink182','blink 182'],
+  'mickey 3d':['mickey 3d','mickey 3 d','mickey trois d'],
+  'k maro':['kmaro','k maro'],
+  'j cole':['j cole','jcole','jermaine cole'],
+  'tyler the creator':['tyler creator','tyler the creator'],
+  'christine and the queens':['christine et les queens','christine and the queens','chris'],
+  'creedence clearwater revival':['ccr','creedence'],
+  'red hot chili peppers':['rhcp','red hot chili peppers','red hot'],
+  'rage against the machine':['ratm','rage against the machine'],
+  'earth wind fire':['earth wind and fire','earth wind et fire','ewf'],
+  'kool the gang':['kool and the gang','kool et the gang','kool the gang'],
+  'bob marley the wailers':['bob marley','bob marley and the wailers','bob marley et the wailers'],
+  'the beatles':['beatles'],
+  'the rolling stones':['rolling stones','stones'],
+  'the white stripes':['white stripes'],
+  'the chemical brothers':['chemical brothers'],
+  'the clash':['clash'],
+  'the cure':['cure'],
+  'the doors':['doors'],
+  'black eyed peas':['the black eyed peas','black eyed peas','bep'],
+  'destiny s child':['destinys child','destiny child'],
+  'sexion d assaut':['section d assaut','sexion dassaut','sexion d assaut'],
+  'l imperatrice':['imperatrice','l imperatrice'],
+  'a ha':['aha','a ha'],
+  'boney m':['boney m','boneym'],
+  'mc solaar':['mc solar','mc solaar','solaar'],
+  'jean jacques goldman':['jj goldman','jjg','goldman'],
+  'jean michel jarre':['jm jarre','jarre'],
+  'jean louis aubert':['aubert'],
+  'jimi hendrix':['hendrix'],
+  'johnny hallyday':['johnny','johnny halliday'],
+  'serge gainsbourg':['gainsbourg'],
+  'michael jackson':['mj','michael jackson'],
+  'kanye west':['ye','kanye'],
+  'asap rocky':['a$ap rocky','a sap rocky','asap rocky'],
+  'the notorious b i g':['biggie','biggie smalls','notorious big','the notorious big','notorious b i g'],
+};
+function basicAlbumNormalize(value){
+  return String(value||'').toLowerCase().normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'').replace(/&/g,' et ')
+    .replace(/\$/g,'s').replace(/['’`]/g,' ')
+    .replace(/[^a-z0-9]+/g,' ').trim().replace(/\s+/g,' ')
+    .replace(/\b(and|et)\b/g,' et ').replace(/\s+/g,' ').trim();
+}
+function canonicalAlbumAnswer(value, isArtist=false){
+  let n=basicAlbumNormalize(value);
+  // Les titres gardent leur identité : pas d'alias d'artiste appliqué aux albums.
+  if(!isArtist) return n;
+  for(const [canonical,aliases] of Object.entries(ARTIST_ALIASES)){
+    if(n===basicAlbumNormalize(canonical) || aliases.some(a=>n===basicAlbumNormalize(a)))
+      return basicAlbumNormalize(canonical);
+  }
+  return n;
+}
+function isAlbumAnswerValid(input, accepted, rejected, isArtist=false){
+  const n=canonicalAlbumAnswer(input,isArtist);
   if(!n) return false;
-  if(rejected.some(x=>canonicalNumbers(x)===n)) return false;
-  if(accepted.some(x=>canonicalNumbers(x)===n)) return 'exact';
+  if(rejected.some(x=>canonicalAlbumAnswer(x,isArtist)===n)) return false;
+  if(accepted.some(x=>canonicalAlbumAnswer(x,isArtist)===n)) return 'exact';
   for(const alias of accepted){
-    const b=canonicalNumbers(alias);
+    const b=canonicalAlbumAnswer(alias,isArtist);
     if(!b) continue;
     const numsA=n.match(/\b\d+\b/g)||[], numsB=b.match(/\b\d+\b/g)||[];
     if(numsA.join(',')!==numsB.join(',')) continue;
@@ -6263,28 +6363,36 @@ function isAlbumAnswerValid(input, accepted, rejected){
 }
 document.getElementById('answerInput').addEventListener('keydown',function(e){
   if(e.key!=='Enter' || answered || this.disabled) return;
+  e.preventDefault();
   if(syncRevealWithClock()) return;
   AC.resume();
   const album=queue[currentIdx];
-  const accepted=albumStage===1?album.part1:album.part2;
-  const rejected=albumStage===1?album.reject1:album.reject2;
-  const match=isAlbumAnswerValid(this.value,accepted,rejected);
-  if(match) triggerCorrect(album,this,match==='fuzzy'); else triggerWrong(this);
+  const matches=[];
+  if(stagePoints[0]===0 && !stageMissed[0] && isAlbumAnswerValid(this.value,album.part1,album.reject1,true)) matches.push(0);
+  if(stagePoints[1]===0 && !stageMissed[1] && isAlbumAnswerValid(this.value,album.part2,album.reject2)) matches.push(1);
+  if(matches.length){ triggerCorrect(album,this,matches); } else triggerWrong(this);
 });
-function triggerCorrect(album,inp,wasFuzzy){
+function triggerCorrect(album,inp,matches){
   if(syncRevealWithClock()) return;
-  clearInterval(revealInterval); answered=true;
-  inp.className='correct'; inp.disabled=true;
-  playCorrect();
-  const pc=document.getElementById('posterContainer');
-  pc.classList.add('flash-correct','correct-flash');
-  const earned=currentPts;
-  stagePoints[albumStage-1]=earned;
-  totalScore+=earned;
+  const earned=PART_BONUS;
+  matches.forEach(i=>{stagePoints[i]=earned;totalScore+=earned;});
   document.getElementById('headerScore').textContent=totalScore;
-  revealStageAnswer();
-  showScorePopup('+'+earned+' pts');
-  setTimeout(()=>{pc.classList.remove('correct-flash');advanceAlbumStage();},1500);
+  playCorrect();
+  showScorePopup('+'+(earned*matches.length)+' pts');
+  inp.value=''; inp.className='correct';
+  setTimeout(()=>{if(!roundFinished) inp.className='';},550);
+  const pc=document.getElementById('posterContainer');
+  if(stagePoints[0]>0 && stagePoints[1]>0){
+    finishAlbum(true);
+  }else{
+    pc.classList.remove('flash-wrong','flash-correct');
+    pc.style.borderColor='var(--gold)';
+    document.getElementById('feedback').textContent='';
+    document.getElementById('feedback').className='feedback fuzzy';
+    inp.placeholder=stagePoints[0]>0?'Titre de l’album…':'Nom de l’artiste…';
+    drawMask(revealPct);
+    inp.focus();
+  }
 }
 function triggerWrong(inp){
   playWrong(); inp.className='wrong'; inp.select();
@@ -6297,22 +6405,20 @@ function triggerWrong(inp){
 }
 
 function skipFilm(){
-  if(answered) return;
+  if(roundFinished) return;
   if(syncRevealWithClock()) return;
-  clearInterval(revealInterval); answered=true;
-  stageMissed[albumStage-1]=true;
-  playWrong(); revealStageAnswer();
-  setTimeout(advanceAlbumStage,1200);
+  finishAlbum(false);
 }
 function nextFilm(){ currentIdx++; if(currentIdx>=queue.length) endGame(); else loadFilm(); }
 
 function endGame(){
-  clearInterval(revealInterval);
+  clearInterval(revealInterval); clearTimeout(roundTimer);
   document.getElementById('gameArea').style.display='none';
+  document.body.classList.remove('game-playing');
   document.body.classList.add('score-visible');
   document.getElementById('screenEnd').classList.add('active');
   window.scrollTo(0,0);
-  const max=queue.length*MAX_PTS*2, pct=Math.round((totalScore/max)*100);
+  const max=queue.length*(MAX_PTS+PART_BONUS*2), pct=Math.round((totalScore/max)*100);
   document.getElementById('endTitle').textContent=totalScore+' pts';
   document.getElementById('endSub').textContent=
     pct>=80?' ':
@@ -6330,7 +6436,7 @@ function endGame(){
   if(lbBtn) lbBtn.disabled=false;
   if(lbStatus) lbStatus.textContent='';
   document.getElementById('breakdown').innerHTML=roundScores.map(r=>`
-    <div class="breakdown-row ${r.pts>0?'scored':'missed'}">
+    <div class="breakdown-row ${r.status==='correct'?'scored':r.status==='partial'?'half-scored':'missed'}">
       <span>${r.title}${r.fuzzy?' <span style="color:#f5a623;font-size:0.7em">~</span>':''}</span>
       <span class="pts">${r.pts>0?'+'+r.pts:r.skipped?'PASSÉ':'MANQUÉ'}</span>
     </div>`).join('');
@@ -6341,6 +6447,7 @@ function restartGame(){
   gameSecretField.type = 'text';
   gameSecretField.disabled = true;
   document.body.classList.remove('score-visible');
+  document.body.classList.add('game-playing');
   document.getElementById('screenEnd').classList.remove('active');
   document.getElementById('headerScore').textContent='0';
   document.getElementById('gameArea').style.display='flex';

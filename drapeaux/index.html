@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" href="favicon.ico.drapeaux.png">
+<link rel="icon" href="/favicon.ico.drapeaux.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DRAPEAUX REVEAL — Devine le drapeau</title>
 <style>
@@ -29,7 +29,7 @@
     width: 100%; padding: 18px 32px; display: flex;
     align-items: center; justify-content: space-between; border-bottom: 1px solid #1e1e2e;
   }
-  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 2px; color: var(--gold); }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 4px; color: var(--gold); }
   .logo span { color: var(--white); }
   .score-display { display: flex; flex-direction: column; align-items: flex-end; }
   .score-label { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gray); }
@@ -350,7 +350,7 @@
 <body class="start-scroll">
 <header>
   <div style="display:flex;align-items:center;gap:14px">
-    <a class="logo" href="index.html" style="cursor:pointer;text-decoration:none;">DRAPEAUX<span>REVEAL</span></a>
+    <a class="logo" href="/" style="cursor:pointer;text-decoration:none;">DRAPEAUX<span>REVEAL</span></a>
     <span id="gameAudioControls" style="display:none;align-items:center;gap:14px">
     <button id="effectsBtn" onclick="toggleEffects()" title="Couper les effets sonores" aria-label="Couper les effets sonores" style="background:transparent;border:none;cursor:pointer;padding:4px;color:var(--gold);display:flex;align-items:center;justify-content:center;transition:color 0.2s;position:relative;top:-3px;">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -776,7 +776,7 @@ let FILMS = [];
 let catalogLoaded = false;
 async function loadVideoCatalog(){
   if(catalogLoaded) return;
-  const response = await fetch('drapeaux.json', {cache:'no-store'});
+  const response = await fetch('/drapeaux.json', {cache:'no-store'});
   if(!response.ok) throw new Error('drapeaux.json introuvable (HTTP '+response.status+')');
   const entries = await response.json();
   if(!Array.isArray(entries) || entries.length < 10) throw new Error('Il faut au moins 10 drapeaux dans le catalogue.');
@@ -784,8 +784,8 @@ async function loadVideoCatalog(){
     title:String(f.title || f.nom || f.name || '').trim(),
     accept:Array.isArray(f.part1) ? f.part1 : (Array.isArray(f.accept) ? f.accept : []),
     reject:Array.isArray(f.reject1) ? f.reject1 : (Array.isArray(f.reject) ? f.reject : []),
-    cleanSrc:String(f.src || f.image || ''),
-    fullSrc:String(f.src || f.image || '')
+    cleanSrc:String(f.src || f.image || '').replace(/^\.?\/?drapeaux-images\//, '/drapeaux-images/'),
+    fullSrc:String(f.src || f.image || '').replace(/^\.?\/?drapeaux-images\//, '/drapeaux-images/')
   }));
   FILMS.forEach(f=>{if(f.title && !f.accept.includes(f.title)) f.accept.unshift(f.title);});
   if(FILMS.some(f=>!f.title || !f.cleanSrc || !f.accept.length)) throw new Error('Catalogue incomplet : pays, image ou réponses manquants.');

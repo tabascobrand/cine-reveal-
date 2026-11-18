@@ -512,6 +512,9 @@ document.addEventListener('mousedown', event => {
 
 let selectedGeneration = 0;
 const LEADERBOARD_API = '/api/leaderboard';
+// Un classement distinct par génération, y compris le mode toutes générations.
+function pokemonLeaderboardGame(){ return selectedGeneration === 0 ? 'pokemon_all' : 'pokemon_gen' + selectedGeneration; }
+let leaderboardRequestSequence = 0;
 let leaderboardScoreSubmitted = false;
 
 function escapeLeaderboardHTML(value){
@@ -539,18 +542,22 @@ function renderLeaderboard(targetId, scores){
 }
 
 async function loadLeaderboard(){
+  const game = pokemonLeaderboardGame();
+  const requestSequence = ++leaderboardRequestSequence;
   if(!LEADERBOARD_API){
     renderLeaderboard('leaderboardStart', []);
     renderLeaderboard('leaderboardEnd', []);
     return;
   }
   try{
-    const res=await fetch(LEADERBOARD_API+'?game=pokemon',{cache:'no-store'});
+    const res=await fetch(LEADERBOARD_API+'?game='+encodeURIComponent(game),{cache:'no-store'});
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data=await res.json();
+    if(requestSequence !== leaderboardRequestSequence || game !== pokemonLeaderboardGame()) return;
     renderLeaderboard('leaderboardStart',data.scores);
     renderLeaderboard('leaderboardEnd',data.scores);
   }catch(err){
+    if(requestSequence !== leaderboardRequestSequence || game !== pokemonLeaderboardGame()) return;
     const msg='<div class="leaderboard-empty">CLASSEMENT INDISPONIBLE</div>';
     const a=document.getElementById('leaderboardStart');
     const b=document.getElementById('leaderboardEnd');
@@ -592,7 +599,7 @@ async function submitLeaderboardScore(){
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        game:'pokemon',
+        game:pokemonLeaderboardGame(),
         player_name:playerName,
         score:totalScore,
         secret:secret
@@ -864,9 +871,12 @@ function chooseGeneration(gen){
   document.getElementById('screenStart').classList.add('active');
   document.getElementById('selectedGenLabel').textContent=gen===0?'TOUTES LES GÉNÉRATIONS':gen+'ÈME GÉNÉRATION';
   document.getElementById('catalogNotice').textContent='';
+  document.getElementById('leaderboardStart').innerHTML='<div class="leaderboard-empty">Chargement…</div>';
+  document.getElementById('leaderboardEnd').innerHTML='<div class="leaderboard-empty">Chargement…</div>';
   loadLeaderboard();
 }
 function backToGenerations(){
+  leaderboardRequestSequence++;
   if(revealInterval)clearInterval(revealInterval);
   answered=true;
   document.getElementById('gameArea').style.display='none';

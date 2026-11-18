@@ -3,7 +3,7 @@ export async function onRequestGet(context) {
   const url = new URL(context.request.url);
   const game = url.searchParams.get("game");
 
-  if (!["cine", "animal", "video", "logo", "flags", "pokemon", "album", "actor"].includes(game)) {
+  if (!["cine", "animal", "video", "logo", "flags", "pokemon", "album", "actor", "pokemon_all", "pokemon_gen1", "pokemon_gen2", "pokemon_gen3", "pokemon_gen4", "pokemon_gen5", "pokemon_gen6", "pokemon_gen7", "pokemon_gen8", "pokemon_gen9"].includes(game)) {
     return Response.json({ error: "Invalid game" }, { status: 400 });
   }
 
@@ -40,7 +40,7 @@ export async function onRequestPost(context) {
     const score = Number(body.score);
     const secret = String(body.secret || "").trim();
 
-    if (!["cine", "animal", "video", "logo", "flags", "pokemon", "album", "actor"].includes(game)) {
+    if (!["cine", "animal", "video", "logo", "flags", "pokemon", "album", "actor", "pokemon_all", "pokemon_gen1", "pokemon_gen2", "pokemon_gen3", "pokemon_gen4", "pokemon_gen5", "pokemon_gen6", "pokemon_gen7", "pokemon_gen8", "pokemon_gen9"].includes(game)) {
       return Response.json({ error: "Invalid game" }, { status: 400 });
     }
 

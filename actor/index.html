@@ -762,39 +762,53 @@ function isFuzzyMatch(input,target){
   const maxDist=b.length<5?0:b.length<8?1:b.length<14?1:2;
   return levenshtein(a,b)<=maxDist ? 'fuzzy' : false;
 }
-// Réponse : prénom ET nom obligatoires pour les noms composés.
-// Les artistes connus sous un seul nom (Zendaya, Bourvil...) restent acceptés.
-// Tolérance très limitée : au plus une faute par mot long, deux au total.
+// Actor Reveal : prénom et nom obligatoires, tolérance selon leur longueur.
+function actorDistance(a,b){
+  const dp=Array.from({length:a.length+1},(_,i)=>[i,...Array(b.length).fill(0)]);
+  for(let j=0;j<=b.length;j++) dp[0][j]=j;
+  for(let i=1;i<=a.length;i++) for(let j=1;j<=b.length;j++){
+    dp[i][j]=Math.min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+(a[i-1]!==b[j-1]));
+    if(i>1 && j>1 && a[i-1]===b[j-2] && a[i-2]===b[j-1])
+      dp[i][j]=Math.min(dp[i][j],dp[i-2][j-2]+1);
+  }
+  return dp[a.length][b.length];
+}
+function actorTolerance(n){
+  return n<=2?0:n<=5?1:n<=8?2:n<=11?3:n<=13?4:Math.floor(n*0.45);
+}
+function actorNameScore(answer,title){
+  const a=normalize(answer).split(' '), b=normalize(title).split(' ');
+  if(!a[0] || !b[0]) return Infinity;
+  if(a.join(' ')===b.join(' ')) return 0;
+  // Les mononymes restent jouables, mais jamais un nom seul pour un nom complet.
+  if((a.length===1)!==(b.length===1)) return Infinity;
+  const compact=w=>w.join('');
+  if(b.length===1){
+    const d=actorDistance(a[0],b[0]);
+    return d<=Math.min(2,actorTolerance(b[0].length))?d:Infinity;
+  }
+  // Essayer les séparations pour gérer les prénoms et noms composés.
+  let best=Infinity;
+  for(let i=1;i<a.length;i++) for(let j=1;j<b.length;j++){
+    const af=compact(a.slice(0,i)), bf=compact(b.slice(0,j));
+    const al=compact(a.slice(i)), bl=compact(b.slice(j));
+    const df=actorDistance(af,bf), dl=actorDistance(al,bl);
+    if(df>Math.min(3,actorTolerance(bf.length)) || dl>actorTolerance(bl.length)) continue;
+    if(df+dl>Math.max(2,Math.floor((bf.length+bl.length)*0.4))) continue;
+    best=Math.min(best,df+dl);
+  }
+  return best;
+}
 function actorAnswerMatch(input,film){
   const answer=normalize(input);
-  if(!answer) return false;
-  const expected=normalize(film.title);
-  const inputWords=answer.split(' '), expectedWords=expected.split(' ');
-  if(inputWords.length!==expectedWords.length) return false;
-  if(answer===expected) return 'exact';
-  let totalDistance=0;
-  for(let i=0;i<expectedWords.length;i++){
-    const a=inputWords[i], b=expectedWords[i];
-    const distance=levenshtein(a,b);
-    // Les mots courts (de, van, al...) doivent être exacts.
-    if(distance>(b.length>=5?1:0)) return false;
-    totalDistance+=distance;
-    if(totalDistance>2) return false;
-  }
-  // Une réponse proche de deux personnes différentes est refusée.
-  const ambiguous=FILMS.some(other=>other!==film && (()=>{
-    const words=normalize(other.title).split(' ');
-    if(words.length!==inputWords.length) return false;
-    let distance=0;
-    for(let i=0;i<words.length;i++){
-      const d=levenshtein(inputWords[i],words[i]);
-      if(d>(words[i].length>=5?1:0)) return false;
-      distance+=d;
-      if(distance>2) return false;
-    }
-    return true;
-  })());
-  return ambiguous?false:'fuzzy';
+  if(!answer || answer.length>120) return false;
+  if(answer===normalize(film.title)) return 'exact';
+  if((film.reject||[]).some(v=>normalize(v)===answer)) return false;
+  const score=actorNameScore(answer,film.title);
+  if(!Number.isFinite(score)) return false;
+  // Refuser un autre acteur exact, plus proche, ou à égalité.
+  if(FILMS.some(other=>other!==film && actorNameScore(answer,other.title)<=score)) return false;
+  return score===0?'exact':'fuzzy';
 }
 
 // Actor Reveal : portraits JPG du catalogue actor.json.

@@ -802,6 +802,47 @@ function isFuzzyMatch(input,target){
 }
 
 // Pokémon Reveal : catalogue indépendant. Réponses EN + FR (PokéAPI, chargées une fois).
+let pokemonAnswerCatalog=[];
+function pokemonAnswerKey(value){
+  return normalize(String(value||'').replace(/♀/g,' female ').replace(/♂/g,' male ').replace(/œ/gi,'oe')).replace(/\s+/g,'');
+}
+function pokemonTypoDistance(a,b){
+  const dp=Array.from({length:a.length+1},(_,i)=>[i,...Array(b.length).fill(0)]);
+  for(let j=0;j<=b.length;j++)dp[0][j]=j;
+  for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++){
+    dp[i][j]=Math.min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+(a[i-1]!==b[j-1]));
+    if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])dp[i][j]=Math.min(dp[i][j],dp[i-2][j-2]+1);
+  }
+  return dp[a.length][b.length];
+}
+function matchPokemonAnswer(input,film){
+  const key=pokemonAnswerKey(input);
+  if(!key||key.length>40)return false;
+  const aliases=(film.accept||[]).map(pokemonAnswerKey).filter(Boolean);
+  if((film.reject||[]).some(a=>pokemonAnswerKey(a)===key))return false;
+  if(aliases.includes(key))return 'exact';
+  // Preserve the exact-only Easter egg and avoid ambiguous very short names.
+  if(film.isMissingNo||key.length<3)return false;
+  let best=Infinity;
+  for(const alias of aliases){
+    const max=alias.length<4?0:alias.length<=5?1:alias.length<=10?2:3;
+    if(Math.abs(key.length-alias.length)>max)continue;
+    const d=pokemonTypoDistance(key,alias);
+    if(d<=max)best=Math.min(best,d);
+  }
+  if(!Number.isFinite(best))return false;
+  // Compare against every generation; reject equally plausible alternatives too.
+  for(const other of pokemonAnswerCatalog){
+    if(other===film || (other.title===film.title&&other.cleanSrc===film.cleanSrc))continue;
+    for(const name of other.accept||[]){
+      const alias=pokemonAnswerKey(name);
+      if(!alias||Math.abs(key.length-alias.length)>best)continue;
+      if(pokemonTypoDistance(key,alias)<=best)return false;
+    }
+  }
+  return 'fuzzy';
+}
+
 let FILMS = [];
 let catalogLoaded = false;
 
@@ -847,14 +888,15 @@ async function loadVideoCatalog(){
   if(!response.ok)throw new Error('Catalogue introuvable : '+response.status);
   const entries=await response.json();
   const translations=await getFrenchNames();
-  const subset=entries.filter(e=>!selectedGeneration||e.generation===selectedGeneration);
-  FILMS=subset.map(e=>{
+  const allPokemon=entries.map(e=>{
     const en=e.english.replace(/-/g,' ');
     const fr=translations[normalize(en).replace(/\s+/g,'')]||'';
     const aliases=new Set([...e.accept,en,e.english,e.title]);
     if(fr)aliases.add(fr);
-    return {title:fr||e.title,accept:[...aliases],reject:[],cleanSrc:e.image,fullSrc:e.image};
+    return {title:fr||e.title,accept:[...aliases],reject:[],cleanSrc:e.image,fullSrc:e.image,generation:e.generation};
   });
+  pokemonAnswerCatalog=[...allPokemon,MISSINGNO_ENTRY];
+  FILMS=allPokemon.filter(e=>!selectedGeneration||e.generation===selectedGeneration);
   if(FILMS.length<10)throw new Error('Moins de 10 Pokémon dans cette génération');
   catalogLoaded=true;
 }
@@ -1271,16 +1313,8 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
   if(syncRevealWithClock()) return;
   AC.resume();
   const film=queue[currentIdx];
-  let matched=false, wasFuzzy=false;
-  if(!(film.reject || []).some(rejected => titleVariants(this.value).some(v => titleVariants(rejected).includes(v)))){
-    // Pokémon : correspondance stricte FR/EN. Aucune tolérance Levenshtein :
-    // Nidoran ne doit jamais valider Nidorina, Têtarte ne valide pas Tartard.
-    // Accents, majuscules, apostrophes et ponctuation restent facultatifs.
-    const entered = normalize(this.value).replace(/\s+/g, '');
-    matched = entered.length > 0 && film.accept.some(alias =>
-      normalize(alias).replace(/\s+/g, '') === entered
-    );
-  }
+  const result=matchPokemonAnswer(this.value,film);
+  const matched=Boolean(result), wasFuzzy=result==='fuzzy';
   if(matched) triggerCorrect(film,this,wasFuzzy);
   else triggerWrong(this);
 });

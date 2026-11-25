@@ -766,6 +766,42 @@ function isFuzzyMatch(input,target){
   return false;
 }
 
+// Validation des marques : fautes de frappe, sans accepter une marque concurrente.
+function logoKey(value){return normalize(value).replace(/\s+/g,'');}
+function logoDistance(a,b){
+  const d=Array.from({length:a.length+1},(_,i)=>[i,...Array(b.length).fill(0)]);
+  for(let j=0;j<=b.length;j++)d[0][j]=j;
+  for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++){
+    d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]!==b[j-1]?1:0));
+    if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])d[i][j]=Math.min(d[i][j],d[i-2][j-2]+1);
+  }
+  return d[a.length][b.length];
+}
+function logoAnswerMatch(input,film){
+  const a=logoKey(input);
+  if(!a||a.length>120)return false;
+  const aliases=(film.accept||[]).map(logoKey).filter(Boolean);
+  if(aliases.includes(a))return 'exact';
+  if((film.reject||[]).some(x=>logoKey(x)===a))return false;
+  const digits=x=>(x.match(/\d+/g)||[]).join(',');
+  const limit=n=>n<=3?0:n<=5?1:n<=10?2:n<=15?3:4;
+  let best=Infinity;
+  for(const b of aliases){
+    if(digits(a)!==digits(b)||Math.abs(a.length-b.length)>limit(b.length))continue;
+    const d=logoDistance(a,b);
+    if(d<=limit(b.length))best=Math.min(best,d);
+  }
+  if(!Number.isFinite(best))return false;
+  // Même une marque hors de la partie en cours peut bloquer une confusion.
+  for(const other of FILMS){
+    if(other===film)continue;
+    for(const b of [other.title,...(other.accept||[])].map(logoKey).filter(Boolean)){
+      if(Math.abs(a.length-b.length)<=best&&logoDistance(a,b)<=best)return false;
+    }
+  }
+  return 'fuzzy';
+}
+
 // Catalogue de test : fourni séparément dans jeux-video-catalogue.json.
 // ATTENTION : les réponses de cette première version sont visibles côté client.
 // Le serveur de validation privé sera nécessaire avant un lancement public sécurisé.
@@ -1141,10 +1177,8 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
   if(syncRevealWithClock()) return;
   AC.resume();
   const film=queue[currentIdx];
-  let matched=false, wasFuzzy=false;
-  // Noms de marques : comparaison stricte, sans confondre des marques voisines.
-  const entered=normalize(this.value).replace(/\s+/g,'');
-  matched=entered.length>0 && film.accept.some(alias=>normalize(alias).replace(/\s+/g,'')===entered);
+  const result=logoAnswerMatch(this.value,film);
+  const matched=!!result, wasFuzzy=result==='fuzzy';
   if(matched) triggerCorrect(film,this,wasFuzzy);
   else triggerWrong(this);
 });

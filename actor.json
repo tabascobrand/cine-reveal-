@@ -77,17 +77,6 @@
     "image": "/images-actor/Alain_Delon.jpg"
   },
   {
-    "title": "Alan Rickman",
-    "accept": [
-      "Alan Rickman",
-      "Rickman"
-    ],
-    "reject": [
-      "Alan"
-    ],
-    "image": "/images-actor/Alan_Rickman.jpg"
-  },
-  {
     "title": "Albert Dupontel",
     "accept": [
       "Albert Dupontel",
@@ -482,17 +471,6 @@
     "image": "/images-actor/Catherine_Deneuve.jpg"
   },
   {
-    "title": "Céline Sallette",
-    "accept": [
-      "Céline Sallette",
-      "Sallette"
-    ],
-    "reject": [
-      "Céline"
-    ],
-    "image": "/images-actor/Celine_Sallette.jpg"
-  },
-  {
     "title": "Chadwick Boseman",
     "accept": [
       "Chadwick Boseman",
@@ -669,17 +647,6 @@
     "image": "/images-actor/Colin_Farrell.jpg"
   },
   {
-    "title": "Colin Firth",
-    "accept": [
-      "Colin Firth",
-      "Firth"
-    ],
-    "reject": [
-      "Colin"
-    ],
-    "image": "/images-actor/Colin_Firth.jpg"
-  },
-  {
     "title": "Coluche",
     "accept": [
       "Coluche"
@@ -730,17 +697,6 @@
       "Daniel"
     ],
     "image": "/images-actor/Daniel_Radcliffe.jpg"
-  },
-  {
-    "title": "Danielle Darrieux",
-    "accept": [
-      "Danielle Darrieux",
-      "Darrieux"
-    ],
-    "reject": [
-      "Danielle"
-    ],
-    "image": "/images-actor/Danielle_Darrieux.jpg"
   },
   {
     "title": "Danny DeVito",
@@ -919,17 +875,6 @@
     "image": "/images-actor/Ewan_McGregor.jpg"
   },
   {
-    "title": "Eye Haidara",
-    "accept": [
-      "Eye Haidara",
-      "Haidara"
-    ],
-    "reject": [
-      "Eye"
-    ],
-    "image": "/images-actor/Eye_Haidara.jpg"
-  },
-  {
     "title": "Émilie Dequenne",
     "accept": [
       "Émilie Dequenne",
@@ -980,17 +925,6 @@
     ],
     "reject": [],
     "image": "/images-actor/Fernandel.jpg"
-  },
-  {
-    "title": "Florence Pugh",
-    "accept": [
-      "Florence Pugh",
-      "Pugh"
-    ],
-    "reject": [
-      "Florence"
-    ],
-    "image": "/images-actor/Florence_Pugh.jpg"
   },
   {
     "title": "Forest Whitaker",
@@ -1171,17 +1105,6 @@
     "image": "/images-actor/Gilles_Lellouche.jpg"
   },
   {
-    "title": "Grégory Gadebois",
-    "accept": [
-      "Grégory Gadebois",
-      "Gadebois"
-    ],
-    "reject": [
-      "Grégory"
-    ],
-    "image": "/images-actor/Gregory_Gadebois.jpg"
-  },
-  {
     "title": "Guillaume Gallienne",
     "accept": [
       "Guillaume Gallienne",
@@ -1259,17 +1182,6 @@
     "image": "/images-actor/Hugh_Jackman.jpg"
   },
   {
-    "title": "Ian McKellen",
-    "accept": [
-      "Ian McKellen",
-      "McKellen"
-    ],
-    "reject": [
-      "Ian"
-    ],
-    "image": "/images-actor/Ian_McKellen.jpg"
-  },
-  {
     "title": "Idris Elba",
     "accept": [
       "Idris Elba",
@@ -1290,17 +1202,6 @@
       "Isabelle"
     ],
     "image": "/images-actor/Isabelle_Adjani.jpg"
-  },
-  {
-    "title": "Isabelle Carré",
-    "accept": [
-      "Isabelle Carré",
-      "Carré"
-    ],
-    "reject": [
-      "Isabelle"
-    ],
-    "image": "/images-actor/Isabelle_Carre.jpg"
   },
   {
     "title": "Isabelle Huppert",
@@ -1809,17 +1710,6 @@
     "image": "/images-actor/Jude_Law.jpg"
   },
   {
-    "title": "Judi Dench",
-    "accept": [
-      "Judi Dench",
-      "Dench"
-    ],
-    "reject": [
-      "Judi"
-    ],
-    "image": "/images-actor/Judi_Dench.jpg"
-  },
-  {
     "title": "Julia Roberts",
     "accept": [
       "Julia Roberts",
@@ -1886,17 +1776,6 @@
     "image": "/images-actor/Kad_Merad.jpg"
   },
   {
-    "title": "Karin Viard",
-    "accept": [
-      "Karin Viard",
-      "Viard"
-    ],
-    "reject": [
-      "Karin"
-    ],
-    "image": "/images-actor/Karin_Viard.jpg"
-  },
-  {
     "title": "Kate Winslet",
     "accept": [
       "Kate Winslet",
@@ -1906,17 +1785,6 @@
       "Kate"
     ],
     "image": "/images-actor/Kate_Winslet.jpg"
-  },
-  {
-    "title": "Katerina Golubeva",
-    "accept": [
-      "Katerina Golubeva",
-      "Golubeva"
-    ],
-    "reject": [
-      "Katerina"
-    ],
-    "image": "/images-actor/Katerina_Golubeva.jpg"
   },
   {
     "title": "Keanu Reeves",
@@ -2096,17 +1964,6 @@
     "image": "/images-actor/Lyna_Khoudri.jpg"
   },
   {
-    "title": "Mads Mikkelsen",
-    "accept": [
-      "Mads Mikkelsen",
-      "Mikkelsen"
-    ],
-    "reject": [
-      "Mads"
-    ],
-    "image": "/images-actor/Mads_Mikkelsen.jpg"
-  },
-  {
     "title": "Mahershala Ali",
     "accept": [
       "Mahershala Ali",
@@ -2171,17 +2028,6 @@
       "Mark"
     ],
     "image": "/images-actor/Mark_Wahlberg.jpg"
-  },
-  {
-    "title": "Martin Freeman",
-    "accept": [
-      "Martin Freeman",
-      "Freeman"
-    ],
-    "reject": [
-      "Martin"
-    ],
-    "image": "/images-actor/Martin_Freeman.jpg"
   },
   {
     "title": "Mathieu Amalric",
@@ -2393,17 +2239,6 @@
     "image": "/images-actor/Michelle_Yeoh.jpg"
   },
   {
-    "title": "Michèle Morgan",
-    "accept": [
-      "Michèle Morgan",
-      "Morgan"
-    ],
-    "reject": [
-      "Michèle"
-    ],
-    "image": "/images-actor/Michele_Morgan.jpg"
-  },
-  {
     "title": "Millie Bobby Brown",
     "accept": [
       "Millie Bobby Brown",
@@ -2498,17 +2333,6 @@
       "Niels"
     ],
     "image": "/images-actor/Niels_Arestrup.jpg"
-  },
-  {
-    "title": "Noémie Merlant",
-    "accept": [
-      "Noémie Merlant",
-      "Merlant"
-    ],
-    "reject": [
-      "Noémie"
-    ],
-    "image": "/images-actor/Noemie_Merlant.jpg"
   },
   {
     "title": "Omar Sy",

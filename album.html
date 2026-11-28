@@ -6361,6 +6361,34 @@ function isAlbumAnswerValid(input, accepted, rejected, isArtist=false){
   }
   return false;
 }
+// Reconnaît artiste et titre dans une même saisie, dans les deux ordres.
+function matchAlbumParts(input, album){
+  const valid=(value,i)=>isAlbumAnswerValid(value, i===0?album.part1:album.part2,
+    i===0?album.reject1:album.reject2, i===0);
+  const direct=[valid(input,0),valid(input,1)];
+  const words=basicAlbumNormalize(input).split(' ').filter(Boolean);
+  let partial=[false,false];
+  // Deux segments distincts : aucun mot ne peut servir aux deux réponses.
+  for(let cut=1;cut<words.length;cut++){
+    const left=words.slice(0,cut), right=words.slice(cut);
+    const pairs=[[left,right]];
+    if(['de','du','par','by','et'].includes(right[0]) && right.length>1)
+      pairs.push([left,right.slice(1)]);
+    for(const [a,b] of pairs){
+      for(const order of [[0,1],[1,0]]){
+        const x=valid(a.join(' '),order[0]), y=valid(b.join(' '),order[1]);
+        if(x && y) return [true,true];
+        if(x==='exact') partial[order[0]]=true;
+        if(y==='exact') partial[order[1]]=true;
+      }
+    }
+  }
+  // Préserve les réponses individuelles et leur tolérance existante.
+  if(direct.some(Boolean)) return direct.map(Boolean);
+  // Si les deux fragments se chevauchent sans former une paire valide,
+  // ne pas attribuer les deux points sur une seule réponse ambiguë.
+  return partial[0] && partial[1] ? [false,false] : partial;
+}
 document.getElementById('answerInput').addEventListener('keydown',function(e){
   if(e.key!=='Enter' || answered || this.disabled) return;
   e.preventDefault();
@@ -6368,8 +6396,9 @@ document.getElementById('answerInput').addEventListener('keydown',function(e){
   AC.resume();
   const album=queue[currentIdx];
   const matches=[];
-  if(stagePoints[0]===0 && !stageMissed[0] && isAlbumAnswerValid(this.value,album.part1,album.reject1,true)) matches.push(0);
-  if(stagePoints[1]===0 && !stageMissed[1] && isAlbumAnswerValid(this.value,album.part2,album.reject2)) matches.push(1);
+  const recognized=matchAlbumParts(this.value,album);
+  if(stagePoints[0]===0 && !stageMissed[0] && recognized[0]) matches.push(0);
+  if(stagePoints[1]===0 && !stageMissed[1] && recognized[1]) matches.push(1);
   if(matches.length){ triggerCorrect(album,this,matches); } else triggerWrong(this);
 });
 function triggerCorrect(album,inp,matches){

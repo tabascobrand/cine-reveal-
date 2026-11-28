@@ -48,7 +48,7 @@
      pas quand l'écran est juste étroit (mobile en mode normal, sans clavier) */
   @media (max-height: 500px) {
     .game-area { padding: 8px 16px 0; gap: 8px; }
-    .poster-container { max-height: 32vh; max-height: 32dvh; }
+    .game-area .poster-container { width: min(100%, 32vh); width: min(100%, 32dvh); }
     header { padding: 8px 20px; }
     .progress-bar-wrap { height: 2px; }
   }
@@ -57,9 +57,9 @@
     font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold);
   }
   .poster-container {
-    position: relative; width: 100%; max-width: min(78vh, 820px); aspect-ratio: 1/1;
-    flex-shrink: 1; min-height: 0;
-    max-height: calc(100vh - 245px); max-height: calc(100dvh - 245px);
+    position: relative; width: min(100%, 78vh, 820px, max(0px, calc(100vh - 245px)));
+    width: min(100%, 78dvh, 820px, max(0px, calc(100dvh - 245px))); aspect-ratio: 1/1;
+    flex-shrink: 0; min-height: 0;
     margin: 0 auto;
     background: #000; overflow: hidden; border: 2px solid #1e1e2e; transition: border-color 0.15s;
   }
